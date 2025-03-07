@@ -71,7 +71,7 @@ Summary of Conversation: Google Calendar-like Website Design
 
 - POST /api/integrations/google-calendar/sync
 - POST /api/integrations/microsoft-calendar/sync
-- POST /api/integrations/deepseel-chatbox (Integrate Deepseel Chatbox AI)
+- POST /api/integrations/deepseek-chatbox (Integrate Deepseek Chatbox AI)
 - POST /api/integrations/oauth2/signin (OAuth 2.0 Sign-In)
 - POST /api/integrations/openai-whisper (Integrate OpenAI Whisper for Speech-to-Text)
 
