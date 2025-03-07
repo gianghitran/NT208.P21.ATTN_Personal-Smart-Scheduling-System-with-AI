@@ -2,12 +2,12 @@ Summary of Conversation: Google Calendar-like Website Design
 
 ### Technology Stack:
 
-- Frontend: React.js (Vite/CRA), Redux, Context API, Material UI, Tailwind CSS
-- Backend: Express.js (Node.js), PostgreSQL, MongoDB, Firebase
-- API Communication: RESTful APIs, Axios, Fetch API
-- Security: OAuth (Google, Microsoft), JWT, Role-based Access Control (RBAC)
-- Hosting & Deployment: Vercel, Netlify (Frontend); AWS, DigitalOcean, Firebase (Backend); PostgreSQL (Supabase), MongoDB (Atlas)
-- Optimization: Lazy Loading, Code Splitting, Rate Limiting, Redis, CDN, Load Balancing (NGINX, Cloudflare)
+- Frontend: React.js
+- Backend: Express.js, MongoDB
+- API Communication: RESTful APIs,Fetch API
+- Security: OAuth 2.0 (Google sign-in)
+- Hosting & Deployment: Vercel (Frontend); Render, Railway (Backend); MongoDB (Atlas)
+- Optimization: Lazy Loading, Rate Limiting
 
 ### Core Features:
 
