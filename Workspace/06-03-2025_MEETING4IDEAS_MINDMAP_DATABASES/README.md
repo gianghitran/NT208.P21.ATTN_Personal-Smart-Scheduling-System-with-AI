@@ -6,3 +6,6 @@
 
 ## Mindmap:
 [link](https://lucid.app/lucidspark/7b3fe3ad-962f-45bc-a972-5f5efc4fd8d5/edit?invitationId=inv_58080238-bd12-45fd-b809-f7fe3e3f91c4&fbclid=IwY2xjawI3RkdleHRuA2FlbQIxMAABHYp48ZYHHeqw-YHzgtjzr3nGgBCe3r3eC9Jw7TNh0z5FhV3yY7p4Dn-0Ow_aem_4m1uNgArNez1yvK5blq_Zg&interceptingPaymentFlow=1&page=0_0#)
+
+## Database:
+[link](https://lucid.app/lucidchart/9d132acf-c8a3-4f7a-934b-2e896fd0aa19/edit?viewport_loc=5%2C-100%2C1470%2C848%2C0_0&invitationId=inv_e90080ee-941a-4f35-b344-aff79feb5268)
