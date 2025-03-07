@@ -1,4 +1,4 @@
-Google Calendar-like Website - Database Schema
+Database Schema
 
 ==============================
 1️⃣ USERS TABLE
