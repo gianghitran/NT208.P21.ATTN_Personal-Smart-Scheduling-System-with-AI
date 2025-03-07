@@ -83,3 +83,4 @@ Summary of Conversation: Google Calendar-like Website Design
 - AI-based Event Recommendations
 - Voice Command Scheduling
 - Offline Mode for Calendar Access
+- Mobile Friendly
