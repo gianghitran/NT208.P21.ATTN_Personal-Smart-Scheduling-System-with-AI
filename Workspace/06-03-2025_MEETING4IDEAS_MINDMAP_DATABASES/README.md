@@ -1,4 +1,4 @@
-- API deepseel_chatbox
+- API AIdeepseek_chatbox: https://www.youtube.com/watch?v=ECxtBChPbk0
 - API Google Calendar
 - API Sign-In OAuth 2.0
-- API OpenAI Whisper
+- API OpenAI Whisper : https://www.youtube.com/watch?v=8SQV-B83tPU
