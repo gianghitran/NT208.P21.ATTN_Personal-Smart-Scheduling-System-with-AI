@@ -1,6 +1,7 @@
 Summary of Conversation: Google Calendar-like Website Design
 
 ### Technology Stack:
+
 - Frontend: React.js (Vite/CRA), Redux, Context API, Material UI, Tailwind CSS
 - Backend: Express.js (Node.js), PostgreSQL, MongoDB, Firebase
 - API Communication: RESTful APIs, Axios, Fetch API
@@ -9,7 +10,9 @@ Summary of Conversation: Google Calendar-like Website Design
 - Optimization: Lazy Loading, Code Splitting, Rate Limiting, Redis, CDN, Load Balancing (NGINX, Cloudflare)
 
 ### Core Features:
+
 1. User Interface (UI) & Experience (UX)
+
    - Calendar Views: Monthly, Weekly, Daily, Agenda
    - Event Management: Create, Edit, Delete, Recurring Events
    - Navigation: Sidebar, Search, Filters, Settings
@@ -17,6 +20,7 @@ Summary of Conversation: Google Calendar-like Website Design
    - File Upload UI: Drag & Drop for CSV/Text, Voice Input Interface
 
 2. Event Scheduling & Management
+
    - Drag & Drop Events
    - Time Zone Support
    - Color-coded Categories
@@ -24,23 +28,28 @@ Summary of Conversation: Google Calendar-like Website Design
    - Real-time Syncing with Google/Microsoft Calendar
 
 3. File Upload & Processing
+
    - CSV Upload API: Bulk Event Updates
    - Text File API: Natural Language Event Processing
    - Voice Input API: Speech-to-Text Event Creation
 
 4. Notifications & Collaboration
+
    - Email, Push, SMS Reminders
    - Shared Calendars
    - Event Invitations
 
 ### API Launch Plan (Express.js Backend):
+
 #### Authentication APIs:
+
 - POST /api/auth/login (OAuth - Google, Microsoft)
 - POST /api/auth/signup (Register new users)
 - POST /api/auth/logout (End session)
 - GET /api/auth/refresh-token (Maintain session)
 
 #### Event Management APIs:
+
 - POST /api/events/create (Create Event)
 - PUT /api/events/{id}/update (Update Event)
 - DELETE /api/events/{id}/delete (Delete Event)
@@ -48,24 +57,32 @@ Summary of Conversation: Google Calendar-like Website Design
 - POST /api/events/recurring (Create Recurring Event)
 
 #### File Upload APIs:
+
 - POST /api/events/upload-csv (Upload & Parse CSV File)
 - POST /api/events/upload-text (Extract Data from Text File)
 - POST /api/events/upload-voice (Convert Speech to Event)
 
 #### Notification APIs:
+
 - POST /api/notifications/set-reminder (Schedule Notifications)
 - GET /api/notifications/get (Fetch Notifications)
 
 #### Integration APIs:
+
 - POST /api/integrations/google-calendar/sync
 - POST /api/integrations/microsoft-calendar/sync
+- POST /api/integrations/deepseel-chatbox (Integrate Deepseel Chatbox AI)
+- POST /api/integrations/oauth2/signin (OAuth 2.0 Sign-In)
+- POST /api/integrations/openai-whisper (Integrate OpenAI Whisper for Speech-to-Text)
 
 ### Performance & Optimization Strategies:
+
 - Frontend: Code Splitting, Lazy Loading
 - Backend: Rate Limiting, Security Middleware, Load Balancing
 - Caching: Redis, CDN
 
 ### Future Enhancements:
+
 - AI-based Event Recommendations
 - Voice Command Scheduling
 - Offline Mode for Calendar Access
