@@ -15,8 +15,6 @@ Summary of Conversation: Google Calendar-like Website Design
 
    - Calendar Views: Monthly, Weekly, Daily, Agenda
    - Event Management: Create, Edit, Delete, Recurring Events
-   - Navigation: Sidebar, Search, Filters, Settings
-   - Accessibility: Dark Mode, Keyboard Shortcuts, Mobile Friendly
    - File Upload UI: Drag & Drop for CSV/Text, Voice Input Interface
 
 2. Event Scheduling & Management
