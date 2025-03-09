@@ -1,4 +1,4 @@
-- API AIdeepseek_chatbox: https://www.youtube.com/watch?v=ECxtBChPbk0
+- API mistral-24b-R1:free\_chatbox: https://www.youtube.com/watch?v=ECxtBChPbk0 , https://openrouter.ai/cognitivecomputations/dolphin3.0-r1-mistral-24b:free
 - API Google Calendar
 - API Sign-In OAuth 2.0
 - API OpenAI Whisper : https://www.youtube.com/watch?v=8SQV-B83tPU
