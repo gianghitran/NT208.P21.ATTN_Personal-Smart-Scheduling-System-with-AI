@@ -15,8 +15,10 @@ const mongoose = require("mongoose"); // Import mongoose
 dotenv.config(); // Use dotenv
 
 const connectToMongo = async () => {
-  await mongoose.connect(process.env.MONGO_URL); // process.env.MONGO_URL is a var in file .env
+  await mongoose.connect(process.env.MONGO_URL); // MONGO_URL is a var in file .env
   console.log("Connected to MongoDB");
 };
 connectToMongo();
 ```
+![image](https://github.com/user-attachments/assets/a18ed740-e0d5-4300-b406-c15f0f6c4112)
+
