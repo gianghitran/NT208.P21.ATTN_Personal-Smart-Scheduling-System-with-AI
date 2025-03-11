@@ -10,9 +10,13 @@ RUN steps:
 - To run this app use this command **npm run start** in current directory
 - How to connect to mongoose (if use web cluster, remember to add your ip or apply for all ip).
 ```
-  const connectToMongo = async () => {
-    await mongoose.connect(process.env.MONGO_URL); // process.env.MONGO_URL is a var in file .env
-    console.log("Connected to MongoDB");
-  };
-  connectToMongo();
+const dotenv = require("dotenv"); // Import dotenv
+const mongoose = require("mongoose"); // Import mongoose
+dotenv.config(); // Use dotenv
+
+const connectToMongo = async () => {
+  await mongoose.connect(process.env.MONGO_URL); // process.env.MONGO_URL is a var in file .env
+  console.log("Connected to MongoDB");
+};
+connectToMongo();
 ```
