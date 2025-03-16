@@ -2,7 +2,6 @@ import "./Nav.css";
 import { Link, useLocation } from "react-router-dom"; 
 import { icons } from "../../assets/icon";
 import threebears from "../../assets/threebears.jpg";
-
 const Navbar = () => {
     return (  
         <nav className="nav">

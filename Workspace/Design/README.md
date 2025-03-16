@@ -36,6 +36,7 @@ des bằng canva trước
 ```
 des bằng canva trước
 ```
+![image](https://github.com/user-attachments/assets/2e0c821b-4a7b-417a-a5df-3b8e34e5439c)
 
 ### Report -- Nghi
 ```

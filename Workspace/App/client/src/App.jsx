@@ -8,7 +8,6 @@ import Myactivities from "./Components/Myactivities/Myactivities";
 import Setting from "./Components/Setting/Setting";
 import Schedule from "./Components/Schedule/Schedule";
 import { Route, Routes } from "react-router-dom";
-import './App.css';
 
 function App() {
 
