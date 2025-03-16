@@ -133,3 +133,8 @@ img {
     color: #3aa5a5;
 }
 
+@media (max-width: 768px) {
+    .nav {
+        display: none;
+    }
+}
