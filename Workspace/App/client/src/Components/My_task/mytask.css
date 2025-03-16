@@ -1,0 +1,213 @@
+
+.mytask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 2.5rem;
+    background-color: #fff;
+    border-right: solid 2px #ddd;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+
+.mytask a {
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.site-title {
+    display: flex;
+    font-size: 1.5rem;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.site-title img {
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+}
+
+/* Layout tổng */
+.app-container {
+    display: flex;
+    height: 100vh;
+    
+  }
+  
+/* 
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  nav ul li {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .spaces {
+    margin-top: 20px;
+  }
+  
+  .spaces li {
+    padding: 10px;
+  }
+   */
+  /* Main Content */
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background: #f9f9f9;
+    padding: 2rem;
+    margin-left: 250px;
+    margin-right: 800px;
+
+  }
+  
+  /* Task Dashboard */
+  .task-dashboard {
+    flex: 2;
+    padding: 1rem;
+    overflow-y: auto; /*thanh cuộn */
+  }
+  
+  .header h2 {
+    font-size: 1.5 rem;
+    font-weight: bold;
+    color:#7a1a08;
+    
+    font-family: "Poppins", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+  
+  .task-list {
+    margin-top: 10px;
+  }
+  
+  .task {
+    
+    background: #fff;
+    padding: 10px;
+    margin: 8px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    /* justify-content: space-between; Đẩy checkbox về cuối */
+    border-bottom: 1px solid #ddd; /*Tạo viền ngăn cách*/
+  }
+  
+  .dot {
+    width: 15px;
+    height: 15px;
+    
+    border-radius: 50%;
+    margin-left: 10px;
+    margin-left: 10px;
+  }
+  .task-checkbox{
+    margin-right : 0;
+    cursor: pointer;
+  }
+  
+  .yellow { background: #FFC107; }
+  .red { background: #F44336; }
+  .blue { background: #2196F3; }
+  .green { background: #4CAF50; }
+  
+  /* Calendar */
+  .calendar {
+    flex: 2;
+    padding: 2rem;
+    border-left: 2px solid #ddd;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 800px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    background-color: #f9f9f9;
+    border-right: solid 2px #ddd;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+  }
+  
+  .calendar-content {
+    margin-top: 10px;
+  }
+  
+  .task-event-red {
+    background: rgb(255, 205, 214);
+    /* padding: 10px; */
+    /* border-radius: 5px; */
+    font-size: 14px;
+
+    padding: 10px;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+    .task-event-blue {
+    background: rgb(205, 198, 255);
+    /* padding: 10px; */
+    /* border-radius: 5px; */
+    font-size: 14px;
+
+    padding: 10px;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .task-event-green {
+    background: rgb(201, 248, 209);
+    /* padding: 10px; */
+    /* border-radius: 5px; */
+    font-size: 14px;
+
+    padding: 10px;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .calendar h2{
+    font-size: 1.5 rem;
+    font-weight: bold;
+    color:#7a1a08;
+    
+    font-family: "Poppins", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+    
+    /* text-decoration: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start; */
+
+  }
