@@ -1,10 +1,14 @@
-# NOT BEGIN
+# BEGIN
 
-RUN steps:
+Install steps:
 
 1. npm create vite@latest . --template (install react.js by vite in current directory)
 
-Note:
+Run steps:
+1. git clone (for sure)
+2. `npm install` in current directory if node_modules disappear (package.json logged all package you installed in this project so just npm install)
+3. `npm run dev` to load server 
 
-- Can delete some files and foldes that we don't need.
-- To run: npm run dev (you can see dev in script field of package.json)
+Note:
+- Can delete some files and foldes that we don't need when first installation.
+- `Link` in React help you navigate to other pages without load the website again.
