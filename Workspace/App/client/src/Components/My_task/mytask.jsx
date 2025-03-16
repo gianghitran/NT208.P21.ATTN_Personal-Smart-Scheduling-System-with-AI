@@ -6,12 +6,6 @@ import threebears from "../../assets/threebears.jpg";
 const MyTask = () => {
   return (
     <div className="app-container">
-        {/* <div className="mytask">
-                <div className="site-title">
-                    <img src={threebears} alt="logo"/>
-                    <Link to="/">My Task</Link>
-                </div> */}
-      {/* Sidebar */}
       <div className="mytask">
       <div className="site-title">
       <img src={threebears} alt="logo"/>
@@ -32,7 +26,7 @@ const MyTask = () => {
       <div className="main-content">
         {/* Task Dashboard */}
         <div className="header">
-            <h2>Task Incomplete or Not Marked Done</h2>
+            <h2>To Do or Not Marked Done</h2>
           </div>
         <div className="task-dashboard">
           
@@ -119,6 +113,29 @@ const MyTask = () => {
             <div className="task-event-red">Overdue</div>
             <div className="task-event-blue">Upcoming</div>
             <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+
+            <div className="task-event-green">Ongoing</div>
+
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+            <div className="task-event-green">Ongoing</div>
+
 
           </div>
         </div>
