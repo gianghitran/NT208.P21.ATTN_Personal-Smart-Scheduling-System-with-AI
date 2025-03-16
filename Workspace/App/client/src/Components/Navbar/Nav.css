@@ -22,7 +22,7 @@ img {
     height: auto;
 }
 
-svg {
+.icon {
     all: initial;
 }
 
@@ -51,6 +51,7 @@ svg {
     font-weight: 800;
     font-style: normal;
     position: fixed;
+    z-index: 1000;
 }
 
 .site-title {

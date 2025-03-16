@@ -1,11 +1,11 @@
-import {date_icon} from './date_icon.svg';
-import {chat_icon} from './robot.svg';
-import {report_icon} from './report.svg';
-import {task_icon} from './task.svg';
-import {team_icon} from './teams.svg';
-import {activity_icon} from './activities.svg';
-import {setting_icon} from './settings.svg';
-import {logout_icon} from './logout.svg';
+import date_icon from './date_icon.svg?react';
+import chat_icon from './robot.svg?react';
+import report_icon from './report.svg?react';
+import task_icon from './task.svg?react';
+import team_icon from './teams.svg?react';
+import activity_icon from './activities.svg?react';
+import setting_icon from './settings.svg?react';
+import logout_icon from './logout.svg?react';
 
 export const icons = {
     date: date_icon,

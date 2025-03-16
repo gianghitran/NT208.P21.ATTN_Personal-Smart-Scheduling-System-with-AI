@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import "./mytask.css";
 import threebears from "../../assets/threebears.jpg";
 
-const MyTask = () => {
+const Mytask = () => {
   return (
     <div className="app-container">
       <div className="mytask">
       <div className="site-title">
-      <img src={threebears} alt="logo"/>
-      <Link to="/">My Task</Link>
+      {/* <img src={threebears} alt="logo"/> */}
+      {/* <Link to="/">My Task</Link> */}
       </div>
         {/* <nav>
             
@@ -144,4 +144,4 @@ const MyTask = () => {
   );
 };
 
-export default MyTask;
+export default Mytask;

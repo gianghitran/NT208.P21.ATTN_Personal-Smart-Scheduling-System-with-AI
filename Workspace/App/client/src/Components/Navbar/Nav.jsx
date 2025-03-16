@@ -38,8 +38,8 @@ function CustomLink({to, icon, children, ...props}) {
     const isActive = location.pathname === to;
     const Icon = icons[icon];
     return (
-        <li className="select ${isActive ? 'active' : ''}">
-            <Icon/>
+        <li className={`select ${isActive ? 'active' : ''}`}>
+            {Icon && <Icon className="icon"/>}
             <Link to={to} {...props}>{children}</Link>
         </li>
     );
