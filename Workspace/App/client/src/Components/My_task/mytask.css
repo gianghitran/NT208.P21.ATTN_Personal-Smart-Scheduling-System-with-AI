@@ -85,6 +85,7 @@
   }
   
   .header h2 {
+    position :static;
     font-size: 1.5 rem;
     font-weight: bold;
     color:#7a1a08;
@@ -122,7 +123,7 @@
     margin-left: 10px;
   }
   .task-checkbox{
-    margin-right : 0;
+    margin-left  : auto;
     cursor: pointer;
   }
   
@@ -153,6 +154,7 @@
   }
   
   .calendar-content {
+    overflow-y: auto; /*thanh cuộn */
     margin-top: 10px;
   }
   

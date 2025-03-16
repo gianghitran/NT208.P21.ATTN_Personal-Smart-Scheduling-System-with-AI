@@ -31,10 +31,11 @@ const MyTask = () => {
       {/* Main Content */}
       <div className="main-content">
         {/* Task Dashboard */}
-        <div className="task-dashboard">
-          <div className="header">
+        <div className="header">
             <h2>Task Incomplete or Not Marked Done</h2>
           </div>
+        <div className="task-dashboard">
+          
           <div className="task-list">
            <div className="task">
                 <span className="dot yellow"></span> Gia Nghi làm hết
@@ -110,13 +111,14 @@ const MyTask = () => {
 
         {/* Calendar */}
         <div className="calendar">
-          <div className="calendar-content">
-            <div>
+        <div>
                 <h2>Calendar</h2>
             </div>
-            <div className="task-event-red">Resource Allocation</div>
-            <div className="task-event-blue">Resource Allocation</div>
-            <div className="task-event-green">Resource Allocation</div>
+          <div className="calendar-content">
+            
+            <div className="task-event-red">Overdue</div>
+            <div className="task-event-blue">Upcoming</div>
+            <div className="task-event-green">Ongoing</div>
 
           </div>
         </div>
