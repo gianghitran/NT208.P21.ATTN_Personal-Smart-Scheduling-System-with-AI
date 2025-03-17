@@ -68,6 +68,10 @@ img {
     height: 45px;
 }
 
+.appname:visited {
+    color: #551C8A;
+}
+
 .menu-item {
     display: flex;
     flex-direction: column;

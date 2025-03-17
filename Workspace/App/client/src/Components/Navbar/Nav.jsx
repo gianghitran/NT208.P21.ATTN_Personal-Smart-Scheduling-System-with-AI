@@ -7,7 +7,7 @@ const Navbar = () => {
         <nav className="nav">
             <div className="site-title">
                 <img src={threebears} alt="logo"/>
-                <Link to="/">Calendar</Link>
+                <Link to="/" className="appname">Calendar</Link>
             </div>
             <ul className="menu-item">
                 <CustomLink to="/Schedule" icon="date">Schedule</CustomLink>
