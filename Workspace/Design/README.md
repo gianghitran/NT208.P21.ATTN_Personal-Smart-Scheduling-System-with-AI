@@ -22,6 +22,8 @@
 ```
 des bằng canva trước
 ```
+![image](https://github.com/user-attachments/assets/3485f43d-38e4-4e41-a925-a8a591201f5f)
+
 - Chọn ngày/tháng/tuần
 - Giao diện drag/drop + Button (kiểu dropbox) : giờ end-start, ngày, decription, ...
 - 

@@ -32,63 +32,63 @@ const Mytask = () => {
           
           <div className="task-list">
            <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot red"></span> Gia Nghi làm hết
+                <span className="dot red"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot red"></span> Gia Nghi làm hết
+                <span className="dot red"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot blue"></span> Gia Nghi làm hết
+                <span className="dot blue"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot green"></span> Gia Nghi làm hết
+                <span className="dot green"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot green"></span> Gia Nghi làm hết
+                <span className="dot green"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot green"></span> Gia Nghi làm hết
+                <span className="dot green"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
-                <span className="dot yellow"></span> Gia Nghi làm hết
+                <span className="dot yellow"></span> Nghĩa làm hết
                  <input type="checkbox" className="task-checkbox" />
             </div>
             <div className="task">
