@@ -57,14 +57,7 @@ function CustomLink({to, icon, children, ...props}) {
 }
 
 function openMenu() {
-    const navbar = document.querySelector(".nav");
-    const menu = document.querySelector(".menu-button");
-    if (navbar.style.display !== "none") {
-        navbar.style.display = "none";
-        return;
-    }
-    else
-        navbar.style.display = "flex";
+    document.querySelector(".nav").classList.toggle("show");
 }
  
 export default Navbar;

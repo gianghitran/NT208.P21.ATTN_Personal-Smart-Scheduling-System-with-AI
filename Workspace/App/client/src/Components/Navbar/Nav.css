@@ -162,6 +162,10 @@ img {
         margin-left: -10px;
     }
 
+    .nav.show {
+        display: flex;
+    }
+
     .site-title {
         margin-top: 0.8rem;
     }
