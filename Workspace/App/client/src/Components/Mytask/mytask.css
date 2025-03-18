@@ -1,36 +1,26 @@
 
-/* 
-  
-  nav ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  nav ul li {
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  .spaces {
-    margin-top: 20px;
-  }
-  
-  .spaces li {
-    padding: 10px;
-  }
-   */
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  transition: all 0.3s ease-in-out;
+}
+
   /* Main Content */
   .main-content {
+    flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
+  /* transition: width 0.3s ease-in-out; */
     display: flex;
 
     flex-shrink:1;
-    position:relative;
+    position: relative;
     flex-direction: column;
     flex: 1;
     background: #f9f9f9;
     padding: 2rem;
-    width:100%;
-    left:0;
+    width:50%;
+    right:0 ;
+    /* z-index: 1000; */
   }
   
   /* Task Dashboard */
@@ -140,8 +130,8 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  right:6px;
-  top:6px;
+  right:30px;
+  top:10px;
   display: block;
   position: fixed;
   z-index: 9999;
