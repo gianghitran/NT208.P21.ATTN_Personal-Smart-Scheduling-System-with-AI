@@ -1,28 +1,19 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import "./mytask.css";
 import threebears from "../../assets/threebears.jpg";
-
+import React, { useState } from "react";
+import NavCal from "./Nav_calendar";
 const Mytask = () => {
-  return (
-    <div className="app-container">
-      {/* <div className="mytask"> */}
-      {/* <div className="site-title"> */}
-      {/* <img src={threebears} alt="logo"/> */}
-      {/* <Link to="/">My Task</Link> */}
-      {/* </div> */}
-        {/* <nav>
-            
-          <ul>
-            <li><Link to="/">My Task</Link></li>
-            <li><Link to="/notifications">🔔 Notifications</Link></li>
-            <li><Link to="/goals">🎯 Goals</Link></li>
-          </ul>
-        </nav> */}
-        
-      {/* </div> */}
+  const [showCalendar, setShowCalendar] = useState(true);
 
-      {/* Main Content */}
+        const toggleCalendar = () => {
+          setShowCalendar((prev) => !prev);
+        };
+
+  return (
+    
+    <div className="app-container">
+      
       <div className="main-content">
         {/* Task Dashboard */}
           
@@ -103,44 +94,28 @@ const Mytask = () => {
           </div>
         </div>
 
+        {/* Button để ẩn/hiện Calendar */}
+        <button className="toggle-btn" onClick={toggleCalendar}>
+          {showCalendar ? "Hide Events" : "Show Events"}
+        </button>
+
         {/* Calendar */}
-        <div className="calendar">
-            <div className="header">
-                    <h2>Calendar</h2>
-                </div>
+        {showCalendar && (
+          <div className="calendar">
+            
+            <div className="calshow">
+              <div>
+                <h2>Calendar</h2>
+              </div>
               <div className="calendar-content">
-                
                 <div className="task-event-red">Overdue</div>
                 <div className="task-event-blue">Upcoming</div>
                 <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-
-                <div className="task-event-green">Ongoing</div>
-
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-                <div className="task-event-green">Ongoing</div>
-
-
               </div>
             </div>
-        </div>
-        
+          </div>
+        )}
+      </div>
     </div>
   );
 };
