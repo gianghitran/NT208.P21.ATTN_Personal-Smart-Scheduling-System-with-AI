@@ -6,6 +6,8 @@ import team_icon from './teams.svg?react';
 import activity_icon from './activities.svg?react';
 import setting_icon from './settings.svg?react';
 import logout_icon from './logout.svg?react';
+import close_icon from './close.svg?react';
+import menu_icon from './menu.svg?react';
 
 export const icons = {
     date: date_icon,
@@ -15,5 +17,7 @@ export const icons = {
     team: team_icon,
     activity: activity_icon,
     setting: setting_icon,
-    logout: logout_icon
+    logout: logout_icon,
+    close: close_icon,
+    menu: menu_icon
 } 
