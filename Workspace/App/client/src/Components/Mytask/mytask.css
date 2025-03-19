@@ -16,7 +16,7 @@
     display: flex;
 
     flex-shrink:1;
-    position: relative;
+    position: absolute;
     flex-direction: column;
     flex: 1;
     background: #f9f9f9;
