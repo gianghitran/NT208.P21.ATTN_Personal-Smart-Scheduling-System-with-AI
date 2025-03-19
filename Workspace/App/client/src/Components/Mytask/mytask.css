@@ -27,6 +27,7 @@
     /* z-index: 1000; */
   }
   @media (max-width: 800px) {
+    
     .main-content{
       flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
   /* transition: width 0.3s ease-in-out; */
@@ -49,7 +50,6 @@
       width: 70%;
       
     }
-
       /* Button Toggle Calendar */
     .toggle-btn {
       
@@ -163,7 +163,7 @@
 .toggle-btn {
   background-color: #4caf50; /* Màu xanh lá */
   color: white;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
   padding: 10px 15px;
   border: none;
