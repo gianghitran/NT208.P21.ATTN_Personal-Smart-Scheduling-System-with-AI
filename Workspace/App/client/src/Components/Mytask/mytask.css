@@ -1,102 +1,36 @@
 
-.mytask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-    gap: 2.5rem;
-    background-color: #fff;
-    border-right: solid 2px #ddd;
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 800;
-    font-style: normal;
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  transition: all 0.3s ease-in-out;
 }
 
-.mytask a {
-    text-decoration: none;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-}
-
-/* .site-title {
-    display: flex;
-    font-size: 1.5rem;
-    gap: 0.5rem;
-    justify-content: center;
-    align-items: center;
-}
-
-.site-title img {
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-} */
-
-/* Layout tổng
-/* .app-container {
-  flex-grow: 1;
-  position: relative;
-
-    display: flex;
-    height: 100vh;
-    margin-left: 0px;
-    
-  } */ 
-  
-/* 
-  
-  nav ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  nav ul li {
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  .spaces {
-    margin-top: 20px;
-  }
-  
-  .spaces li {
-    padding: 10px;
-  }
-   */
   /* Main Content */
   .main-content {
-    width:50%;
+    flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
+  /* transition: width 0.3s ease-in-out; */
     display: flex;
-    flex-grow: 1;
+
+    flex-shrink:1;
+    position: relative;
+    flex-direction: column;
     flex: 1;
-    position:relative;
     background: #f9f9f9;
     padding: 2rem;
-    margin-left: 0px;
-    margin-right: 800px;
-
-
-
+    width:50%;
+    right:0 ;
+    /* z-index: 1000; */
   }
   
   /* Task Dashboard */
   .task-dashboard {
-    flex: 1;
+    flex: 2;
     padding: 1rem;
     overflow-y: auto; /*thanh cuộn */
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 1;
   }
   
   .header h2 {
-
     font-size: 1.5 rem;
     font-weight: bold;
     color:#7a1a08;
@@ -143,31 +77,6 @@
   .blue { background: #2196F3; }
   .green { background: #4CAF50; }
   
-  /* Calendar */
-  .calendar {
-    flex-shrink: 1;
-    flex: 1;
-    padding: 2rem;
-    border-left: 2px solid #ddd;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: #f9f9f9;
-    border-right: solid 2px #ddd;
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 800;
-    font-style: normal;
-  }
-  
-  .calendar-content {
-    overflow-y: auto; /*thanh cuộn */
-    margin-top: 10px;
-  }
   
   .task-event-red {
     background: rgb(255, 205, 214);
@@ -208,11 +117,61 @@
     border-radius: 5px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   }
+
+
+  /* Button Toggle Calendar */
+.toggle-btn {
+  background-color: #4caf50; /* Màu xanh lá */
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  right:30px;
+  top:10px;
+  display: block;
+  position: fixed;
+  z-index: 9999;
+}
+
+.toggle-btn:hover {
+  background-color: #388e3c; /* Màu xanh đậm hơn khi hover */
+}
+
+.toggle-btn:active {
+  transform: scale(1);
+}
+
+
+
+  /* Calendar */
+  .calendar {
+    width:35%;
+    flex: 1;
+    flex-shrink:1;
+    padding: 2rem;
+    border-left: 2px solid #ddd;
+    position: fixed;
+    right: 0;
+    top:0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    border-right: solid 2px #ddd;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+  }
   .calendar h2{
     font-size: 1.5 rem;
     font-weight: bold;
     color:#7a1a08;
-    
+    margin-top: 20px;
     font-family: "Poppins", sans-serif;
     font-optical-sizing: auto;
     font-weight: 800;
@@ -220,3 +179,12 @@
     
     
   }
+  
+  .calendar-content {
+    overflow-y: auto; /*thanh cuộn */
+    margin-top: 10px;
+  }
+.calendar.hidden {
+  opacity: 0;
+  max-height: 0;
+}
