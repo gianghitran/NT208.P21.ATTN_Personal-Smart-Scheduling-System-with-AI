@@ -4,111 +4,133 @@ import DOMPurify from "dompurify"; // npm install dompurify
 import "./chatbox.css";
 
 const Chatbox = () => {
+
   const [input, setInput] = useState("");
-  const [response, setResponse] = useState("");
+  const [messages, setMessages] = useState([]); // lịch sử tin nhắn
   const [loading, setLoading] = useState(false);
-  const controllerRef = useRef(null); // Lưu trữ AbortController
+  const controllerRef = useRef(null);
 
   const sendMessage = async () => {
     if (!input.trim()) {
-      setResponse("Please enter a message.");
+      setMessages((prev) => [{ text: "Please enter a message.", type: "error" }, ...prev]);
       return;
     }
+    setMessages((prev) => [
+      { 
+      text: `<div style="background-color: lightblue; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">Input:<br/>${input}</div>`, 
+      text: `<div style="background-color: lightgreen; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">Question:<br/>${input}</div>`, 
+      type:"user-input"
+      },
+      ...prev
+    ]);
+    
 
     if (controllerRef.current) {
-        controllerRef.current.abort();
-      }
-  
+      controllerRef.current.abort();
+    }
+
     controllerRef.current = new AbortController();
     const { signal } = controllerRef.current;
-    
+
     setLoading(true);
-    setResponse("Loading...");
+    setMessages((prev) => [{ text: "Loading...", type: "loading" }, ...prev]);
 
     try {
-      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization:
-            "Bearer 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",
-          "HTTP-Referer": "http://localhost:3000",
-          "X-Title": "mistral_24b_free",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free",
-          messages: [{ role: "user", content: input }],
-        }),
-      });
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                Authorization:
+                  "Bearer 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",
+                "HTTP-Referer": "http://localhost:3000",
+                "X-Title": "mistral_24b_free",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                model: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free",
+                messages: [{ role: "user", content: input }],
+              }),
+              signal,
+            });
 
-      const data = await res.json();
-      const markdownText =
-        data.choices?.[0]?.message?.content || "No response received.";
+            const data = await res.json();
+            const markdownText =
+              data.choices?.[0]?.message?.content || "No response received.";
 
-      setResponse(DOMPurify.sanitize(markdownText));
+            setMessages((prev) => [
+              { text: DOMPurify.sanitize(markdownText), type: "response" },
+              ...prev,
+            ]);
     } catch (error) {
-      setResponse("Error: " + error.message);
+      setMessages((prev) => [{ text: "Error: " + error.message, type: "error" }, ...prev]);
     }
 
     setLoading(false);
   };
-    const stopChat = () => {
-        if (controllerRef.current) {
-          controllerRef.current.abort();
-          controllerRef.current = null;
-        }
-        setLoading(false);
-        setResponse("Chat stopped. You can ask another question.");
-      };
-    
+
+  const stopChat = () => {
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+      controllerRef.current = null;
+    }
+    setLoading(false);
+    setMessages((prev) => [{ text: "Chat stopped. You can ask another question.", type: "error" }, ...prev]);
+  };
   
 
   return (
     <div className="container">
-      {/* Tiêu đề động */}
-      <div className="title">
-        <motion.h1
-          className="text-6xl font-bold"
-          animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          style={{
-            fontSize: "2rem",
-            fontWeight: "900",
-            background:
-              "linear-gradient(90deg, #ff4b2b,rgb(253, 126, 8),rgb(252, 213, 41))",
-            backgroundSize: "200% 100%",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          🔥 [SMART] To do list - Chatbox 🔥
-        </motion.h1>
-      </div>
+          {/* Tiêu đề động */}
+          <div className="title">
+            <motion.h1
+              className="text-6xl font-bold"
+              animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              style={{
+                fontSize: "2rem",
+                fontWeight: "900",
+                background:
+                  "linear-gradient(90deg, #ff4b2b,rgb(253, 126, 8),rgb(252, 213, 41))",
+                backgroundSize: "200% 100%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              🔥 [SMART] To do list - Chatbox 🔥
+            </motion.h1>
+          </div>
 
-      {/* Input và Button */}
-      <div className="form-group">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Enter your question"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-      </div>
-      <button className="btn btn-success" onClick={sendMessage} disabled={loading}>
-        {loading ? "Loading..." : "Ask!"}
-      </button>
-      <button className="btn btn-danger ml-2" onClick={stopChat} disabled={!loading}>
-        Stop
-      </button>
+          {/* Input và Button */}
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter your question"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            />
+          </div >
+          <button className="btn btn-success" onClick={sendMessage} disabled={loading}>
+            {loading ? "Loading..." : "Ask!"}
+          </button>
+          <button className="btn btn-danger ml-2" onClick={stopChat} disabled={!loading}>
+            Stop
+          </button>
+          
 
-      {/* Hiển thị phản hồi từ chatbot */}
-      <div className="response">
-        <div dangerouslySetInnerHTML={{ __html: response }} />
-      </div>
+          {/* Hiển thị phản hồi từ chatbot */}
+          <div className="response">
+                       
+            {messages.map((msg, index) => (
+                <div key={index} className={`response ${msg.type}`}>
+
+                  <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+                </div>
+            ))}
+            </div>
+
     </div>
   );
 };
 
-    export default Chatbox;
+export default Chatbox;
