@@ -20,7 +20,7 @@ const Schedule = () => {
         setViewMode(mode);
     };
     return (
-        <div className={`container ${viewMode === "day" ? "day-mode" : ""}`}>
+        <div className={`container-schedule ${viewMode === "day" ? "day-mode" : ""}`}>
             <div className="content">
 
                 <div className="choice">
