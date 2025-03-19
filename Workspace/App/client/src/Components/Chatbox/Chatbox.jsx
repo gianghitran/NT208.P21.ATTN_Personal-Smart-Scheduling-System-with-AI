@@ -121,6 +121,7 @@ const Chatbox = () => {
           <div className="response">
               {messages.map((msg, index) => (
                 <div key={index} className={`response ${msg.type}`}>
+                
                   <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
               ))}
