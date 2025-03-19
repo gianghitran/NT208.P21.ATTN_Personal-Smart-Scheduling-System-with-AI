@@ -39,8 +39,9 @@ img {
     display: flex;
     width: 250px;
     height: 100%;
-    width: 18%;
     left: 0;
+    top: 0;
+    bottom: 0;
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
@@ -154,8 +155,7 @@ img {
 @media (max-width: 800px) {
     .nav {
         display: none;
-        position: fixed;
-        width: 50%;
+        width: 180px;
         gap: 0.5rem;
         margin-left: -10px;
     }
