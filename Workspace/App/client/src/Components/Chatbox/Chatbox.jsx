@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion } from "framer-motion"; // npm install framer-motion
 import DOMPurify from "dompurify"; // npm install dompurify
 import "./chatbox.css";
+import ReactMarkdown from "react-markdown"; 
 
 const Chatbox = () => {
 
@@ -15,14 +16,6 @@ const Chatbox = () => {
       setMessages((prev) => [{ text: "Please enter a message.", type: "error" }, ...prev]);
       return;
     }
-    setMessages((prev) => [
-      { 
-      text: `<div style="background-color: lightblue; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">Input:<br/>${input}</div>`, 
-      text: `<div style="background-color: lightgreen; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">Question:<br/>${input}</div>`, 
-      type:"user-input"
-      },
-      ...prev
-    ]);
     
 
     if (controllerRef.current) {
@@ -31,7 +24,8 @@ const Chatbox = () => {
 
     controllerRef.current = new AbortController();
     const { signal } = controllerRef.current;
-
+    const userMessage = `Question: ${input}`;
+  
     setLoading(true);
     setMessages((prev) => [{ text: "Loading...", type: "loading" }, ...prev]);
 
@@ -65,6 +59,11 @@ const Chatbox = () => {
     }
 
     setLoading(false);
+
+
+    setMessages((prev) => [{ text: userMessage, type: "user" }, ...prev]);
+
+  
   };
 
   const stopChat = () => {
@@ -120,14 +119,13 @@ const Chatbox = () => {
 
           {/* Hiển thị phản hồi từ chatbot */}
           <div className="response">
-                       
-            {messages.map((msg, index) => (
+              {messages.map((msg, index) => (
                 <div key={index} className={`response ${msg.type}`}>
-
-                  <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
-            ))}
+              ))}
             </div>
+
 
     </div>
   );
