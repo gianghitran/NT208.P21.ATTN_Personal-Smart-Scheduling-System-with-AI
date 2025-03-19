@@ -70,53 +70,53 @@ const Chatbox = () => {
 
   return (
     <div className="container">
-      {/* Tiêu đề động */}
-      <div className="title">
-        <motion.h1
-          className="text-6xl font-bold"
-          animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          style={{
-            fontSize: "2rem",
-            fontWeight: "900",
-            background:
-              "linear-gradient(90deg, #ff4b2b,rgb(253, 126, 8),rgb(252, 213, 41))",
-            backgroundSize: "200% 100%",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          🔥 [SMART] To do list - Chatbox 🔥
-        </motion.h1>
-      </div>
+          {/* Tiêu đề động */}
+          <div className="title">
+            <motion.h1
+              className="text-6xl font-bold"
+              animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              style={{
+                fontSize: "2rem",
+                fontWeight: "900",
+                background:
+                  "linear-gradient(90deg, #ff4b2b,rgb(253, 126, 8),rgb(252, 213, 41))",
+                backgroundSize: "200% 100%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              🔥 [SMART] To do list - Chatbox 🔥
+            </motion.h1>
+          </div>
 
-      {/* Input và Button */}
-      <div className="form-group">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Enter your question"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-      </div >
-      <button className="btn btn-success" onClick={sendMessage} disabled={loading}>
-        {loading ? "Loading..." : "Ask!"}
-      </button>
-      <button className="btn btn-danger ml-2" onClick={stopChat} disabled={!loading}>
-        Stop
-      </button>
+          {/* Input và Button */}
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter your question"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            />
+          </div >
+          <button className="btn btn-success" onClick={sendMessage} disabled={loading}>
+            {loading ? "Loading..." : "Ask!"}
+          </button>
+          <button className="btn btn-danger ml-2" onClick={stopChat} disabled={!loading}>
+            Stop
+          </button>
 
-      {/* Hiển thị phản hồi từ chatbot */}
-      <div className="response">
-        {messages.map((msg, index) => (
-            <div key={index} className={`response ${msg.type}`}>
+          {/* Hiển thị phản hồi từ chatbot */}
+          <div className="response">
+            {messages.map((msg, index) => (
+                <div key={index} className={`response ${msg.type}`}>
 
-              <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+                  <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+                </div>
+            ))}
             </div>
-        ))}
-        </div>
 
     </div>
   );
