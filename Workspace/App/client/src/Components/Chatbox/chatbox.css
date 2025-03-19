@@ -78,8 +78,7 @@ button {
 
 /* Loading hiệu ứng */
 .response.loading {
-  background: #ffeeba;
-  color: #856404;
+  color: #28a745;
   font-style: italic;
 }
 

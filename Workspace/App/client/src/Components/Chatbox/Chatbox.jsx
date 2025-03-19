@@ -4,26 +4,27 @@ import DOMPurify from "dompurify"; // npm install dompurify
 import "./chatbox.css";
 
 const Chatbox = () => {
+
   const [input, setInput] = useState("");
-  const [response, setResponse] = useState("");
+  const [messages, setMessages] = useState([]); // lịch sử tin nhắn
   const [loading, setLoading] = useState(false);
-  const controllerRef = useRef(null); // Lưu trữ AbortController
+  const controllerRef = useRef(null);
 
   const sendMessage = async () => {
     if (!input.trim()) {
-      setResponse("Please enter a message.");
+      setMessages((prev) => [{ text: "Please enter a message.", type: "error" }, ...prev]);
       return;
     }
 
     if (controllerRef.current) {
-        controllerRef.current.abort();
-      }
-  
+      controllerRef.current.abort();
+    }
+
     controllerRef.current = new AbortController();
     const { signal } = controllerRef.current;
-    
+
     setLoading(true);
-    setResponse("Loading...");
+    setMessages((prev) => [{ text: "Loading...", type: "loading" }, ...prev]);
 
     try {
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -39,28 +40,32 @@ const Chatbox = () => {
           model: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free",
           messages: [{ role: "user", content: input }],
         }),
+        signal,
       });
 
       const data = await res.json();
       const markdownText =
         data.choices?.[0]?.message?.content || "No response received.";
 
-      setResponse(DOMPurify.sanitize(markdownText));
+      setMessages((prev) => [
+        { text: DOMPurify.sanitize(markdownText), type: "response" },
+        ...prev,
+      ]);
     } catch (error) {
-      setResponse("Error: " + error.message);
+      setMessages((prev) => [{ text: "Error: " + error.message, type: "error" }, ...prev]);
     }
 
     setLoading(false);
   };
-    const stopChat = () => {
-        if (controllerRef.current) {
-          controllerRef.current.abort();
-          controllerRef.current = null;
-        }
-        setLoading(false);
-        setResponse("Chat stopped. You can ask another question.");
-      };
-    
+
+  const stopChat = () => {
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+      controllerRef.current = null;
+    }
+    setLoading(false);
+    setMessages((prev) => [{ text: "Chat stopped. You can ask another question.", type: "error" }, ...prev]);
+  };
   
 
   return (
@@ -95,7 +100,7 @@ const Chatbox = () => {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
-      </div>
+      </div >
       <button className="btn btn-success" onClick={sendMessage} disabled={loading}>
         {loading ? "Loading..." : "Ask!"}
       </button>
@@ -105,10 +110,16 @@ const Chatbox = () => {
 
       {/* Hiển thị phản hồi từ chatbot */}
       <div className="response">
-        <div dangerouslySetInnerHTML={{ __html: response }} />
-      </div>
+        {messages.map((msg, index) => (
+            <div key={index} className={`response ${msg.type}`}>
+
+              <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+            </div>
+        ))}
+        </div>
+
     </div>
   );
 };
 
-    export default Chatbox;
+export default Chatbox;
