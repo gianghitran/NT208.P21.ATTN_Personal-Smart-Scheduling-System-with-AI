@@ -6,7 +6,7 @@
   /* hỗ trợ trình duyệt di động */
   min-height: 100dvh; 
   transition: all 0.3s ease-in-out;
-  
+
 }
 
   /* Main Content */
@@ -22,7 +22,7 @@
     background: #f9f9f9;
     padding: 2rem;
     /* width:100%; */
-    left:142px;
+    left:250px;
     right:0px;
     /* z-index: 1000; */
   }
