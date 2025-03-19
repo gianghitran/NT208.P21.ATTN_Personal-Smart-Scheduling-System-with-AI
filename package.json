@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "dompurify": "^3.2.4",
+    "DOMPurify": "npm:dompurify@^3.2.4",
+    "framer-motion": "^12.5.0",
+    "from": "^0.1.7",
+    "import": "^0.0.6"
+  }
+}

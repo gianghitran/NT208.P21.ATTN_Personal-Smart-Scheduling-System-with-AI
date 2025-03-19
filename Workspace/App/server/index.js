@@ -1,11 +1,11 @@
 const express = require("express"); // Import express
 const app = express(); // Define our app using express
-const port = 3000; // Port that server will be run on
+const port = 4000; // Port that server will be run on
 
-app.get("/", (req, res) => {
-    res.send("Hello World")
+app.get("/api/user", (req, res) => {
+    console.log("hello");
 });
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

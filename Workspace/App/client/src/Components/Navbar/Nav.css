@@ -39,11 +39,14 @@ img {
     display: flex;
     width: 250px;
     height: 100%;
+    left: 0;
+    top: 0;
+    bottom: 0;
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
     padding: 2rem 2rem;
-    gap: 2.5rem;
+    gap: 1rem;
     background-color: #fff;
     border-right: solid 2px #ddd;
     font-family: "Montserrat", sans-serif;
@@ -101,12 +104,19 @@ img {
 
 #account .title {
     color: gray;
-    margin-top: 1rem;
+    margin-top: 2rem;
+    margin-bottom: -0.1rem;
 }
 
 #system .title {
     color: gray;
-    margin-top: 4.5rem;
+    margin-top: 6rem;
+    margin-bottom: -0.1rem;
+}
+
+.link {
+    text-decoration: none;
+    color: #000;    
 }
 
 .select{
@@ -118,25 +128,16 @@ img {
     gap: 0.5rem;
     padding: 1rem 0;
     border-radius: 8px; 
-    text-decoration: none;
-    font-weight: 500;
+    font-weight: 550;
     transition: background 0.3s ease;
     min-width: 200px;
     padding-left: 1rem;
     cursor: pointer;
 }
 
-.select a {
-    color: #000;
-    text-decoration: none;
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-.select a .icon {
+.select .icon {
     vertical-align: middle;
-    margin-right: 0.5rem;
+    margin-right: 0.2rem;
     cursor: pointer;
 }
 
@@ -156,8 +157,7 @@ img {
 @media (max-width: 800px) {
     .nav {
         display: none;
-        position: fixed;
-        width: 50%;
+        width: 180px;
         gap: 0.5rem;
         margin-left: -10px;
     }

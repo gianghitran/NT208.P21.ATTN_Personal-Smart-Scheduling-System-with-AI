@@ -24,4 +24,13 @@ html {
   
 .container {
     text-align: center;
+    width: 100%;
+
 }  
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  height: 100vh;
+
+}

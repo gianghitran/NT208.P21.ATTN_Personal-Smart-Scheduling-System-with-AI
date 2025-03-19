@@ -22,6 +22,8 @@ function App() {
             </Routes>
           ) : (
               <>
+      <div className="app-layout">
+
                 <Navbar/>
                 <div className="container">
                   <Routes>
@@ -35,6 +37,8 @@ function App() {
                     <Route path="/Setting" element={<Setting/>} />
                   </Routes>
                 </div>
+      </div>
+
               </>
             )
           } 
