@@ -120,7 +120,7 @@ const Chatbox = () => {
           {/* Hiển thị phản hồi từ chatbot */}
           <div className="response">
               {messages.map((msg, index) => (
-                <div key={index} className={`response ${msg.type}`}>
+                <div key={index} className={`response_ans ${msg.type}`}>
                 
                   <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
