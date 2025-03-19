@@ -82,7 +82,7 @@ const Chatbox = () => {
           <div className="title">
             <motion.h1
               className="text-6xl font-bold"
-              animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1] }}
+              animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1.5] }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               style={{
                 fontSize: "2rem",
@@ -94,7 +94,7 @@ const Chatbox = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              🔥 [SMART] To do list - Chatbox 🔥
+              [SMART] [Chatbox]<a></a>🔥To do list
             </motion.h1>
           </div>
 

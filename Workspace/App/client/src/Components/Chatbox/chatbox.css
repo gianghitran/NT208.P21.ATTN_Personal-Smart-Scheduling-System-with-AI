@@ -106,6 +106,15 @@ button {
 @media (max-width: 800px) {
   .container {
   margin-left: 0;
+  margin-right: 0;
+
+  }
+  .title{
+    display: flex;
+    position:relatives;
+    justify-content: center;
+    align-items: center;
+    width: 230px;
   }
 }
 
