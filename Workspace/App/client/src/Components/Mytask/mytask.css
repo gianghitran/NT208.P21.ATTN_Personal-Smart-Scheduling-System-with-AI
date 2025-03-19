@@ -153,7 +153,6 @@
   
   .calendar-content {
     overflow-y: auto; /*thanh cuộn */
-    margin-top: 10px;
   }
   
   .task-event-red {
