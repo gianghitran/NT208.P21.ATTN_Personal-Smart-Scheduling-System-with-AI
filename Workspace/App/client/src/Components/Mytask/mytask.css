@@ -1,9 +1,12 @@
 
 .app-container {
   display: flex;
-  width: 100vw;
-  height: 100vh;
+  /* width: 100%; */
+  
+  /* hỗ trợ trình duyệt di động */
+  min-height: 100dvh; 
   transition: all 0.3s ease-in-out;
+
 }
 
   /* Main Content */
@@ -13,21 +16,23 @@
     display: flex;
 
     flex-shrink:1;
-    position: relative;
+    position: absolute;
     flex-direction: column;
     flex: 1;
     background: #f9f9f9;
     padding: 2rem;
-    width:50%;
-    right:0 ;
+    /* width:100%; */
+    left:250px;
+    right:0px;
     /* z-index: 1000; */
   }
+
   
   /* Task Dashboard */
   .task-dashboard {
-    flex: 2;
+    flex: 1;
     padding: 1rem;
-    overflow-y: auto; /*thanh cuộn */
+    
   }
   
   .header h2 {
@@ -82,6 +87,7 @@
     background: rgb(255, 205, 214);
     /* padding: 10px; */
     /* border-radius: 5px; */
+    
     font-size: 14px;
 
     padding: 10px;
@@ -123,7 +129,7 @@
 .toggle-btn {
   background-color: #4caf50; /* Màu xanh lá */
   color: white;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
   padding: 10px 15px;
   border: none;
@@ -134,11 +140,15 @@
   top:10px;
   display: block;
   position: fixed;
+  opacity: 70%;
+
   z-index: 9999;
 }
 
 .toggle-btn:hover {
-  background-color: #388e3c; /* Màu xanh đậm hơn khi hover */
+  background-color: #4add4f; /* Màu xanh đậm hơn khi hover */
+  opacity: 100%;
+
 }
 
 .toggle-btn:active {
@@ -188,3 +198,45 @@
   opacity: 0;
   max-height: 0;
 }
+
+
+
+@media (max-width: 800px) {
+    
+  .main-content{
+    flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
+/* transition: width 0.3s ease-in-out; */
+  display: flex;
+
+  flex-shrink:1;
+  position: absolute;
+  flex-direction: column;
+  flex: 1;
+  background: #f9f9f9;
+  padding: 2rem;
+  /* width:100%; */
+  left:0px;
+  right:0px;
+  
+  }
+
+
+  .calendar {
+    width: 70%;
+    
+  }
+    /* Button Toggle Calendar */
+  .toggle-btn {
+    
+    margin-top:20px;
+    margin-right:-20px;
+    font-size: smaller;
+    
+  }
+  .task-dashboard{
+    padding: 0.5rem;
+
+  }
+
+}
+
