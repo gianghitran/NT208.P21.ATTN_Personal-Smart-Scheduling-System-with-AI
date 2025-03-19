@@ -24,7 +24,7 @@ const Chatbox = () => {
 
     controllerRef.current = new AbortController();
     const { signal } = controllerRef.current;
-    const userMessage = `Question: ${input}`;
+    const userMessage = `[Question:]\n ${input}`;
   
     setLoading(true);
     setMessages((prev) => [{ text: "Loading...", type: "loading" }, ...prev]);
@@ -120,10 +120,16 @@ const Chatbox = () => {
           {/* Hiển thị phản hồi từ chatbot */}
           <div className="response">
               {messages.map((msg, index) => (
-                <div key={index} className={`response_ans ${msg.type}`}>
-                
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
-                </div>
+                 <div key={index} className={`response_ans ${msg.type}`}>
+                 <ReactMarkdown
+                   components={{
+                     pre: ({ children }) => <pre className="code-block">{children}</pre>,
+                     code: ({ children }) => <code className="inline-code">{children}</code>
+                   }}
+                 >
+                   {msg.text}
+                 </ReactMarkdown>
+               </div>
               ))}
             </div>
 

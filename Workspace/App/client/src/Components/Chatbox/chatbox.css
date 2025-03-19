@@ -8,7 +8,9 @@
   /* width:100%; */
   margin-left:120px;
   margin-right:0px;
-
+  white-space: pre-wrap; /* Đảm bảo code không bị tràn */
+  /* word-wrap: break-word; */
+  overflow-x: auto;
 
 }
 
@@ -63,6 +65,8 @@ button {
 
 /* ----- Respone----- */
 .response_ans {
+  overflow-wrap: break-word;
+  
   margin-top: 20px;
   padding: 15px;
   border-radius: 10px;
@@ -76,7 +80,26 @@ button {
   text-align: left;
   transition: all 0.3s ease-in-out;
 
+
+
 }
+
+
+.response_ans pre {
+  white-space: pre-wrap; /* Giúp code xuống dòng tự động */
+  word-wrap: break-word;
+  overflow-x: auto; /* Nếu quá dài thì có thể cuộn ngang */
+  background-color: #fdf7f3;
+  border-radius: 10px;
+  
+}
+
+.response_ans code {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background-color: #eee;
+}
+
 
 /* Loading hiệu ứng */
 .response_ans.loading {
@@ -97,7 +120,6 @@ button {
   padding: 10px;
   border-radius: 10px;
   margin-bottom: 10px;
-  right:0;
 
   max-width: 80%;
   animation: fadeIn 0.5s ease-in-out;
@@ -106,11 +128,15 @@ button {
 .response_ans.user{
   background:#caf7d5;
 }
+
+
+
 @media (max-width: 800px) {
   .container {
+    
   margin-left: 0;
   margin-right: 0;
-  width:100%;
+  /* width:100%; */
 
   }
   .title{
@@ -119,6 +145,12 @@ button {
     justify-content: center;
     align-items: center;
     width: 230px;
+  }
+  .response_ans code {
+    font-size:smaller ;
+  }
+  .response_ans pre {
+    font-weight:smaller ;
   }
 }
 
