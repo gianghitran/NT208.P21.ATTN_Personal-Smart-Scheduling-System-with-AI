@@ -26,46 +26,12 @@
     right:0px;
     /* z-index: 1000; */
   }
-  @media (max-width: 800px) {
-    
-    .main-content{
-      flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
-  /* transition: width 0.3s ease-in-out; */
-    display: flex;
-
-    flex-shrink:1;
-    position: absolute;
-    flex-direction: column;
-    flex: 1;
-    background: #f9f9f9;
-    padding: 2rem;
-    /* width:100%; */
-    left:0px;
-    right:0px;
-    
-    }
-
-
-    .calendar {
-      width: 70%;
-      
-    }
-      /* Button Toggle Calendar */
-    .toggle-btn {
-      
-      margin-top:20px;
-      margin-right:-20px;
-      
-    }
-
-}
-  
 
   
   /* Task Dashboard */
   .task-dashboard {
-    flex: 2;
-    padding: 0.5rem;
+    flex: 1;
+    padding: 1rem;
     
   }
   
@@ -232,3 +198,45 @@
   opacity: 0;
   max-height: 0;
 }
+
+
+
+@media (max-width: 800px) {
+    
+  .main-content{
+    flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
+/* transition: width 0.3s ease-in-out; */
+  display: flex;
+
+  flex-shrink:1;
+  position: absolute;
+  flex-direction: column;
+  flex: 1;
+  background: #f9f9f9;
+  padding: 2rem;
+  /* width:100%; */
+  left:0px;
+  right:0px;
+  
+  }
+
+
+  .calendar {
+    width: 70%;
+    
+  }
+    /* Button Toggle Calendar */
+  .toggle-btn {
+    
+    margin-top:20px;
+    margin-right:-20px;
+    font-size: smaller;
+    
+  }
+  .task-dashboard{
+    padding: 0.5rem;
+
+  }
+
+}
+
