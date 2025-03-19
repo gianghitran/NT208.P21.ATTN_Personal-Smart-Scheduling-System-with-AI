@@ -46,7 +46,7 @@ img {
     align-items: flex-start;
     flex-direction: column;
     padding: 2rem 2rem;
-    gap: 2.5rem;
+    gap: 1rem;
     background-color: #fff;
     border-right: solid 2px #ddd;
     font-family: "Montserrat", sans-serif;
@@ -104,12 +104,14 @@ img {
 
 #account .title {
     color: gray;
-    margin-top: 1rem;
+    margin-top: 2rem;
+    margin-bottom: -0.1rem;
 }
 
 #system .title {
     color: gray;
-    margin-top: 4.5rem;
+    margin-top: 6rem;
+    margin-bottom: -0.1rem;
 }
 
 .link {
