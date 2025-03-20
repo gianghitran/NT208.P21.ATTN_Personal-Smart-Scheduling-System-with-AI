@@ -83,7 +83,7 @@ img {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 8px; 
+    gap: 10px; 
 }
 
 
@@ -111,10 +111,22 @@ img {
     margin-bottom: -0.1rem;
 }
 
+.accountmenu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .system .title {
     color: gray;
     margin-top: 6rem;
     margin-bottom: -0.1rem;
+}
+
+.systemmenu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .link {
