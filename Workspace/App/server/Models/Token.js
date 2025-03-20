@@ -21,6 +21,6 @@ const RefreshToken = new mongoose.Schema(
     }
 );
 
-RefreshToken.index({createdAt: 1}, {expireAfterSeconds: 60});
+RefreshToken.index({createdAt: 1}, {expireAfterSeconds: 60 * 60 * 24 * 365}); // Set the expiration time of the token to 365 days
 
 module.exports = mongoose.model("RefreshToken", RefreshToken); // Export the model

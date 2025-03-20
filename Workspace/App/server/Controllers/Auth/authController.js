@@ -54,7 +54,7 @@ const authController = {
                 admin: user.admin
             }, 
             process.env.REFRESH_KEY, 
-            {expiresIn: "60s"}
+            {expiresIn: "365d"}
         );
         return token;
     },
