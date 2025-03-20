@@ -24,7 +24,7 @@ const Chatbox = () => {
 
     controllerRef.current = new AbortController();
     const { signal } = controllerRef.current;
-    const userMessage = `Question: ${input}`;
+    const userMessage = `[Question:]\n ${input}`;
   
     setLoading(true);
     setMessages((prev) => [{ text: "Loading...", type: "loading" }, ...prev]);
@@ -82,7 +82,7 @@ const Chatbox = () => {
           <div className="title">
             <motion.h1
               className="text-6xl font-bold"
-              animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1] }}
+              animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1.5] }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               style={{
                 fontSize: "2rem",
@@ -94,7 +94,7 @@ const Chatbox = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              🔥 [SMART] To do list - Chatbox 🔥
+              [SMART] [Chatbox]<a></a>🔥To do list
             </motion.h1>
           </div>
 
@@ -120,9 +120,16 @@ const Chatbox = () => {
           {/* Hiển thị phản hồi từ chatbot */}
           <div className="response">
               {messages.map((msg, index) => (
-                <div key={index} className={`response ${msg.type}`}>
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
-                </div>
+                 <div key={index} className={`response_ans ${msg.type}`}>
+                 <ReactMarkdown
+                   components={{
+                     pre: ({ children }) => <pre className="code-block">{children}</pre>,
+                     code: ({ children }) => <code className="inline-code">{children}</code>
+                   }}
+                 >
+                   {msg.text}
+                 </ReactMarkdown>
+               </div>
               ))}
             </div>
 
