@@ -83,7 +83,7 @@ img {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 8px; 
+    gap: 10px; 
 }
 
 
@@ -111,10 +111,22 @@ img {
     margin-bottom: -0.1rem;
 }
 
+.accountmenu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .system .title {
     color: gray;
     margin-top: 6rem;
     margin-bottom: -0.1rem;
+}
+
+.systemmenu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .link {
@@ -177,11 +189,6 @@ img {
         font-size: 1.3rem;
     }
 
-    .main-item {
-        gap: 2px;
-        margin-left: -0.5rem;
-    }
-
     .tag {
         margin-left: -0.5rem;
     }
@@ -204,6 +211,11 @@ img {
         padding-right: 0.1rem;
         padding-left: 0.5rem;
         min-width: 150px;
+    }
+
+    .mainitem {
+        gap: 2px;
+        margin-left: -0.5rem;
     }
 
     .select:hover {
