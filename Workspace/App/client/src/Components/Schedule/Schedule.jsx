@@ -1,6 +1,5 @@
 import schedule from "./Schedule.module.css"
 import { useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const events = [
     { title: "Meeting", startDay: 1, endDay: 2, startHour: 9, endHour: 11, color: "lightblue" },
@@ -29,39 +28,6 @@ const Schedule = () => {
 
     const handleModeChange = (mode) => {
         setViewMode(mode);
-    };
-
-    const [draggedEvent, setDraggedEvent] = useState(null);
-    const [showEventForm, setShowEventForm] = useState(false);
-    const [eventDetails, setEventDetails] = useState({
-        title: "",
-        startDay: "",
-        startHour: "",
-        endDay: "",
-        endHour: "",
-        color: "",
-    });
-
-    // Khi bắt đầu kéo sự kiện
-    const onDragStart = (event, item) => {
-        event.dataTransfer.setData("event", JSON.stringify(item));
-        setDraggedEvent(item);
-    };
-
-    // Khi thả sự kiện vào ô lịch
-    const onDrop = (event, dayIndex, hourIndex) => {
-        event.preventDefault();
-        const eventData = JSON.parse(event.dataTransfer.getData("event"));
-
-        setEventDetails({
-            ...eventData,
-            startDay: dayIndex,
-            startHour: hourIndex,
-            endDay: dayIndex,
-            endHour: hourIndex + 1, // Giả sử mặc định sự kiện kéo dài 1 giờ
-        });
-
-        setShowEventForm(true); // Hiển thị hộp thoại nhập thông tin
     };
 
     return (
@@ -141,8 +107,7 @@ const Schedule = () => {
                                             height: `${(event.endHour - event.startHour) * 40}px`
                                         }}
                                     >
-                                        {`${event.startHour > 12 ? event.startHour - 12 : event.startHour} ${event.startHour > 12 ? "PM" : "AM"} - 
-                                        ${event.endHour > 12 ? event.endHour - 12 : event.endHour} ${event.endHour > 12 ? "PM" : "AM"}`} <br /> {event.title}
+                                        {`${event.startHour > 12 ? event.startHour - 12 : event.startHour} ${event.startHour > 12 ? "PM" : "AM"} - ${event.endHour > 12 ? event.endHour - 12 : event.endHour} ${event.endHour > 12 ? "PM" : "AM"}`} <br />{event.title}
                                     </div>
                                 )
                             ))}
