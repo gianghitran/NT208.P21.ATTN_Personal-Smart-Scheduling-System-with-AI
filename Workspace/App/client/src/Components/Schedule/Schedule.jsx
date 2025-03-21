@@ -1,122 +1,197 @@
-import schedule from "./Schedule.module.css"
 import { useState } from "react";
+import { Calendar, Views, momentLocalizer } from "react-big-calendar";
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
+import styles from "./Schedule.module.css";
+import Modal from "react-modal";
 
-const events = [
-    { title: "Meeting", startDay: 1, endDay: 2, startHour: 9, endHour: 11, color: "lightblue" },
-    { title: "Lunch", startDay: 3, endDay: 4, startHour: 12, endHour: 13, color: "lightgreen" },
-    { title: "Workout", startDay: 5, endDay: 7, startHour: 18, endHour: 20, color: "lightcoral" },
+const localizer = momentLocalizer(moment);
+const DnDCalendar = withDragAndDrop(Calendar);
+
+const initialEvents = [
+  { id: 1, title: "Math Class", start: new Date(2025, 2, 20, 10, 0), end: new Date(2025, 2, 20, 12, 0), category: "school" },
+  { id: 2, title: "Work Meeting", start: new Date(2025, 2, 21, 14, 0), end: new Date(2025, 2, 21, 16, 0), category: "work" },
+  { id: 3, title: "Yoga Class", start: new Date(2025, 2, 22, 18, 0), end: new Date(2025, 2, 22, 19, 30), category: "relax" },
 ];
 
-const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+export default function MyCalendar() {
+  const [view, setView] = useState(Views.WEEK);
+  const [date, setDate] = useState(new Date());
+  const [events, setEvents] = useState(initialEvents);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work" });
+  const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax"]);
 
-const formatHour = (hour) => {
-    const displayHour = hour % 12 || 12;
-    return `${displayHour.toString().padStart(2, "0")}:00 ${hour < 12 ? "AM" : "PM"}`;
-};
+  const onEventDrop = ({ event, start, end }) => {
+    setEvents(events.map(e => e.id === event.id ? { ...e, start, end } : e));
+  };
 
-const Schedule = () => {
-    const [viewMode, setViewMode] = useState("week");
-    const [currentDayIndex, setCurrentDayIndex] = useState(0);
+  const onEventResize = ({ event, start, end }) => {
+    setEvents(events.map(e => e.id === event.id ? { ...e, start, end } : e));
+  };
 
-    const handlePreviousDay = () => {
-        setCurrentDayIndex((prev) => (prev > 0 ? prev - 1 : 6));
-    };
+  const handleSelectSlot = ({ start, end }) => {
+    setNewEvent({ title: "", start, end, category: "work" });
+    setModalIsOpen(true);
+  };
 
-    const handleNextDay = () => {
-        setCurrentDayIndex((prev) => (prev < 6 ? prev + 1 : 0));
-    };
+  const handleAllChange = (event) => {
+    const checked = event.target.checked;
+    setSelectedCategories(checked ? ["work", "school", "relax"] : []);
+  };
 
-    const handleModeChange = (mode) => {
-        setViewMode(mode);
-    };
+  const handleCategoryChange = (category) => {
+    setSelectedCategories(prev => {
+      const newCategories = prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category];
+      return newCategories.length === 3 ? ["work", "school", "relax"] : newCategories;
+    });
+  };
 
-    return (
-        <div className={`${schedule.container_sch} ${viewMode === "day" ? schedule.day_mode : ""}`}>
-            <div className={schedule.content}>
-                <div className={schedule.choice}>
-                    <div className={schedule.option_box}>
-                        <div className={schedule.option} onClick={() => handleModeChange("day")}>Day</div>
-                        <div className={schedule.option} onClick={() => handleModeChange("week")}>Week</div>
-                        <div className={schedule.option}>Month</div>
-                        <div className={schedule.option}>Year</div>
-                    </div>
-                    <div className={schedule.search}>
-                        <span className={schedule.search_icon}>🔍</span>
-                        <input className={schedule.search_box} type="text" row="30" column="70" placeholder="Search" />
-                    </div>
-                </div>
+  const filteredEvents = events.filter(event => selectedCategories.includes(event.category));
 
-                <div className={schedule.box_title}>
-                    <h2><span className={schedule.title}>March</span> 2025</h2>
-                    <div className={schedule.box_filter}>
-                        <div className={`${schedule.filter} ${schedule.personal}`}>
-                            <input type="checkbox" className={schedule.task_checkbox} />Personal
-                        </div>
-                        <div className={`${schedule.filter} ${schedule.work}`}>
-                            <input type="checkbox" className={schedule.task_checkbox} />Work
-                        </div>
-                        <div className={`${schedule.filter} ${schedule.school}`}>
-                            <input type="checkbox" className={schedule.task_checkbox} />School
-                        </div>
-                        <div>
-                            <button className={schedule.add}>+</button>
-                        </div>
-                    </div>
-                </div>
+  const addEvent = () => {
+    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    setModalIsOpen(false);
+  };
 
-                <div className={schedule.week_header}>
-                    <div className={schedule.time_placeholder}></div>
-                    {viewMode === "day" ? (
-                        <div className={schedule.day_navigation}>
-                            <button className={schedule.nav_button} onClick={handlePreviousDay}>&lt;</button>
-                            <div className={schedule.day}>{daysOfWeek[currentDayIndex]}</div>
-                            <button className={schedule.nav_button} onClick={handleNextDay}>&gt;</button>
-                        </div>
-                    ) : (
-                        daysOfWeek.map((day, index) => (
-                            <div key={index} className={schedule.day}>{day}</div>
-                        ))
-                    )}
-                </div>
+  const getEventStyle = (event) => {
+    const colors = { school: "#4CAF50", work: "#2196F3", relax: "#FF9800" };
+    return { style: { backgroundColor: colors[event.category], borderRadius: "8px", color: "white", padding: "5px" } };
+  };
 
-                <div className={schedule.calendar_container}>
-                    <div className={schedule.calendar_contents}>
-                        <div className={schedule.time_list}>
-                            {[...Array(24)].map((_, hour) => (
-                                <div key={hour} className={schedule.time}>
-                                    {formatHour(hour)}
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className={schedule.grid}>
-                            {[...Array(7 * 24)].map((_, index) => (
-                                <div key={index} className={schedule.cell}></div>
-                            ))}
-
-                            {events.map((event, index) => (
-                                (viewMode === "week" || (viewMode === "day" && event.startDay <= currentDayIndex && event.endDay >= currentDayIndex)) && (
-                                    <div
-                                        key={index}
-                                        className={schedule.event}
-                                        style={{
-                                            backgroundColor: event.color,
-                                            gridColumn: viewMode === "day" ? "1 / 2" : `${event.startDay + 1} / ${event.endDay + 2}`,
-                                            gridRow: `${event.startHour + 1} / span ${event.endHour - event.startHour}`,
-                                            width: "100%",
-                                            height: `${(event.endHour - event.startHour) * 40}px`
-                                        }}
-                                    >
-                                        {`${event.startHour > 12 ? event.startHour - 12 : event.startHour} ${event.startHour > 12 ? "PM" : "AM"} - ${event.endHour > 12 ? event.endHour - 12 : event.endHour} ${event.endHour > 12 ? "PM" : "AM"}`} <br />{event.title}
-                                    </div>
-                                )
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className={styles.container}>
+      <div className={styles.add_event}>
+        <button className={styles.add} onClick={() => setModalIsOpen(true)}>+</button>
+        <div className={styles.filters}>
+          <h3 style={{ color: "black", fontWeight: "bold" }}>Filters</h3>
+          <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
+            <label>
+              <input type="checkbox" checked={selectedCategories.length === 3} onChange={handleAllChange} />
+              All
+            </label>
+          </div>
+          <div className={styles.chbox} style={{ backgroundColor: "#2196F3" }}>
+            <label>
+              <input type="checkbox" checked={selectedCategories.includes("work")} onChange={() => handleCategoryChange("work")} />
+              Work
+            </label>
+          </div>
+          <div className={styles.chbox} style={{ backgroundColor: "#4CAF50" }}>
+            <label>
+              <input type="checkbox" checked={selectedCategories.includes("school")} onChange={() => handleCategoryChange("school")} />
+              School
+            </label>
+          </div>
+          <div className={styles.chbox} style={{ backgroundColor: "#FF9800" }}>
+            <label>
+              <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
+              Relax
+            </label>
+          </div>
         </div>
-    );
-}
+      </div>
 
-export default Schedule;
+      <DnDCalendar
+        localizer={localizer}
+        events={filteredEvents}
+        startAccessor="start"
+        endAccessor="end"
+        date={date}
+        selectable
+        onSelectSlot={handleSelectSlot}
+        onNavigate={(newDate) => setDate(newDate)}
+        view={view}
+        onView={(newView) => setView(newView)}
+        eventPropGetter={getEventStyle}
+        onEventDrop={onEventDrop}
+        onEventResize={onEventResize}
+        resizable
+        draggableAccessor={() => true}
+      />
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        ariaHideApp={false}
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
+        <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Add Event</h2>
+        <div className={styles.field}>
+          <div className={styles.formGroup}>
+            <label>Title:</label>
+            <input
+              type="text"
+              value={newEvent.title}
+              onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Start Date:</label>
+            <input
+              type="date"
+              value={moment(newEvent.start).format("YYYY-MM-DD")}
+              onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Start Time:</label>
+            <input
+              type="time"
+              value={moment(newEvent.start).format("HH:mm")}
+              onChange={(e) => setNewEvent({
+                ...newEvent,
+                start: new Date(moment(newEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
+              })}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>End Date:</label>
+            <input
+              type="date"
+              value={moment(newEvent.end).format("YYYY-MM-DD")}
+              onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>End Time:</label>
+            <input
+              type="time"
+              value={moment(newEvent.end).format("HH:mm")}
+              onChange={(e) => setNewEvent({
+                ...newEvent,
+                end: new Date(moment(newEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
+              })}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Type:</label>
+            <select
+              value={newEvent.category}
+              onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
+            >
+              <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
+              <option value="school" style={{ background: "#4CAF50", color: "white" }}>School</option>
+              <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
+            </select>
+          </div>
+        </div>
+
+        <div className={styles.modalFooter}>
+          <button onClick={addEvent} className={styles.addButton}>Add</button>
+          <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
