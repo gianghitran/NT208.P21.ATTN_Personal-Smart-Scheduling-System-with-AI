@@ -19,28 +19,29 @@ function App() {
     return(
       <>  
           <div className="app-layout">
-              {isLoggedIn !== null && <Navbar/>}
+              <Navbar/>
+              {/* {isLoggedIn !== null && <Navbar/>} */}
               
               <Routes>
-                {isLoggedIn === null && (
-                  <>
+                {/* {isLoggedIn === null && (
+                  <> */}
                     <Route path="/" element={<Home/>} />  
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} /> 
-                  </>
-                )}
+                  {/* </>
+                )} */}
 
-                <Route element={<ProtectedRoute/>}> 
+                {/* <Route element={<ProtectedRoute/>}> 
                     <Route path="/login" element={<Navigate to="/Schedule"/>} />
                     <Route path="/register" element={<Navigate to="/Schedule"/>} />
-                    <Route path="/" element={<Navigate to="/Schedule"/>} />
+                    <Route path="/" element={<Navigate to="/Schedule"/>} /> */}
                     <Route path="/Schedule" element={<Schedule/>} />
                     <Route path="/Chatbox" element={<Chatbox/>} />
                     <Route path="/Myactivities" element={<Myactivities/>} />
                     <Route path="/Mytask" element={<Mytask/>} />
                     <Route path="/Myteam" element={<Myteam/>} />
                     <Route path="/Setting" element={<Setting/>} />
-                </Route>
+                {/* </Route> */}
               </Routes>
             </div>
       </>
