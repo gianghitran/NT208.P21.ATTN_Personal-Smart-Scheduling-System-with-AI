@@ -30,6 +30,7 @@
     "react-redux": "^9.2.0",
     "react-resizable": "^3.0.5",
     "react-router-dom": "^7.3.0",
+    "redux-persist": "^6.0.0",
     "vite-plugin-svgr": "^4.3.0"
   },
   "devDependencies": {
