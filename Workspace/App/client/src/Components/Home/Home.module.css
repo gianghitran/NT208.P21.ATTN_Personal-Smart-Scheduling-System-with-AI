@@ -13,7 +13,10 @@ h1 {
   -ms-overflow-style: none; /* Ẩn trên IE/Edge */
   height: 100dvh;
   width: 100%;
-  
+  background-image: url('..//..//assets/backgroud_homepage.png'); /* Đường dẫn ảnh */
+  /* background-size: cover; Đảm bảo ảnh phủ toàn màn hình */
+  /* background-position: center; Căn giữa ảnh */
+  background-repeat: no-repeat; /* Không lặp lại ảnh */
 }
 .date_container {
   align-self: center;
