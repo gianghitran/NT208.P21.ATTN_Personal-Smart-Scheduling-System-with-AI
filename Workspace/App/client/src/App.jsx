@@ -15,31 +15,21 @@ function App() {
     const [isLogin, setIsLogin] = useState(true);
     return(
       <>
-          { !isLogin ? (
-            <Routes>
-              <Route path="/login" element={<Login setIsLogin={setIsLogin}/>} />
-              <Route path="*" element={<Navigate to="/login" replace/>} />
-            </Routes>
-          ) : (
-              <>
-                <div className="app-layout">
-                    <Navbar/>
-                    <div className="container">
-                      <Routes>
-                        <Route path="/" element={<Home/>} />
-                        <Route path="/Schedule" element={<Schedule/>} />
-                        <Route path="/Chatbox" element={<Chatbox/>} />
-                        <Route path="/Report" element={<Report/>} />
-                        <Route path="/Mytask" element={<Mytask/>} />
-                        <Route path="/Myteam" element={<Myteam/>} />
-                        <Route path="/Myactivities" element={<Myactivities/>} />
-                        <Route path="/Setting" element={<Setting/>} />
-                      </Routes>
-                    </div>
-                </div>
-              </>
-            )
-          } 
+          <div className="app-layout">
+              <Navbar/>
+              <div className="container">
+                <Routes>
+                  <Route path="/" element={<Home/>} />
+                  <Route path="/Schedule" element={<Schedule/>} />
+                  <Route path="/Chatbox" element={<Chatbox/>} />
+                  <Route path="/Report" element={<Report/>} />
+                  <Route path="/Mytask" element={<Mytask/>} />
+                  <Route path="/Myteam" element={<Myteam/>} />
+                  <Route path="/Myactivities" element={<Myactivities/>} />
+                  <Route path="/Setting" element={<Setting/>} />
+                </Routes>
+              </div>
+          </div>
       </>
     );
 }
