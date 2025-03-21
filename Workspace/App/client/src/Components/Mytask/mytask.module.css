@@ -1,5 +1,5 @@
 
-.app-container {
+.app_container {
   display: flex;
   /* width: 100%; */
   
@@ -10,7 +10,7 @@
 }
 
   /* Main Content */
-  .main-content {
+  .main_content {
     flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
   /* transition: width 0.3s ease-in-out; */
     display: flex;
@@ -24,12 +24,13 @@
     /* width:100%; */
     left:250px;
     right:0px;
+    height:100%;
     /* z-index: 1000; */
   }
 
   
   /* Task Dashboard */
-  .task-dashboard {
+  .task_dashboard {
     flex: 1;
     padding: 1rem;
     
@@ -47,7 +48,7 @@
 
 }
   
-  .task-list {
+  .task_list {
     margin-top: 10px;
   }
   
@@ -72,7 +73,7 @@
     margin-left: 10px;
     margin-left: 10px;
   }
-  .task-checkbox{
+  .task_checkbox{
     margin-left  : auto;
     cursor: pointer;
   }
@@ -83,7 +84,7 @@
   .green { background: #4CAF50; }
   
   
-  .task-event-red {
+  .task_event_red {
     background: rgb(255, 205, 214);
     /* padding: 10px; */
     /* border-radius: 5px; */
@@ -97,7 +98,7 @@
     border-radius: 5px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   }
-    .task-event-blue {
+    .task_event_blue {
     background: rgb(205, 198, 255);
     /* padding: 10px; */
     /* border-radius: 5px; */
@@ -110,7 +111,7 @@
     border-radius: 5px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   }
-  .task-event-green {
+  .task_event_green {
     background: rgb(201, 248, 209);
     /* padding: 10px; */
     /* border-radius: 5px; */
@@ -126,7 +127,7 @@
 
 
   /* Button Toggle Calendar */
-.toggle-btn {
+.toggle_btn {
   background-color: #4caf50; /* Màu xanh lá */
   color: white;
   font-size: 1rem;
@@ -145,13 +146,13 @@
   z-index: 9999;
 }
 
-.toggle-btn:hover {
+.toggle_btn:hover {
   background-color: #4add4f; /* Màu xanh đậm hơn khi hover */
   opacity: 100%;
 
 }
 
-.toggle-btn:active {
+.toggle_btn:active {
   transform: scale(1);
 }
 
@@ -190,7 +191,7 @@
     
   }
   
-  .calendar-content {
+  .calendar_content {
     overflow-y: auto; /*thanh cuộn */
     margin-top: 10px;
   }
@@ -203,7 +204,7 @@
 
 @media (max-width: 800px) {
     
-  .main-content{
+  .main_content{
     flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
 /* transition: width 0.3s ease-in-out; */
   display: flex;
@@ -226,14 +227,14 @@
     
   }
     /* Button Toggle Calendar */
-  .toggle-btn {
+  .toggle_btn {
     
     margin-top:20px;
     margin-right:-20px;
     font-size: smaller;
     
   }
-  .task-dashboard{
+  .task_dashboard{
     padding: 0.5rem;
 
   }

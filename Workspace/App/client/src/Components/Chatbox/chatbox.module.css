@@ -19,7 +19,7 @@
 }
 
 /* ----- Input và nút ----- */
-.form-group input {
+.form_group input {
 height:50%;
   padding: 10px;
   font-size: 1rem;
@@ -30,7 +30,7 @@ height:50%;
   transition: all 0.3s ease;
 }
 
-.form-group input:focus {
+.form_group input:focus {
   border-color: #ff4b2b;
   box-shadow: 0 0 5px rgba(255, 75, 43, 0.5);
 }
@@ -45,23 +45,24 @@ button {
   transition: all 0.3s ease;
 }
 
-.btn-success {
+.btnSuccess {
   background: #28a745;
   color: white;
 }
 
-.btn-success:hover {
+.btnSuccess:hover {
   background: #218838;
 }
 
-.btn-danger {
+.btnDanger {
   background: #dc3545;
   color: white;
 }
 
-.btn-danger:hover {
+.btnDanger:hover {
   background: #c82333;
 }
+
 
 /* ----- Respone----- */
 .response_ans {
@@ -102,19 +103,19 @@ button {
 
 
 /* Loading hiệu ứng */
-.response_ans.loading {
+.response_ans .loading {
   color: #28a745;
   font-style: italic;
 }
 
 /* Khi có lỗi */
-.response_ans.error {
+.response_ans .error {
   background: #f8d7da;
   color: #721c24;
 }
 
 /* Chatbot hiển thị từng tin nhắn */
-.chat-bubble {
+.chat_bubble {
   background: #ff4b2b;
   color: white;
   padding: 10px;
@@ -125,7 +126,7 @@ button {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-.response_ans.user{
+.response_ans .user{
   background:#caf7d5;
 }
 

@@ -1,4 +1,4 @@
-import home from "./Home.module.css"
+import home from "./home.module.css"
 import DateContainer from "../miniCalendar/DateContainer";
 import { Typography, Button, Container, Box, Paper } from "@mui/material";
 // npm install @mui/material @emotion/react @emotion/styled
