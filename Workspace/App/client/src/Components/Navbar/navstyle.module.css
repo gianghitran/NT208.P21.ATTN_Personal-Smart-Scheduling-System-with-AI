@@ -74,8 +74,10 @@ img {
     height: 45px;
 }
 
-.appname:visited {
+.appname {
     color: #551C8A;
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
 }
 
 .mainitem {

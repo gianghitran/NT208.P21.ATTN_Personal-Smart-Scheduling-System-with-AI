@@ -37,21 +37,6 @@ export default function MyCalendar() {
     setModalIsOpen(true);
   };
 
-  const openModal = () => {
-    const now = new Date(); // Lấy thời gian hiện tại
-    const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000); // Thêm 1 giờ
-
-    setNewEvent({
-      title: "",
-      start: now,
-      end: oneHourLater,
-      category: "work",
-    });
-
-    setModalIsOpen(true);
-  };
-
-
   const handleAllChange = (event) => {
     const checked = event.target.checked;
     setSelectedCategories(checked ? ["work", "school", "relax"] : []);
@@ -65,6 +50,38 @@ export default function MyCalendar() {
       return newCategories.length === 3 ? ["work", "school", "relax"] : newCategories;
     });
   };
+
+  const handleStartChange = (e, type) => {
+    let newStart = new Date(newEvent.start);
+    if (type === "date") {
+      newStart = new Date(e.target.value + "T" + moment(newStart).format("HH:mm"));
+    } else {
+      newStart = new Date(moment(newStart).format("YYYY-MM-DD") + "T" + e.target.value);
+    }
+  
+    let newEnd = newEvent.end;
+    if (newStart >= newEnd) {
+      newEnd = new Date(newStart.getTime() + 60 * 60 * 1000); // Cộng thêm 1 giờ
+    }
+  
+    setNewEvent({ ...newEvent, start: newStart, end: newEnd });
+  };
+  
+  const handleEndChange = (e, type) => {
+    let newEnd = new Date(newEvent.end);
+    if (type === "date") {
+      newEnd = new Date(e.target.value + "T" + moment(newEnd).format("HH:mm"));
+    } else {
+      newEnd = new Date(moment(newEnd).format("YYYY-MM-DD") + "T" + e.target.value);
+    }
+  
+    if (newEvent.start >= newEnd) {
+      newEnd = new Date(newEvent.start.getTime() + 60 * 60 * 1000); // Cộng thêm 1 giờ
+    }
+  
+    setNewEvent({ ...newEvent, end: newEnd });
+  };
+  
 
   const filteredEvents = events.filter(event => selectedCategories.includes(event.category));
 
@@ -81,31 +98,31 @@ export default function MyCalendar() {
   return (
     <div className={styles.container}>
       <div className={styles.add_event}>
-        <button className={styles.add} onClick={() => openModal()}>+</button>
+        <button className={styles.add} onClick={() => setModalIsOpen(true)}>+</button>
         <div className={styles.filters}>
           <h3 style={{ color: "black", fontWeight: "bold" }}>Filters</h3>
           <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.length === 3} onChange={handleAllChange} />
-              All
+              <span style={{ fontWeight: "bold" }}>All</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#2196F3" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("work")} onChange={() => handleCategoryChange("work")} />
-              Work
+              <span style={{ fontWeight: "bold" }}>Work</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#4CAF50" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("school")} onChange={() => handleCategoryChange("school")} />
-              School
+              <span style={{ fontWeight: "bold" }}>School</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#FF9800" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
-              Relax
+              <span style={{ fontWeight: "bold" }}>Relax</span>
             </label>
           </div>
         </div>
@@ -139,20 +156,11 @@ export default function MyCalendar() {
         <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Add Event</h2>
         <div className={styles.field}>
           <div className={styles.formGroup}>
-            <label>Title:</label>
-            <input
-              type="text"
-              value={newEvent.title}
-              onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
             <label>Start Date:</label>
             <input
               type="date"
               value={moment(newEvent.start).format("YYYY-MM-DD")}
-              onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
+              onChange={(e) => handleStartChange(e, "date")}
             />
           </div>
 
@@ -161,10 +169,7 @@ export default function MyCalendar() {
             <input
               type="time"
               value={moment(newEvent.start).format("HH:mm")}
-              onChange={(e) => setNewEvent({
-                ...newEvent,
-                start: new Date(moment(newEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
-              })}
+              onChange={(e) => handleStartChange(e, "time")}
             />
           </div>
 
@@ -173,7 +178,7 @@ export default function MyCalendar() {
             <input
               type="date"
               value={moment(newEvent.end).format("YYYY-MM-DD")}
-              onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
+              onChange={(e) => handleEndChange(e, "date")}
             />
           </div>
 
@@ -182,10 +187,7 @@ export default function MyCalendar() {
             <input
               type="time"
               value={moment(newEvent.end).format("HH:mm")}
-              onChange={(e) => setNewEvent({
-                ...newEvent,
-                end: new Date(moment(newEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
-              })}
+              onChange={(e) => handleEndChange(e, "time")}
             />
           </div>
 
