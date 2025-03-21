@@ -10,7 +10,6 @@ import Schedule from "./Components/Schedule/Schedule";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { useState } from "react";
 
 function App() {
     return(
