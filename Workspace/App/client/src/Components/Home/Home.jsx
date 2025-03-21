@@ -3,6 +3,8 @@ import DateContainer from "../miniCalendar/DateContainer";
 import { Typography, Button, Container, Box, Paper } from "@mui/material";
 // npm install @mui/material @emotion/react @emotion/styled
 import gifAnimation from "../../assets/homepage_element.gif";
+import threeBears from "../../assets/3bears.png";
+
 const Home = () => {
     return ( 
         <div className={home.Home_byNghi}>
@@ -26,6 +28,13 @@ const Home = () => {
 
             <div className={home.image}>
             <img src={gifAnimation} alt="GIF Animation" width="800px" />
+
+            </div>
+
+
+            <div className={home.Bears}>
+            <img src={threeBears} alt="Bears" width="800px" />
+
 
             </div>
         </div>
