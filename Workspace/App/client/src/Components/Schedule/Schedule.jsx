@@ -37,6 +37,21 @@ export default function MyCalendar() {
     setModalIsOpen(true);
   };
 
+  const openModal = () => {
+    const now = new Date(); // Lấy thời gian hiện tại
+    const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000); // Thêm 1 giờ
+
+    setNewEvent({
+      title: "",
+      start: now,
+      end: oneHourLater,
+      category: "work",
+    });
+
+    setModalIsOpen(true);
+  };
+
+
   const handleAllChange = (event) => {
     const checked = event.target.checked;
     setSelectedCategories(checked ? ["work", "school", "relax"] : []);
@@ -66,7 +81,7 @@ export default function MyCalendar() {
   return (
     <div className={styles.container}>
       <div className={styles.add_event}>
-        <button className={styles.add} onClick={() => setModalIsOpen(true)}>+</button>
+        <button className={styles.add} onClick={() => openModal()}>+</button>
         <div className={styles.filters}>
           <h3 style={{ color: "black", fontWeight: "bold" }}>Filters</h3>
           <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
