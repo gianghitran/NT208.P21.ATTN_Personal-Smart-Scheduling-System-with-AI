@@ -1,3 +1,7 @@
+  *{
+  flex-shrink: 1;
+
+  }
   .calendarContainer {
 
     display: flex;
