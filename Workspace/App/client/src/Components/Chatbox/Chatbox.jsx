@@ -121,11 +121,13 @@ const Chatbox = () => {
           {/* Hiển thị phản hồi từ chatbot */}
           <div className={chatbox.response}>
               {messages.map((msg, index) => (
-                 <div key={index} className={`${chatbox.response_ans} ${msg.type}`}>
+                //  <div key={index} className={`${chatbox.response_ans} ${msg.type}`}>
+                <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
+
                  <ReactMarkdown
                    components={{
-                    pre: ({ children }) => <pre className={`${styles.code_block}`}>${children}</pre>,
-                    code: ({ children }) => <code className={`${styles.inline_code}`}>{children}</code>
+                    pre: ({ children }) => <pre className={`${chatbox.code_block}`}>${children}</pre>,
+                    code: ({ children }) => <code className={`${chatbox.inline_code}`}>{children}</code>
 
                    }}
                  >
