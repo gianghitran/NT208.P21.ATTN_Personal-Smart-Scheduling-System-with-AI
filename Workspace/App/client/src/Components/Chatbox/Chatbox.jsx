@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion"; // npm install framer-motion
 import DOMPurify from "dompurify"; // npm install dompurify
-import "./chatbox.css";
+// import "./chatbox.css";
 import ReactMarkdown from "react-markdown"; 
+import chatbox from './chatbox.module.css'; // Import CSS Module
 
 const Chatbox = () => {
 
@@ -77,9 +78,9 @@ const Chatbox = () => {
   
 
   return (
-    <div className="container">
+    <div className={chatbox.container}>
           {/* Tiêu đề động */}
-          <div className="title">
+          <div className={chatbox.title}>
             <motion.h1
               className="text-6xl font-bold"
               animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1.5] }}
@@ -99,32 +100,33 @@ const Chatbox = () => {
           </div>
 
           {/* Input và Button */}
-          <div className="form-group">
+          <div className={chatbox.form_group}>
             <input
               type="text"
-              className="form-control"
+              className={chatbox.form_control}
               placeholder="Enter your question"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
           </div >
-          <button className="btn btn-success" onClick={sendMessage} disabled={loading}>
+          <button className={chatbox.btnSuccess} onClick={sendMessage} disabled={loading}>
             {loading ? "Loading..." : "Ask!"}
           </button>
-          <button className="btn btn-danger ml-2" onClick={stopChat} disabled={!loading}>
+          <button className={chatbox.btnDanger} onClick={stopChat} disabled={!loading}>
             Stop
           </button>
           
 
           {/* Hiển thị phản hồi từ chatbot */}
-          <div className="response">
+          <div className={chatbox.response}>
               {messages.map((msg, index) => (
-                 <div key={index} className={`response_ans ${msg.type}`}>
+                 <div key={index} className={`${chatbox.response_ans} ${msg.type}`}>
                  <ReactMarkdown
                    components={{
-                     pre: ({ children }) => <pre className="code-block">{children}</pre>,
-                     code: ({ children }) => <code className="inline-code">{children}</code>
+                    pre: ({ children }) => <pre className={`${styles.code_block}`}>${children}</pre>,
+                    code: ({ children }) => <code className={`${styles.inline_code}`}>{children}</code>
+
                    }}
                  >
                    {msg.text}
