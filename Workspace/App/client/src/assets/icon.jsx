@@ -8,6 +8,9 @@ import setting_icon from './settings.svg?react';
 import logout_icon from './logout.svg?react';
 import close_icon from './close.svg?react';
 import menu_icon from './menu.svg?react';
+import mail_icon from './mail.svg?react';
+import password_icon from './password.svg?react';
+import name_icon from './name.svg?react';
 
 export const icons = {
     date: date_icon,
@@ -19,5 +22,8 @@ export const icons = {
     setting: setting_icon,
     logout: logout_icon,
     close: close_icon,
-    menu: menu_icon
+    menu: menu_icon,
+    mail: mail_icon,
+    password: password_icon,
+    name: name_icon,
 } 

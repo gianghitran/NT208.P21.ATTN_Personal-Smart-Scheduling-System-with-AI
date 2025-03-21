@@ -1,6 +1,7 @@
 const express = require("express"); // Import express
 const app = express(); // Define our app using express
 const mongoose = require("mongoose");
+const cors = require("cors");
 const dotenv = require("dotenv");
 const port = 4000; // Port that server will be run on
 
@@ -22,6 +23,10 @@ const connectDB = async () => {
 
 connectDB();
 
+app.use(cors({
+    credentials: true,
+    origin: ["http://localhost:3000"],
+}))
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
