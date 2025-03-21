@@ -54,7 +54,7 @@ img {
     font-weight: 800;
     font-style: normal;
     position: fixed;
-    z-index: 1000;
+    z-index: 100000;
     overflow-y:scroll;
     scrollbar-width: none;
     overflow-x: hidden;
@@ -232,7 +232,7 @@ img {
         position: fixed;
         margin-left: 0.5rem;
         margin-top: 1px;
-        z-index: 1001;
+        z-index: 100001;
     }
 
     .menubutton svg {
