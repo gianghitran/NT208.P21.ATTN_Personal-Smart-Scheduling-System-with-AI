@@ -50,7 +50,7 @@ const Register = () => {
                 <input type="submit" value="Register" className={registerStyle.registerButton}/>
 
                 <div className={registerStyle.loginLink}>
-                    <p>Already have an account? <Link to="/login">Login</Link></p>
+                    <p>Already have an account? <Link to="/Login">Login</Link></p>
                 </div>
             </form>
         </div>
