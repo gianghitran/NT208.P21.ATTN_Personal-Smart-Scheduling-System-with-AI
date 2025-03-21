@@ -1,20 +1,22 @@
+
 h1 {
     align-items: center;
     justify-content: center;
     display: flex;
 }
+
 .Home_byNghi{
   overflow-x:hidden;
   overflow-y:hidden;
-
   height: 100dvh;
   width: 100%;
+  
 }
 .date_container {
+  transform: scale(0.9);
   flex-shrink: 1;
-    position: fixed;
-    bottom:0;
-    right: 0;
+    position: relative;
+    
     
     display: flex;
     justify-content: center;
@@ -27,23 +29,25 @@ h1 {
 }
 
 .title_container {
+  
   display: flex;
-  justify-content: center; /* Căn giữa ngang */
+  justify-content: center;
   align-items: center; /* Căn giữa dọc */
   height: 50vh;
-  width: calc(100% - 130px); /* Trừ đi kích thước sidebar */
+  width: calc(100% - 280px); /* Trừ đi kích thước sidebar */
   border-radius: 10px;
   text-align: center;
   background-color: #f9f9f9;
   position: relative;
   padding: 20px;
-  margin-left: auto; /* Xóa margin-left cố định */
-  margin-right: 0; /* Đảm bảo căn giữa */
+  margin-left: 265px; 
+  margin-right: 30px;
+  margin-top:15px;
   }
   
   .title_box {
-    text-align: center;
-    background: white;
+    
+    background: rgb(232, 254, 221);
     padding: 50px;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -83,28 +87,40 @@ h1 {
     background-color: #0056b3;
   }
   
+.image{
+  transform: scale(1.2);
+  position:relative;
+  /* display: flex; */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  text-align: center; /* Đảm bảo chữ cũng ở giữa */
+  margin-left: 265px; 
+  bottom:-70px;
+}
 
 @media (max-width: 800px) {
 
+  .Home_byNghi{
+  background-color:white;
+  }
     .date_container{
-      transform: scale(0.8);
-      width: 100%;
-      /* left: -25px; */
-      
-      
+      transform: scale(0);
+      width: 0; 
+       
       
     }
     .title_box{
+      
       width: 100%;
       
     }
 
     .title_container{
-
+      transform: scale(0.9);
       width: 100%;
+      /* height:100dvh; */
       flex-shrink: 1;
-      margin-left: 0;
-      margin-right: 0;
+      margin: 10px;
+      margin-left:0;
       padding:10px;
     }
 
@@ -113,10 +129,20 @@ h1 {
       padding:10px;
     }
     .login_button{
-      transform: scale(0.8);
+      transform: scale(0.9);
 
     }
-    
+    .image{
+      transform: scale(0.9);
+      position:fixed;
+      display: flex;
+      justify-content: center; /* Căn giữa theo chiều ngang */
+      text-align: center; /* Đảm bảo chữ cũng ở giữa */
+      margin-left: 0px; 
+      z-index:10000;
+      bottom:60px;
+
+    }
   }
   
 

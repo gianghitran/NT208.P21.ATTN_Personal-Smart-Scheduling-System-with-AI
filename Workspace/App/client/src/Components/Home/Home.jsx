@@ -7,9 +7,9 @@ const Home = () => {
     return ( 
         <div className={home.Home_byNghi}>
             {/* Mini Calendar */}
-            <div className={home.date_container}>
+            {/* <div className={home.date_container}>
                 <DateContainer/>
-            </div>
+            </div> */}
 
             {/* Nội dung chính */}
             <div className={home.title_container}>
@@ -18,11 +18,14 @@ const Home = () => {
                 <p className={home.subtitle_text}>Write. Plan. Collaborate. With a little help from AI.</p>
                 <button className={home.login_button}>Login</button>
             </div>
+            <div className={home.date_container}>
+                <DateContainer/>
+            </div> 
             </div>
 
 
-            <div>
-            <img src={gifAnimation} alt="GIF Animation" width="900px" />
+            <div className={home.image}>
+            <img src={gifAnimation} alt="GIF Animation" width="800px" />
 
             </div>
         </div>
