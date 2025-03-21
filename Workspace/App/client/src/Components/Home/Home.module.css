@@ -14,8 +14,10 @@ h1 {
   height: 100dvh;
   width: 100%;
   background-image: url('..//..//assets/backgroud_homepage.png'); /* Đường dẫn ảnh */
-  /* background-size: cover; Đảm bảo ảnh phủ toàn màn hình */
-  /* background-position: center; Căn giữa ảnh */
+  /* Đảm bảo ảnh phủ toàn màn hình */
+  background-size: cover; 
+  /* Căn giữa ảnh */
+  background-position: center;
   background-repeat: no-repeat; /* Không lặp lại ảnh */
 }
 .date_container {
@@ -156,7 +158,6 @@ h1 {
       justify-content: center; /* Căn giữa theo chiều ngang */
       text-align: center; /* Đảm bảo chữ cũng ở giữa */
       margin-left: 0px; 
-      z-index:10000;
       bottom:60px;
 
     }
