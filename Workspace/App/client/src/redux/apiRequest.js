@@ -1,4 +1,4 @@
-import { loginRequest, loginSuccess, loginFailure } from "./authSlice";
+import { loginRequest, loginSuccess, loginFailure, registerFailure, registerRequest, registerSuccess } from "./authSlice";
 import axios from "axios";
 
 export const loginUser = async (user, dispatch, navigate) => {

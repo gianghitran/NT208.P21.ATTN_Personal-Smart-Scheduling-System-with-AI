@@ -47,4 +47,6 @@ const authReducer = createSlice({
 
 export const { loginRequest, loginSuccess, loginFailure } = authReducer.actions;
 
+export const { registerRequest, registerSuccess, registerFailure } = authReducer.actions;
+
 export default authReducer.reducer;
