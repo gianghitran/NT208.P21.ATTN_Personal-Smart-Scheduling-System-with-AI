@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.14.0",
     "@hello-pangea/dnd": "^18.0.1",
     "@mui/material": "^6.4.8",
+    "@reduxjs/toolkit": "^2.6.1",
     "axios": "^1.8.3",
     "dompurify": "^3.2.4",
     "framer-motion": "^12.5.0",
