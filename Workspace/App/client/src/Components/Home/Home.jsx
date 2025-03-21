@@ -15,7 +15,7 @@ const Home = () => {
             <div className={home.title_container}>
             <div className={home.title_box}>
                 <h1 className={home.title_text}>The Happier Workspace</h1>
-                <p className={home.subtitle_text}>Write. Plan. Collaborate. With a little help from AI.</p>
+                <p className={home.subtitle_text}>Calendar. Plan. To-do list. With a little help from AI.</p>
                 <button className={home.login_button}>Login</button>
             </div>
             <div className={home.date_container}>
