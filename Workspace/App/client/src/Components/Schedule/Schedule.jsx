@@ -55,42 +55,47 @@ export default function MyCalendar() {
     });
   };
 
-  const handleStartChange = (e, type) => {
-    let newStart = new Date(newEvent.start);
-    if (type === "date") {
-      newStart = new Date(e.target.value + "T" + moment(newStart).format("HH:mm"));
-    } else {
-      newStart = new Date(moment(newStart).format("YYYY-MM-DD") + "T" + e.target.value);
+  const [error, setError] = useState("");
+  const handleCheck = () => {
+    const newStart = new Date(tempStartDate + "T" + tempStartTime);
+    const newEnd = new Date(tempEndDate + "T" + tempEndTime);
+
+    if (newEnd < newStart) {
+      alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      return;
     }
 
-    let newEnd = newEvent.end;
-    if (newStart >= newEnd) {
-      newEnd = new Date(newStart.getTime() + 60 * 60 * 1000); // Cộng thêm 1 giờ
-    }
-
-    setNewEvent({ ...newEvent, start: newStart, end: newEnd });
-  };
-
-  const handleEndChange = (e, type) => {
-    let newEnd = new Date(newEvent.end);
-    if (type === "date") {
-      newEnd = new Date(e.target.value + "T" + moment(newEnd).format("HH:mm"));
-    } else {
-      newEnd = new Date(moment(newEnd).format("YYYY-MM-DD") + "T" + e.target.value);
-    }
-
-    if (newEvent.start >= newEnd) {
-      newEnd = new Date(newEvent.start.getTime() + 60 * 60 * 1000); // Cộng thêm 1 giờ
-    }
-
-    setNewEvent({ ...newEvent, end: newEnd });
+    setNewEvent({ start: newStart, end: newEnd });
   };
 
 
   const filteredEvents = events.filter(event => selectedCategories.includes(event.category));
 
   const addEvent = () => {
+    if (!newEvent.title.trim()) {
+      alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
+      return;
+    }
+
+    if (newEvent.end < newEvent.start) {
+      alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      return;
+    }
     setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    setModalIsOpen(false);
+  };
+
+  const saveEditedEvent = () => {
+    if (!selectedEvent.title.trim()) {
+      alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
+      return;
+    }
+
+    if (selectedEvent.end < selectedEvent.start) {
+      alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      return;
+    }
+    setEvents(events.map(e => e.id === selectedEvent.id ? selectedEvent : e));
     setModalIsOpen(false);
   };
 
@@ -108,11 +113,6 @@ export default function MyCalendar() {
     setModalIsOpen(true);
   };
 
-  const editEvent = () => {
-    setEvents(events.map(e => e.id === selectedEvent.id ? selectedEvent : e));
-    setModalIsOpen(false);
-  };
-
   const addButton = () => {
     setModalType("add");
     setModalIsOpen(true);
@@ -121,7 +121,7 @@ export default function MyCalendar() {
 
   const handleDeleteEvent = (eventId) => {
     setEvents(events.filter(event => event.id !== eventId));
-    setEventDetailsModal(false);
+    setModalIsOpen(false);
   };
 
   return (
@@ -186,21 +186,22 @@ export default function MyCalendar() {
         {modalType === "add" && (
           <div>
             <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Add Event</h2>
-            <div className={styles.formGroup}>
-              <label>Title:</label>
-              <input
-                type="text"
-                value={newEvent.title}
-                onChange={(e) => setNewEvent(prev => ({ ...prev, title: e.target.value }))}
-              />
-            </div>
             <div className={styles.field}>
+              <div className={styles.formGroup}>
+                <label>Title:</label>
+                <input
+                  type="text"
+                  value={newEvent.title}
+                  onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                />
+              </div>
+
               <div className={styles.formGroup}>
                 <label>Start Date:</label>
                 <input
                   type="date"
                   value={moment(newEvent.start).format("YYYY-MM-DD")}
-                  onChange={(e) => handleStartChange(e, "date")}
+                  onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
                 />
               </div>
 
@@ -209,7 +210,10 @@ export default function MyCalendar() {
                 <input
                   type="time"
                   value={moment(newEvent.start).format("HH:mm")}
-                  onChange={(e) => handleStartChange(e, "time")}
+                  onChange={(e) => setNewEvent({
+                    ...newEvent,
+                    start: new Date(moment(newEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
+                  })}
                 />
               </div>
 
@@ -218,7 +222,7 @@ export default function MyCalendar() {
                 <input
                   type="date"
                   value={moment(newEvent.end).format("YYYY-MM-DD")}
-                  onChange={(e) => handleEndChange(e, "date")}
+                  onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
                 />
               </div>
 
@@ -227,7 +231,10 @@ export default function MyCalendar() {
                 <input
                   type="time"
                   value={moment(newEvent.end).format("HH:mm")}
-                  onChange={(e) => handleEndChange(e, "time")}
+                  onChange={(e) => setNewEvent({
+                    ...newEvent,
+                    end: new Date(moment(newEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
+                  })}
                 />
               </div>
 
@@ -271,7 +278,7 @@ export default function MyCalendar() {
               setModalType("edit");
             }} className={styles.closeButton} style={{ backgroundColor: "#FFFF66" }}>Edit</button>
             <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
-            <button onClick={() => handleDeleteEvent(selectedEvent.id)} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
+            <button onClick={() => { handleDeleteEvent(selectedEvent.id); setModalIsOpen(false) }} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
           </div>
         )}
 
@@ -286,12 +293,13 @@ export default function MyCalendar() {
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
               />
             </div>
+
             <div className={styles.formGroup}>
               <label>Start Date:</label>
               <input
                 type="date"
                 value={moment(selectedEvent.start).format("YYYY-MM-DD")}
-                onChange={(e) => handleStartChange(e, "date")}
+                onChange={(e) => setSelectedEvent({ ...selectedEvent, start: new Date(e.target.value) })}
               />
             </div>
 
@@ -300,7 +308,10 @@ export default function MyCalendar() {
               <input
                 type="time"
                 value={moment(selectedEvent.start).format("HH:mm")}
-                onChange={(e) => handleStartChange(e, "time")}
+                onChange={(e) => setSelectedEvent({
+                  ...selectedEvent,
+                  start: new Date(moment(selectedEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
+                })}
               />
             </div>
 
@@ -309,7 +320,7 @@ export default function MyCalendar() {
               <input
                 type="date"
                 value={moment(selectedEvent.end).format("YYYY-MM-DD")}
-                onChange={(e) => handleEndChange(e, "date")}
+                onChange={(e) => setSelectedEvent({ ...selectedEvent, end: new Date(e.target.value) })}
               />
             </div>
 
@@ -318,10 +329,25 @@ export default function MyCalendar() {
               <input
                 type="time"
                 value={moment(selectedEvent.end).format("HH:mm")}
-                onChange={(e) => handleEndChange(e, "time")}
+                onChange={(e) => setSelectedEvent({
+                  ...selectedEvent,
+                  end: new Date(moment(selectedEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
+                })}
               />
             </div>
-            <button onClick={editEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
+
+            <div className={styles.formGroup}>
+              <label>Type:</label>
+              <select
+                value={selectedEvent.category}
+                onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
+              >
+                <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
+                <option value="school" style={{ background: "#4CAF50", color: "white" }}>School</option>
+                <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
+              </select>
+            </div>
+            <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
             <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
           </div>
         )}
