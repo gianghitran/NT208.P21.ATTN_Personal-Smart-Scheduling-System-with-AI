@@ -26,14 +26,18 @@ export default function MyCalendar() {
 
   const onEventDrop = ({ event, start, end }) => {
     setEvents(events.map(e => e.id === event.id ? { ...e, start, end } : e));
+    alert(`Sự kiện "${event.title}" đã được di chuyển!`);
   };
 
   const onEventResize = ({ event, start, end }) => {
     setEvents(events.map(e => e.id === event.id ? { ...e, start, end } : e));
+    alert(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
   };
+
 
   const handleSelectSlot = ({ start, end }) => {
     setNewEvent({ title: "", start, end, category: "work" });
+    setModalType("add");
     setModalIsOpen(true);
   };
 
@@ -58,15 +62,15 @@ export default function MyCalendar() {
     } else {
       newStart = new Date(moment(newStart).format("YYYY-MM-DD") + "T" + e.target.value);
     }
-  
+
     let newEnd = newEvent.end;
     if (newStart >= newEnd) {
       newEnd = new Date(newStart.getTime() + 60 * 60 * 1000); // Cộng thêm 1 giờ
     }
-  
+
     setNewEvent({ ...newEvent, start: newStart, end: newEnd });
   };
-  
+
   const handleEndChange = (e, type) => {
     let newEnd = new Date(newEvent.end);
     if (type === "date") {
@@ -74,14 +78,14 @@ export default function MyCalendar() {
     } else {
       newEnd = new Date(moment(newEnd).format("YYYY-MM-DD") + "T" + e.target.value);
     }
-  
+
     if (newEvent.start >= newEnd) {
       newEnd = new Date(newEvent.start.getTime() + 60 * 60 * 1000); // Cộng thêm 1 giờ
     }
-  
+
     setNewEvent({ ...newEvent, end: newEnd });
   };
-  
+
 
   const filteredEvents = events.filter(event => selectedCategories.includes(event.category));
 
@@ -95,10 +99,35 @@ export default function MyCalendar() {
     return { style: { backgroundColor: colors[event.category], borderRadius: "8px", color: "white", padding: "5px" } };
   };
 
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [modalType, setModalType] = useState("add");
+
+  const onSelectEvent = (event) => {
+    setSelectedEvent(event);
+    setModalType("details");
+    setModalIsOpen(true);
+  };
+
+  const editEvent = () => {
+    setEvents(events.map(e => e.id === selectedEvent.id ? selectedEvent : e));
+    setModalIsOpen(false);
+  };
+
+  const addButton = () => {
+    setModalType("add");
+    setModalIsOpen(true);
+    setNewEvent({ title: "", start: new Date(), end: new Date(), category: "work" });
+  }
+
+  const handleDeleteEvent = (eventId) => {
+    setEvents(events.filter(event => event.id !== eventId));
+    setEventDetailsModal(false);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.add_event}>
-        <button className={styles.add} onClick={() => setModalIsOpen(true)}>+</button>
+        <button className={styles.add} onClick={() => addButton()}>+</button>
         <div className={styles.filters}>
           <h3 style={{ color: "black", fontWeight: "bold" }}>Filters</h3>
           <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
@@ -136,6 +165,7 @@ export default function MyCalendar() {
         date={date}
         selectable
         onSelectSlot={handleSelectSlot}
+        onSelectEvent={onSelectEvent}
         onNavigate={(newDate) => setDate(newDate)}
         view={view}
         onView={(newView) => setView(newView)}
@@ -153,61 +183,148 @@ export default function MyCalendar() {
         overlayClassName={styles.modalOverlay}
         style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Add Event</h2>
-        <div className={styles.field}>
-          <div className={styles.formGroup}>
-            <label>Start Date:</label>
-            <input
-              type="date"
-              value={moment(newEvent.start).format("YYYY-MM-DD")}
-              onChange={(e) => handleStartChange(e, "date")}
-            />
-          </div>
+        {modalType === "add" && (
+          <div>
+            <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Add Event</h2>
+            <div className={styles.formGroup}>
+              <label>Title:</label>
+              <input
+                type="text"
+                value={newEvent.title}
+                onChange={(e) => setNewEvent(prev => ({ ...prev, title: e.target.value }))}
+              />
+            </div>
+            <div className={styles.field}>
+              <div className={styles.formGroup}>
+                <label>Start Date:</label>
+                <input
+                  type="date"
+                  value={moment(newEvent.start).format("YYYY-MM-DD")}
+                  onChange={(e) => handleStartChange(e, "date")}
+                />
+              </div>
 
-          <div className={styles.formGroup}>
-            <label>Start Time:</label>
-            <input
-              type="time"
-              value={moment(newEvent.start).format("HH:mm")}
-              onChange={(e) => handleStartChange(e, "time")}
-            />
-          </div>
+              <div className={styles.formGroup}>
+                <label>Start Time:</label>
+                <input
+                  type="time"
+                  value={moment(newEvent.start).format("HH:mm")}
+                  onChange={(e) => handleStartChange(e, "time")}
+                />
+              </div>
 
-          <div className={styles.formGroup}>
-            <label>End Date:</label>
-            <input
-              type="date"
-              value={moment(newEvent.end).format("YYYY-MM-DD")}
-              onChange={(e) => handleEndChange(e, "date")}
-            />
-          </div>
+              <div className={styles.formGroup}>
+                <label>End Date:</label>
+                <input
+                  type="date"
+                  value={moment(newEvent.end).format("YYYY-MM-DD")}
+                  onChange={(e) => handleEndChange(e, "date")}
+                />
+              </div>
 
-          <div className={styles.formGroup}>
-            <label>End Time:</label>
-            <input
-              type="time"
-              value={moment(newEvent.end).format("HH:mm")}
-              onChange={(e) => handleEndChange(e, "time")}
-            />
-          </div>
+              <div className={styles.formGroup}>
+                <label>End Time:</label>
+                <input
+                  type="time"
+                  value={moment(newEvent.end).format("HH:mm")}
+                  onChange={(e) => handleEndChange(e, "time")}
+                />
+              </div>
 
-          <div className={styles.formGroup}>
-            <label>Type:</label>
-            <select
-              value={newEvent.category}
-              onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
-            >
-              <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
-              <option value="school" style={{ background: "#4CAF50", color: "white" }}>School</option>
-              <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
-            </select>
-          </div>
-        </div>
+              <div className={styles.formGroup}>
+                <label>Type:</label>
+                <select
+                  value={newEvent.category}
+                  onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
+                >
+                  <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
+                  <option value="school" style={{ background: "#4CAF50", color: "white" }}>School</option>
+                  <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
+                </select>
+              </div>
+            </div>
 
-        <div className={styles.modalFooter}>
-          <button onClick={addEvent} className={styles.addButton}>Add</button>
-          <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
-        </div>
+            <div className={styles.modalFooter}>
+              <button onClick={addEvent} className={styles.addButton}>Add</button>
+              <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
+            </div>
+          </div>
+        )}
+
+        {modalType === "details" && selectedEvent && (
+          <div>
+            <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Event Details</h2>
+            <div className={styles.formGroup}>
+              <p><label>Title:</label> {selectedEvent.title}</p>
+            </div>
+            <div className={styles.formGroup}>
+              <p><label>Start:</label> {moment(selectedEvent.start).format("YYYY-MM-DD HH:mm A")}</p>
+            </div>
+            <div className={styles.formGroup}>
+              <p><label>End:</label> {moment(selectedEvent.end).format("YYYY-MM-DD HH:mm A")}</p>
+            </div>
+            <div className={styles.formGroup}>
+              <p><label>Type:</label> {selectedEvent.category.replace(/\b\w/g, char => char.toUpperCase())}</p>
+            </div>
+            <button onClick={() => {
+              setNewEvent(selectedEvent);
+              setModalType("edit");
+            }} className={styles.closeButton} style={{ backgroundColor: "#FFFF66" }}>Edit</button>
+            <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
+            <button onClick={() => handleDeleteEvent(selectedEvent.id)} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
+          </div>
+        )}
+
+        {modalType === "edit" && (
+          <div>
+            <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Edit Event</h2>
+            <div className={styles.formGroup}>
+              <label>Title:</label>
+              <input
+                type="text"
+                value={selectedEvent.title}
+                onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label>Start Date:</label>
+              <input
+                type="date"
+                value={moment(selectedEvent.start).format("YYYY-MM-DD")}
+                onChange={(e) => handleStartChange(e, "date")}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Start Time:</label>
+              <input
+                type="time"
+                value={moment(selectedEvent.start).format("HH:mm")}
+                onChange={(e) => handleStartChange(e, "time")}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>End Date:</label>
+              <input
+                type="date"
+                value={moment(selectedEvent.end).format("YYYY-MM-DD")}
+                onChange={(e) => handleEndChange(e, "date")}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>End Time:</label>
+              <input
+                type="time"
+                value={moment(selectedEvent.end).format("HH:mm")}
+                onChange={(e) => handleEndChange(e, "time")}
+              />
+            </div>
+            <button onClick={editEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
+            <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
+          </div>
+        )}
       </Modal>
     </div>
   );
