@@ -54,7 +54,7 @@
 
 :global(.rbc-event-label) {
   font-weight: normal;
-  font-size: 12px;
+  font-size: 11.8px;
   white-space: normal;
 }
 
@@ -151,7 +151,7 @@
 }
 
 .closeButton {
-  background-color: lightcoral;
+  background-color: rgb(199, 199, 199);
   cursor: pointer;
 }
 
