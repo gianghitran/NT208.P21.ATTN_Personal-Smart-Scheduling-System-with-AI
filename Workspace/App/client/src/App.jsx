@@ -8,42 +8,41 @@ import Setting from "./Components/Setting/Setting";
 import Schedule from "./Components/Schedule/Schedule";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
-import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
 function App() {
-    // const navigate = useNavigate();
-    // const user = useSelector((state) => state.auth.currentUser);
-    // const location = useLocation();
-
-    // useEffect(() => {
-    //   const publicPages = ["/Login", "/Register"];
-    //   if (!user && !publicPages.includes(location.pathname)) {
-    //     navigate("/Login");
-    //   }
-    // }, [user]);
+    const isLoggedIn = useSelector((state) => state.auth.login.currentUser);
 
     return(
       <>  
           <div className="app-layout">
-              <Navbar/>
+              {isLoggedIn !== null && <Navbar/>}
+              
               <Routes>
-                <Route path="/Login" element={<Login/>} />
-                <Route path="/Register" element={<Register/>} />
+                {isLoggedIn === null && (
+                  <>
+                    <Route path="/login" element={<Login/>} />
+                    <Route path="/register" element={<Register/>} />
+                    <Route path="/" element={<Home/>} />
+                  </>
+                )}
+
+                <Route element={<ProtectedRoute/>}> 
+                    <Route path="/login" element={<Navigate to="/Schedule"/>} />
+                    <Route path="/register" element={<Navigate to="/Schedule"/>} />
+                    <Route path="/" element={<Navigate to="/Schedule"/>} />
+                    <Route path="/Schedule" element={<Schedule/>} />
+                    <Route path="/Chatbox" element={<Chatbox/>} />
+                    <Route path="/Myactivities" element={<Myactivities/>} />
+                    <Route path="/Mytask" element={<Mytask/>} />
+                    <Route path="/Myteam" element={<Myteam/>} />
+                    <Route path="/Setting" element={<Setting/>} />
+                </Route>
               </Routes>
-              <div className="container">
-                <Routes>
-                      <Route path="/" element={<Home/>} />
-                      <Route path="/Schedule" element={<Schedule/>} />
-                      <Route path="/Chatbox" element={<Chatbox/>} />
-                      <Route path="/Myactivities" element={<Myactivities/>} />
-                      <Route path="/Mytask" element={<Mytask/>} />
-                      <Route path="/Myteam" element={<Myteam/>} />
-                      <Route path="/Setting" element={<Setting/>} />
-                </Routes>
-              </div>
-          </div>
+            </div>
       </>
     );
 }

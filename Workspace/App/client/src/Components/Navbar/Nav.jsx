@@ -2,7 +2,7 @@ import navs from "./navstyle.module.css";
 import { Link, useLocation } from "react-router-dom"; 
 import { icons } from "../../assets/icon";
 import threebears from "../../assets/threebears.jpg";
-const Navbar = () => {
+const Navbar = ( {isLoggedIn} ) => {
     const menu_icon = icons["menu"];
     return (  
         <>  
