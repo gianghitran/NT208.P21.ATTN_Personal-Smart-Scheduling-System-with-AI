@@ -115,6 +115,14 @@ h1 {
   bottom:-70px;
 }
 
+.Bears{
+  transform: scale(0.5);
+
+  position: fixed;
+  right: -180px;
+  bottom: -80px;
+}
+
 @media (max-width: 800px) {
 
   .Home_byNghi{
@@ -158,8 +166,14 @@ h1 {
       justify-content: center; /* Căn giữa theo chiều ngang */
       text-align: center; /* Đảm bảo chữ cũng ở giữa */
       margin-left: 0px; 
-      bottom:60px;
+      bottom:100px;
 
+    }
+    .Bears{
+      transform: scale(0.3);
+
+      right: -140px;
+      bottom:-80px;
     }
   }
   
