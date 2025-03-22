@@ -6,6 +6,8 @@ h1 {
 }
 
 .Home_byNghi{
+  font-size: clamp(0.3em, 1.5em, 1em);
+
   overflow: auto; /* Ngăn chặn thanh cuộn toàn trang */
   overflow-y: auto;  /* Cho phép cuộn dọc */
   overflow-x: hidden; /* Ẩn cuộn ngang nếu có */
@@ -21,24 +23,38 @@ h1 {
   background-repeat: no-repeat; /* Không lặp lại ảnh */
 }
 .date_container {
+
+  display: flex;
+    flex-direction: column; /* Hiển thị nội dung theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    text-align: center; /* Đảm bảo chữ cũng nằm giữa */
+
+
+    font-size:  min(4em, 1.2em);
+  align-self: center;
+
+  position: relative;
+
+  font-size:  min(2em, 0.8em);
   align-self: center;
   transform: scale(1.1);
   flex-shrink: 1;
-    position: relative;
     
-    margin:30px;
+    margin-right:-50px;
     display: flex;
     justify-content: center;
     align-items: center;
     
-    width: fit-content; /* Thu nhỏ container */
+    /* width: fit-content; Thu nhỏ container */
     justify-content: center;
     /* height: 100dvh; Chiếm toàn bộ chiều cao màn hình */
     /* padding: 20px; Thêm khoảng cách */
+    
+    margin-left:30px;
 }
 
 .title_container {
-  
+  font-size:  min(4em, 1.2em);
   display: flex;
   justify-content: center;
   align-items: center; /* Căn giữa dọc */
@@ -48,48 +64,76 @@ h1 {
   text-align: center;
   background-color: #f9f9f9;
   position: relative;
-  padding: 20px;
-  margin-left: 465px;/*265px*/ 
+  padding: 50px;
+  margin-left: 350px;/*265px*/ 
   margin-top:15px;
   
   }
-  
+
+/*   
+  clamp(min, preferred, max): Giới hạn kích thước chữ với:
+
+    min: kích thước nhỏ nhất.
+
+    preferred: kích thước dựa trên em (chiều rộng màn hình).
+
+    max: kích thước lớn nhất. */
   .title_box {
+    display: flex;
+    flex-direction: column; /* Hiển thị nội dung theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    text-align: center; /* Đảm bảo chữ cũng nằm giữa */
+
+
+    font-size:  min(4em, 1.2em);
   align-self: center;
 
   position: relative;
-  display: flex;
-    flex-direction: column;
     margin:30px;
     flex-shrink:1;
     transform: scale(1.2);
     background: rgb(232, 254, 221);
-    padding: 50px;
+    padding: 3.5%;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     max-width: 90%; /* Giới hạn độ rộng để tránh tràn màn hình */
-    width: fit-content; /* Tự động co giãn theo nội dung */
+    /* Tự động co giãn theo nội dung */
+
+    margin-right:30px;
+
   }
   
   .title_text {
-    font-size: 2.5rem;
+    font-size:  min(4em, 1.2em);
+
+    /* font-size: 2.5em; */
+    /* font-size: clamp(1.2em, 4em, 2.5em); Tỷ lệ chữ phụ thuộc vào title_box */
     font-weight: bold;
     color: #333;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   }
   
   .subtitle_text {
-    font-size: 1.1rem;
+    /* font-size: 1.1em; */
+    font-size:  min(4em, 0.8em);
+    
     color: #666;
     margin-top: 10px;
   }
   
   .login_button {
     flex-shrink: 1;
-
     margin-top: 20px;
     padding: 10px 20px;
-    font-size: 1rem;
+    font-size: min(4em, 0.6em);
+    
+    display: flex;
+    justify-content: center; /* Căn giữa ngang */
+    flex-direction: column; /* Hiển thị nội dung theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    text-align: center; /* Đảm bảo chữ cũng nằm giữa */
+    
+    position: relative;
     font-weight: bold;
     color: white;
     background-color: #007bff;
@@ -97,8 +141,7 @@ h1 {
     border-radius: 8px;
     cursor: pointer;
     transition: 0.3s;
-    width:40%;
-    align-self: center;
+    width: 100%;
   }
   
   .login_button:hover {
@@ -111,7 +154,7 @@ h1 {
   /* display: flex; */
   justify-content: center; /* Căn giữa theo chiều ngang */
   text-align: center; /* Đảm bảo chữ cũng ở giữa */
-  margin-left: 265px; 
+  margin-left: 0px; 
   bottom:-70px;
 }
 
@@ -131,33 +174,39 @@ h1 {
     .date_container{
       transform: scale(0);
       width: 0; 
-       
-      
+    margin-left:0px;
+
     }
-    .title_box{
-      padding: 20px;
-      margin-right:-30px;
-      width: 100%;
-      
+    .title_text{
+      font-size: 2em;
+
     }
 
     .title_container{
+      font-size: 1.1em;
+
       transform: scale(0.9);
       width: 100%;
       /* height:100dvh; */
       flex-shrink: 1;
-      margin: 10px;
-      margin-left:0;
+      margin: 5px;
       padding:10px;
+      align-self:center;
+    
+
     }
 
     .title_box{
       transform: scale(0.9);
-      padding:10px;
+      padding:20px;
+      align-self:center;
+      
+      left:-20px;
     }
     .login_button{
+      font-size: 1em;
       transform: scale(0.9);
-
+      
     }
     .image{
       transform: scale(0.9);
