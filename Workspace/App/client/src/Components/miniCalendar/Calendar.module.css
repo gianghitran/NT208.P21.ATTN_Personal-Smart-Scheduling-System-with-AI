@@ -3,23 +3,26 @@
 
   }
   .calendarContainer {
-    
-
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    
+    position: relative; /* Nếu cần */
+    transform: translateX(-50%); /* Dịch Calendar về giữa */
     
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    
-    width: fit-content; /* Thu nhỏ lại vừa với Calendar */
+    /* width: fit-content; */
     padding: 10px;
-    flex-shrink:1;
+    font-family:'Times New Roman', Times, serif;
 
-    transform: scale(0.8); /* Thu nhỏ toàn bộ Calendar xuống */
-    
-  }
+    width: 100%; /* Điều chỉnh theo title_box */
+    flex-shrink: 1;
+
+    transform: scale(0.8); 
+}
+
 
   .react-calendar {
 
@@ -42,6 +45,11 @@
     font-weight: bold;
     opacity: 80%;
   }
-  
+  /* Khi màn hình nhỏ hơn 768px (Tablet) */
+@media (max-width: 768px) {
+  .calendarContainer {
+    transform: scale(0.6); 
+  }
+}
 
   
