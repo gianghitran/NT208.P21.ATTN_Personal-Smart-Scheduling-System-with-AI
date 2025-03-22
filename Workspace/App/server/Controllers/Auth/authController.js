@@ -35,6 +35,18 @@ const authController = {
         } 
     },
 
+    logoutUser: async (req, res) => {
+        try {
+            res.clearCookie("refresh_token", {
+                httpOnly: true,
+                secure: false,
+            });
+            return res.status(200).json({message: "User logged out"});
+        } catch (error) {
+            return res.status(500).json({message: error});
+        }
+    },
+
     generateAccessToken: (user) => {
         const token = jwt.sign(
             {
@@ -99,7 +111,7 @@ const authController = {
         }
 
         // Check if refresh token is valid (of user)
-        const validToken = await RefreshToken.findOne({refreshToken: token});
+        const validToken = await RefreshToken.findOne({userId: req.body.id, refreshToken: token});
         if (!validToken) {
             return res.status(403).json({message: "Refresh token is not valid"});
         }

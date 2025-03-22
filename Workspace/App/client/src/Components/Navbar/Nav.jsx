@@ -1,9 +1,17 @@
 import navs from "./navstyle.module.css";
-import { Link, useLocation } from "react-router-dom"; 
+import { Link, useLocation, useNavigate } from "react-router-dom"; 
+import { useDispatch } from "react-redux";
 import { icons } from "../../assets/icon";
+import { logoutUser } from "../../redux/apiRequest";
 import threebears from "../../assets/threebears.jpg";
-const Navbar = ( {isLoggedIn} ) => {
+const Navbar = () => {
     const menu_icon = icons["menu"];
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logoutUser(dispatch, navigate);
+    }
     return (  
         <>  
             <nav className={navs.navmobile}>
@@ -34,7 +42,7 @@ const Navbar = ( {isLoggedIn} ) => {
                     <div className={navs.title}>System</div>
                     <ul className={navs.systemmenu}>
                         <CustomLink to="/Setting" icon="setting">Setting</CustomLink>
-                        <CustomLink to="/Logout" icon="logout">Logout</CustomLink>
+                        <CustomLink to="/" icon="logout" onClick={handleLogout}>Logout</CustomLink>
                     </ul>
                 </div>
             </nav>
