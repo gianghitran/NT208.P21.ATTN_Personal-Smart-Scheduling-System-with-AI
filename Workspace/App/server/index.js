@@ -8,6 +8,8 @@ const port = 4000; // Port that server will be run on
 const authRoute = require("./Routes/authRoute");
 const cookieParser = require("cookie-parser");
 
+const eventRoute = require("./Routes/eventRoute");
+
 dotenv.config();
 
 // Connect to MongoDB
@@ -31,8 +33,10 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoute);
+app.use("/api/event", eventRoute);
 
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+

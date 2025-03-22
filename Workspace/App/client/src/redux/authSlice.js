@@ -27,7 +27,7 @@ const authReducer = createSlice({
             state.login.fetching = true;
         },
         loginSuccess: (state, action) => {
-            state.login.currentUser = action.payload;
+            state.login.currentUser = { userData: action.payload };
             state.login.fetching = false;
             state.login.error = false;
         },

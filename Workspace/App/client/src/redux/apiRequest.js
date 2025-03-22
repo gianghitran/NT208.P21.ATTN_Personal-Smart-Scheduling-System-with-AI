@@ -33,3 +33,20 @@ export const logoutUser = async (dispatch, navigate) => {
         dispatch(logoutFailure());
     }
 }
+
+export const addEvents = async (newEvent) => {
+    try {
+        await axios.post("/api/event/create", newEvent);
+    }
+    catch (error) {
+        if (!newEvent.title.trim()) {
+            alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
+            return;
+          }
+      
+          if (newEvent.end < newEvent.start) {
+            alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+            return;
+          }
+    }
+}
