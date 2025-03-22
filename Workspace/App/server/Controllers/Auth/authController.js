@@ -37,6 +37,8 @@ const authController = {
 
     logoutUser: async (req, res) => {
         try {
+            
+            await RefreshToken.deleteOne({refreshToken: req.cookies.refresh_token});
             res.clearCookie("refresh_token", {
                 httpOnly: true,
                 secure: false,
@@ -111,7 +113,7 @@ const authController = {
         }
 
         // Check if refresh token is valid (of user)
-        const validToken = await RefreshToken.findOne({userId: req.body.id, refreshToken: token});
+        const validToken = await RefreshToken.findOne({refreshToken: token});
         if (!validToken) {
             return res.status(403).json({message: "Refresh token is not valid"});
         }
@@ -122,7 +124,7 @@ const authController = {
                 return res.status(403).json({message: "Token is not valid"});
             }
 
-            // Delte old refresh token
+            // Delete old refresh token
             RefreshToken.deleteOne({refreshToken: token});
 
             // Generate new refresh token and access token; and save new refresh token
