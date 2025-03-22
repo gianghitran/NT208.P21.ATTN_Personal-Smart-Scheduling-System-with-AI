@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import moment from "moment";
@@ -6,7 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import styles from "./Schedule.module.css";
 import Modal from "react-modal";
-import { addEvents } from "../../redux/apiRequest";
+import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
 import { useSelector } from "react-redux";
 
 const localizer = momentLocalizer(moment);
@@ -19,18 +19,46 @@ export default function MyCalendar() {
   const [events, setEvents] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work" });
-  const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax", "todo", "other"]);
+  const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax", "todo", "others"]);
 
-  const onEventDrop = ({ event, start, end }) => {
-    setEvents(events.map(e => e.id === event.id ? { ...e, start, end } : e));
-    alert(`Sự kiện "${event.title}" đã được di chuyển!`);
+  const renderEvents = async () => {
+    const data = await getEvents(user.userData._id);
+    const items = data.map(({ _id, userId, __v, start, end, ...rest }) => ({
+      id: _id,
+      title: rest.title,
+      start: new Date(start),
+      end: new Date(end),
+      category: rest.category,
+      ...rest,
+    }));
+    setEvents(items);
   };
 
-  const onEventResize = ({ event, start, end }) => {
-    setEvents(events.map(e => e.id === event.id ? { ...e, start, end } : e));
-    alert(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
+  useEffect(() => {
+    renderEvents();
+  }, [events]);
+
+  const onEventDrop = async ({ event, start, end }) => {
+    const updatedEvent = { ...event, start, end, userId: user.userData._id };
+    const response = await saveEvents(updatedEvent, event.id);
+    if (response.success) {
+      setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
+      alert(`Sự kiện "${event.title}" đã được di chuyển!`);
+    } else {
+      alert("⛔ Lỗi: Không thể cập nhật sự kiện!");
+    }
   };
 
+  const onEventResize = async ({ event, start, end }) => {
+    const updatedEvent = { ...event, start, end, userId: user.userData._id };
+    const response = await saveEvents(updatedEvent, event.id);
+    if (response.success) {
+      setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
+      alert(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
+    } else {
+      alert("⛔ Lỗi: Không thể cập nhật sự kiện!");
+    }
+  };
 
   const handleSelectSlot = ({ start, end }) => {
     setNewEvent({ title: "", start, end, category: "work" });
@@ -40,7 +68,8 @@ export default function MyCalendar() {
 
   const handleAllChange = (event) => {
     const checked = event.target.checked;
-    setSelectedCategories(checked ? ["work", "school", "relax"] : []);
+    setSelectedCategories(checked ? ["work", "school", "relax", "todo", "others"] : []);
+
   };
 
   const handleCategoryChange = (category) => {
@@ -48,27 +77,17 @@ export default function MyCalendar() {
       const newCategories = prev.includes(category)
         ? prev.filter(c => c !== category)
         : [...prev, category];
-      return newCategories.length === 3 ? ["work", "school", "relax"] : newCategories;
+      return newCategories.length === 5 ? ["work", "school", "relax", "todo", "others"] : newCategories;
     });
   };
 
-  const [error, setError] = useState("");
-  const handleCheck = () => {
-    const newStart = new Date(tempStartDate + "T" + tempStartTime);
-    const newEnd = new Date(tempEndDate + "T" + tempEndTime);
+  const filteredEvents = events.filter(event => selectedCategories.includes(event.category));
 
-    if (newEnd < newStart) {
+  const addEvent = async () => {
+    if (newEvent.end < newEvent.start) {
       alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
       return;
     }
-
-    setNewEvent({ start: newStart, end: newEnd });
-  };
-
-
-  const filteredEvents = events.filter(event => selectedCategories.includes(event.category));
-
-  const addEvent = () => {
     const event = {
       userId: user.userData._id,
       title: newEvent.title,
@@ -77,23 +96,34 @@ export default function MyCalendar() {
       category: newEvent.category
     }
 
-    addEvents(event);
-    setEvents([...events, { ...newEvent, id: events.length + 1 }]);
+    await addEvents(event);
     setModalIsOpen(false);
   };
 
-  const saveEditedEvent = () => {
-    if (!selectedEvent.title.trim()) {
-      alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
-      return;
-    }
-
+  const saveEditedEvent = async () => {
     if (selectedEvent.end < selectedEvent.start) {
       alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
       return;
     }
-    setEvents(events.map(e => e.id === selectedEvent.id ? selectedEvent : e));
+
+    const event = {
+      userId: user.userData._id,
+      title: selectedEvent.title,
+      start: selectedEvent.start,
+      end: selectedEvent.end,
+      category: selectedEvent.category
+    }
+
+    await saveEvents(event, selectedEvent.id);
     setModalIsOpen(false);
+
+  };
+
+  const deleteEvent = async (eventId) => {
+    const response = await deleteEvents(eventId, user.userData._id);
+    setEvents(events.filter(event => event.id !== eventId));
+    setModalIsOpen(false);
+
   };
 
   const getEventStyle = (event) => {
@@ -115,11 +145,6 @@ export default function MyCalendar() {
     setModalIsOpen(true);
     setNewEvent({ title: "", start: new Date(), end: new Date(), category: "work" });
   }
-
-  const handleDeleteEvent = (eventId) => {
-    setEvents(events.filter(event => event.id !== eventId));
-    setModalIsOpen(false);
-  };
 
   return (
     <div className={styles.container}>
@@ -153,13 +178,13 @@ export default function MyCalendar() {
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#4CAF50" }}>
             <label>
-              <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
+              <input type="checkbox" checked={selectedCategories.includes("todo")} onChange={() => handleCategoryChange("todo")} />
               <span style={{ fontWeight: "bold" }}>To do</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#9E9E9E" }}>
             <label>
-              <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
+              <input type="checkbox" checked={selectedCategories.includes("others")} onChange={() => handleCategoryChange("others")} />
               <span style={{ fontWeight: "bold" }}>Others</span>
             </label>
           </div>
@@ -256,8 +281,8 @@ export default function MyCalendar() {
                   <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
                   <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
                   <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
-                  <option value="relax" style={{ background: "#4CAF50", color: "white" }}>To do</option>
-                  <option value="relax" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
+                  <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
+                  <option value="others" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
                 </select>
               </div>
             </div>
@@ -289,7 +314,7 @@ export default function MyCalendar() {
               setModalType("edit");
             }} className={styles.closeButton} style={{ backgroundColor: "#FFFF66" }}>Edit</button>
             <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
-            <button onClick={() => { handleDeleteEvent(selectedEvent.id); setModalIsOpen(false) }} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
+            <button onClick={() => deleteEvent(selectedEvent.id)} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
           </div>
         )}
 
@@ -356,8 +381,8 @@ export default function MyCalendar() {
                 <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
                 <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
                 <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
-                <option value="relax" style={{ background: "#4CAF50", color: "white" }}>To do</option>
-                <option value="relax" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
+                <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
+                <option value="others" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
               </select>
             </div>
             <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
