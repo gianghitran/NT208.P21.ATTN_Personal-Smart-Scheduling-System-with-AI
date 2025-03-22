@@ -29,10 +29,8 @@ h1 {
     align-items: center; /* Căn giữa theo chiều ngang */
     text-align: center; /* Đảm bảo chữ cũng nằm giữa */
 
-
-    font-size:  min(4em, 1.2em);
+  
   align-self: center;
-
   position: relative;
 
   font-size:  min(2em, 0.8em);
@@ -50,23 +48,29 @@ h1 {
     /* height: 100dvh; Chiếm toàn bộ chiều cao màn hình */
     /* padding: 20px; Thêm khoảng cách */
     
+
     margin-left:30px;
 }
 
 .title_container {
-  font-size:  min(4em, 1.2em);
+  font-size: clamp(0.8em, 1.5vw, 2em); /* Co giãn kích thước chữ linh hoạt */
+    
   display: flex;
-  justify-content: center;
-  align-items: center; /* Căn giữa dọc */
-  height: 50vh;
-  width: calc(100% - 700px); /* Trừ đi kích thước sidebar */
+  flex-direction: row; /* Nội dung hiển thị theo chiều dọc */
+  justify-content: center; /* Căn giữa dọc */
+  align-items: center; /* Căn giữa ngang */
+  
+  width: 100%; /* Chiếm 80% màn hình */
+  max-width: 900px; /* Giới hạn chiều rộng tối đa */
+  height: auto;
+
   border-radius: 10px;
   text-align: center;
   background-color: #f9f9f9;
   position: relative;
-  padding: 50px;
-  margin-left: 350px;/*265px*/ 
-  margin-top:15px;
+  padding: 50px; /* Giảm padding để phù hợp trên mọi màn hình */
+  
+  margin: 20px auto; /* Căn giữa theo chiều ngang */
   
   }
 
@@ -115,7 +119,7 @@ h1 {
   
   .subtitle_text {
     /* font-size: 1.1em; */
-    font-size:  min(4em, 0.8em);
+    font-size:  min(2em, 0.5em);
     
     color: #666;
     margin-top: 10px;
@@ -148,15 +152,21 @@ h1 {
     background-color: #0056b3;
   }
   
-.image{
-  transform: scale(1.2);
-  position:relative;
-  /* display: flex; */
-  justify-content: center; /* Căn giữa theo chiều ngang */
-  text-align: center; /* Đảm bảo chữ cũng ở giữa */
-  margin-left: 0px; 
-  bottom:-70px;
+  .image {
+    transform: scale(1.5);
+    width: 100%;
+    height: auto;
+    
+    display: flex;
+    justify-content: center;
+    text-align: center;
+
+    transition: transform 0.3s ease-in-out;
+    
+    position: relative;
+    top: 150px; /* Dịch xuống 50px */
 }
+
 
 .Bears{
   transform: scale(0.5);
@@ -194,6 +204,17 @@ h1 {
       align-self:center;
     
 
+      display: flex;
+      justify-content: center;
+      align-items: center; /* Căn giữa dọc */
+      height: 50vh;
+      border-radius: 10px;
+      text-align: center;
+      background-color: #f9f9f9;
+      position: relative;
+      padding: 50px;
+      
+
     }
 
     .title_box{
@@ -210,12 +231,12 @@ h1 {
     }
     .image{
       transform: scale(0.9);
-      position:fixed;
+      position:relatives;
       display: flex;
       justify-content: center; /* Căn giữa theo chiều ngang */
       text-align: center; /* Đảm bảo chữ cũng ở giữa */
       margin-left: 0px; 
-      bottom:100px;
+      top:100px;
 
     }
     .Bears{
