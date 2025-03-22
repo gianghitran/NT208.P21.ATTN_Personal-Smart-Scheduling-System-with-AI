@@ -18,4 +18,15 @@ const middlewareController = {
             return res.status(401).json("You are not authenticated");
         }
     },
+
+    verifyUserAdmin: (req, res, next) => {
+        if (req.user.admin || req.params.id === req.user.id) {
+            next();
+        }
+        else {
+            return res.status(403).json("You are not authorized to perform this action");
+        }
+    }
 };
+
+module.exports = middlewareController;
