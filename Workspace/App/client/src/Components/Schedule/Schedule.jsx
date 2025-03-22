@@ -6,23 +6,20 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import styles from "./Schedule.module.css";
 import Modal from "react-modal";
+import { addEvents } from "../../redux/apiRequest";
+import { useSelector } from "react-redux";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
 
-const initialEvents = [
-  { id: 1, title: "Math Class", start: new Date(2025, 2, 20, 10, 0), end: new Date(2025, 2, 20, 12, 0), category: "school" },
-  { id: 2, title: "Work Meeting", start: new Date(2025, 2, 21, 14, 0), end: new Date(2025, 2, 21, 16, 0), category: "work" },
-  { id: 3, title: "Yoga Class", start: new Date(2025, 2, 22, 18, 0), end: new Date(2025, 2, 22, 19, 30), category: "relax" },
-];
-
 export default function MyCalendar() {
+  const user = useSelector((state) => state.auth.login.currentUser);
   const [view, setView] = useState(Views.WEEK);
   const [date, setDate] = useState(new Date());
-  const [events, setEvents] = useState(initialEvents);
+  const [events, setEvents] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work" });
-  const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax"]);
+  const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax", "todo", "other"]);
 
   const onEventDrop = ({ event, start, end }) => {
     setEvents(events.map(e => e.id === event.id ? { ...e, start, end } : e));
@@ -72,15 +69,15 @@ export default function MyCalendar() {
   const filteredEvents = events.filter(event => selectedCategories.includes(event.category));
 
   const addEvent = () => {
-    if (!newEvent.title.trim()) {
-      alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
-      return;
+    const event = {
+      userId: user.userData._id,
+      title: newEvent.title,
+      start: newEvent.start,
+      end: newEvent.end,
+      category: newEvent.category
     }
 
-    if (newEvent.end < newEvent.start) {
-      alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
-      return;
-    }
+    addEvents(event);
     setEvents([...events, { ...newEvent, id: events.length + 1 }]);
     setModalIsOpen(false);
   };
@@ -100,7 +97,7 @@ export default function MyCalendar() {
   };
 
   const getEventStyle = (event) => {
-    const colors = { school: "#4CAF50", work: "#2196F3", relax: "#FF9800" };
+    const colors = { school: "#08ccc2", work: "#2196F3", relax: "#FF9800", todo: "#4CAF50", others: "#9E9E9E" };
     return { style: { backgroundColor: colors[event.category], borderRadius: "8px", color: "white", padding: "5px" } };
   };
 
@@ -132,7 +129,7 @@ export default function MyCalendar() {
           <h3 style={{ color: "black", fontWeight: "bold" }}>Filters</h3>
           <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
             <label>
-              <input type="checkbox" checked={selectedCategories.length === 3} onChange={handleAllChange} />
+              <input type="checkbox" checked={selectedCategories.length === 5} onChange={handleAllChange} />
               <span style={{ fontWeight: "bold" }}>All</span>
             </label>
           </div>
@@ -142,7 +139,7 @@ export default function MyCalendar() {
               <span style={{ fontWeight: "bold" }}>Work</span>
             </label>
           </div>
-          <div className={styles.chbox} style={{ backgroundColor: "#4CAF50" }}>
+          <div className={styles.chbox} style={{ backgroundColor: "#08ccc2" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("school")} onChange={() => handleCategoryChange("school")} />
               <span style={{ fontWeight: "bold" }}>School</span>
@@ -152,6 +149,18 @@ export default function MyCalendar() {
             <label>
               <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
               <span style={{ fontWeight: "bold" }}>Relax</span>
+            </label>
+          </div>
+          <div className={styles.chbox} style={{ backgroundColor: "#4CAF50" }}>
+            <label>
+              <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
+              <span style={{ fontWeight: "bold" }}>To do</span>
+            </label>
+          </div>
+          <div className={styles.chbox} style={{ backgroundColor: "#9E9E9E" }}>
+            <label>
+              <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
+              <span style={{ fontWeight: "bold" }}>Others</span>
             </label>
           </div>
         </div>
@@ -245,8 +254,10 @@ export default function MyCalendar() {
                   onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
                 >
                   <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
-                  <option value="school" style={{ background: "#4CAF50", color: "white" }}>School</option>
+                  <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
                   <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
+                  <option value="relax" style={{ background: "#4CAF50", color: "white" }}>To do</option>
+                  <option value="relax" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
                 </select>
               </div>
             </div>
@@ -343,8 +354,10 @@ export default function MyCalendar() {
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
               >
                 <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
-                <option value="school" style={{ background: "#4CAF50", color: "white" }}>School</option>
+                <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
                 <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
+                <option value="relax" style={{ background: "#4CAF50", color: "white" }}>To do</option>
+                <option value="relax" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
               </select>
             </div>
             <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
