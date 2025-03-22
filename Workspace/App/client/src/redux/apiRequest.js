@@ -37,16 +37,44 @@ export const logoutUser = async (dispatch, navigate) => {
 export const addEvents = async (newEvent) => {
     try {
         await axios.post("/api/event/create", newEvent);
-    }
-    catch (error) {
+        return;
+    } catch (error) {
         if (!newEvent.title.trim()) {
             alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
-            return;
-          }
-      
-          if (newEvent.end < newEvent.start) {
-            alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
-            return;
-          }
+        }
+        return;
     }
 }
+
+export const saveEvents = async (selectedEvent, _id) => {
+    try {
+        if (!selectedEvent.title.trim()) {
+            alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
+            return { success: false };
+        }
+        await axios.put(`/api/event/update/${_id}`, selectedEvent);
+        return;
+    } catch (error) {
+        return;
+    }
+}
+
+export const getEvents = async (userId) => {
+    try {
+        const res = await axios.get(`/api/event/get?userId=${userId}`);
+        return res.data;
+    } catch (error) {
+        return [];
+    }
+}
+
+export const deleteEvents = async (_id, userId) => {
+    try {
+        await axios.delete(`/api/event/delete/${_id}`, {
+            data: { userId }
+        });
+        return;
+    } catch (error) {
+        return;
+    }
+};
