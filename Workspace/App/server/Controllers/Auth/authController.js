@@ -56,7 +56,7 @@ const authController = {
                 admin: user.admin
             }, 
             process.env.ACCESS_KEY, 
-            {expiresIn: "10s"}
+            {expiresIn: "30s"}
         );
         return token;
     },
@@ -127,9 +127,14 @@ const authController = {
             // Delete old refresh token
             RefreshToken.deleteOne({refreshToken: token});
 
+            const fixUser = {
+                _id: user.id,
+                admin: user.admin,
+            };
+
             // Generate new refresh token and access token; and save new refresh token
-            const newAccessToken = authController.generateAccessToken(user);
-            const newRefreshToken = authController.generateRefreshToken(user);
+            const newAccessToken = authController.generateAccessToken(fixUser);
+            const newRefreshToken = authController.generateRefreshToken(fixUser);
             RefreshToken.create({userId: user.id, refreshToken: newRefreshToken});
             res.cookie("refresh_token", newRefreshToken, {
                 httpOnly: true,

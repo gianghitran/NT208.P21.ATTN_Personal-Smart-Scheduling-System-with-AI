@@ -1,16 +1,21 @@
 import navs from "./navstyle.module.css";
 import { Link, useLocation, useNavigate } from "react-router-dom"; 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { icons } from "../../assets/icon";
 import { logoutUser } from "../../redux/apiRequest";
+import { logoutSuccess } from "../../redux/authSlice";
+import { createAxios } from "../../utils/axiosConfig";
 import threebears from "../../assets/threebears.jpg";
 const Navbar = () => {
     const menu_icon = icons["menu"];
+    const user = useSelector((state) => state.auth.login?.currentUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    let axiosJWT = createAxios(user, dispatch, logoutSuccess);
 
     const handleLogout = () => {
-        logoutUser(dispatch, navigate);
+        const access_token = user?.access_token;
+        logoutUser(dispatch, navigate, access_token, axiosJWT);
     }
     return (  
         <>  
