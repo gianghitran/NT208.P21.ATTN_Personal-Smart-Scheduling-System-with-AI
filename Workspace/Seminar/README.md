@@ -1,6 +1,6 @@
 # MERN Stack (MongoDB + Express.js + React.js + Node.js)
 - Javasript stack : giúp việc deploy 1 ứng dụng full-stack web dễ dàng và đơn giản hơn.
-  ```
+ ```
   - MongoDB: Non Relational Database
   - Express: NodeJS web server
   - React: JavaScript Frontend Framework
