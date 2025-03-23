@@ -1,8 +1,1 @@
-### Frontend
-- React big-calendar:
-```
-Nội dung
-```
-- abc
-- 
-### Backend
+# MERN Stack (MongoDB + Express.js + React.js + Node.js)
