@@ -32,7 +32,7 @@ exports.saveMessage = async (req, res) => {
 
         res.status(200).json({ message: "Chat history updated successfully", history: chatHistory.messages });
     } catch (error) {
-        console.error("❌ Lỗi trong saveMessage:", error);
+        console.error("Error when saveMessage:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -51,7 +51,7 @@ exports.getChatHistory = async (req, res) => {
 
         res.status(200).json({ history: chatHistory ? chatHistory.messages : [] });
     } catch (error) {
-        console.error("❌ Lỗi trong getChatHistory:", error);
+        console.error("Error in getChatHistory:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };

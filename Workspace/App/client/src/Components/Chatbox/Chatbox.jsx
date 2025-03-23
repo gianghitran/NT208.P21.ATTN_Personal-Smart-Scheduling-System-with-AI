@@ -40,7 +40,7 @@ const Chatbox = () => {
   // Hàm gửi tin nhắn đến AI và lưu vào MongoDB
   const sendMessage = async () => {
     if (!input.trim()) {
-      setMessages((prev) => [{ text: "Messages noy found!.", type: "error" }, ...prev]);
+      setMessages((prev) => [{ text: "Messages not found!.", type: "error" }, ...prev]);
       return;
     }
   
@@ -84,7 +84,7 @@ const Chatbox = () => {
       }
   
       const data = await res.json();
-      const botReply = data.choices?.[0]?.message?.content || "Không có phản hồi.";
+      const botReply = data.choices?.[0]?.message?.content || "Not response";
   
       // Cập nhật tin nhắn ngay lập tức trước khi gửi lên server
       setMessages((prev) => [
