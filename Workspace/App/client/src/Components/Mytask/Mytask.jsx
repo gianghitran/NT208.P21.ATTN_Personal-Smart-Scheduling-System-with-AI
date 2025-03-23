@@ -59,6 +59,10 @@ const Mytask = () => {
 
   return (
     <div className={mytask.app_container}>
+      <div className={mytask.notebox}>
+          <span className={`${mytask.dot} ${mytask.green}`}></span> Valid
+          <span className={`${mytask.dot} ${mytask.red}`}></span> Expired
+      </div>
       <div className={mytask.main_content}>
         {/* Task Dashboard */}
         <div className={mytask.task_dashboard}>
@@ -122,7 +126,7 @@ const Mytask = () => {
                 <p><label>End:</label> {moment(selectedEvent.end).format("YYYY-MM-DD HH:mm A")}</p>
               </div>
               <div className={mytask.formGroup}>
-                <p><label>Status:</label> {(selectedEvent.completed == true && moment().format("YYYY-MM-DD HH:mm A") > selectedEvent.end) ? "Exxpired" : "Valid"}</p>
+                <p><label>Status:</label> {new Date(selectedEvent.end) < new Date() ? <span style={{color: "#F44336"}}>Expired</span> : <span style={{color: "green"}}>Valid</span>}</p>
               </div>
               <button onClick={() => setModalIsOpen(false)} className={mytask.closeButton}>Close</button>
             </div>

@@ -68,7 +68,7 @@
   .dot {
     width: 15px;
     height: 15px;
-    
+    display: inline-block;
     border-radius: 50%;
     margin-left: 10px;
     margin-left: 10px;
@@ -250,6 +250,22 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+}
+
+.notebox {
+  position: fixed;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  bottom: 10px;
+  right: 10px;
+  background-color: white;
+  color:black;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
 }
 
 
