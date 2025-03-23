@@ -288,7 +288,6 @@
   
   }
 
-
   .calendar {
     width: 70%;
     
@@ -302,7 +301,7 @@
     
   }
   .task_dashboard{
-    padding: 0.5rem;
+    margin-top: 2rem;
 
   }
 
