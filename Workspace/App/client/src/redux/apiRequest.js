@@ -23,10 +23,12 @@ export const registerUser = async (user, dispatch, navigate) => {
     }
 }
 
-export const logoutUser = async (dispatch, navigate) => {
+export const logoutUser = async (dispatch, navigate, access_token, axiosJWT) => {
     dispatch(logoutRequest());
     try {
-        await axios.post("/api/auth/logout");
+        await axiosJWT.post("/api/auth/logout", {
+            headers: { token: `Bearer ${access_token}` },
+        });
         dispatch(logoutSuccess());
         navigate("/");
     } catch (error) {
@@ -46,13 +48,15 @@ export const addEvents = async (newEvent) => {
     }
 }
 
-export const saveEvents = async (selectedEvent, _id) => {
+export const saveEvents = async (selectedEvent, _id, access_token, axiosJWT) => {
     try {
         if (!selectedEvent.title.trim()) {
             alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
             return { success: false };
         }
-        await axios.put(`/api/event/update/${_id}`, selectedEvent);
+        await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {
+            headers: { token: `Bearer ${access_token}` }
+        });
         return;
     } catch (error) {
         return;
@@ -68,10 +72,11 @@ export const getEvents = async (userId) => {
     }
 }
 
-export const deleteEvents = async (_id, userId) => {
+export const deleteEvents = async (_id, userId, access_token, axiosJWT) => {
     try {
-        await axios.delete(`/api/event/delete/${_id}`, {
-            data: { userId }
+        await axiosJWT.delete(`/api/event/delete/${_id}`, {
+            headers: { token: `Bearer ${access_token}` },
+            data: { userId },
         });
         return;
     } catch (error) {

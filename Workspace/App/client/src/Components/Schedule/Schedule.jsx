@@ -8,12 +8,16 @@ import styles from "./Schedule.module.css";
 import Modal from "react-modal";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
 import { useSelector } from "react-redux";
+import { createAxios } from "../../utils/axiosConfig";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/authSlice";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
 
 export default function MyCalendar() {
-  const user = useSelector((state) => state.auth.login.currentUser);
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const dispatch = useDispatch();
   const [view, setView] = useState(Views.WEEK);
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState([]);
@@ -21,8 +25,11 @@ export default function MyCalendar() {
   const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work" });
   const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax", "todo", "others"]);
 
+  let axiosJWT = createAxios(user, dispatch, loginSuccess);
+
+
   const renderEvents = async () => {
-    const data = await getEvents(user.userData._id);
+    const data = await getEvents(user?.userData._id);
     const items = data.map(({ _id, userId, __v, start, end, ...rest }) => ({
       id: _id,
       title: rest.title,
@@ -89,7 +96,7 @@ export default function MyCalendar() {
       return;
     }
     const event = {
-      userId: user.userData._id,
+      userId: user?.userData._id,
       title: newEvent.title,
       start: newEvent.start,
       end: newEvent.end,
@@ -107,20 +114,23 @@ export default function MyCalendar() {
     }
 
     const event = {
-      userId: user.userData._id,
+      userId: user?.userData._id,
       title: selectedEvent.title,
       start: selectedEvent.start,
       end: selectedEvent.end,
       category: selectedEvent.category
     }
 
-    await saveEvents(event, selectedEvent.id);
+    const access_token = user?.access_token;
+
+    await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
     setModalIsOpen(false);
 
   };
 
   const deleteEvent = async (eventId) => {
-    const response = await deleteEvents(eventId, user.userData._id);
+    const access_token = user?.access_token;
+    const response = await deleteEvents(eventId, user?.userData._id, access_token, axiosJWT);
     setEvents(events.filter(event => event.id !== eventId));
     setModalIsOpen(false);
 
