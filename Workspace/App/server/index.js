@@ -12,6 +12,8 @@ const eventRoute = require("./Routes/eventRoute");
 const chatboxRoute = require("./Routes/chatboxRoute");
 
 
+const os = require("os");
+
 dotenv.config();
 
 // Connect to MongoDB
@@ -27,10 +29,36 @@ const connectDB = async () => {
 
 connectDB();
 
-app.use(cors({
-    credentials: true,
-    origin: ["http://localhost:3000"],
-}))
+
+function getLocalIPs() {
+    const interfaces = os.networkInterfaces();
+    const ips = [];
+  
+    Object.values(interfaces).forEach((iface) => {
+      iface.forEach((info) => {
+        if (info.family === "IPv4" && !info.internal) {
+          ips.push(`http://${info.address}:3000`);
+        }
+      });
+    });
+  
+    return ips;
+  }
+  
+  const allowedOrigins = ["http://localhost:3000", ...getLocalIPs()];
+  
+  
+  app.use(
+    cors({
+      credentials: true,
+      origin: allowedOrigins,
+    })
+  );
+  
+// app.use(cors({
+//     credentials: true,
+//     origin: ["http://localhost:3000","http://172.18.112.1:3000"],
+// }))
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
