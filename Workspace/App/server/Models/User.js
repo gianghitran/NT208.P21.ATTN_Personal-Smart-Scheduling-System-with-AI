@@ -5,6 +5,9 @@ const User = new mongoose.Schema(
     full_name: {
         type: String,
         trim: true,
+        match: /^[A-ZÀ-Ỹa-zà-ỹ]+([ '-][A-ZÀ-Ỹa-zà-ỹ]+)*$/,
+        minLength: 2,
+        maxLength: 50,
         required: true
     },
 
