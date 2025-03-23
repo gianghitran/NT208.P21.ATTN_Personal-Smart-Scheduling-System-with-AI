@@ -107,6 +107,10 @@ h1 {
     margin-right:30px;
 
   }
+
+  .title_box a {
+    text-decoration: none;
+  }
   
   .title_text {
     font-size:  min(4em, 1.2em);
