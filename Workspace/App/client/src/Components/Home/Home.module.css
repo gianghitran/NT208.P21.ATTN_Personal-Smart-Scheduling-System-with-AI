@@ -6,6 +6,7 @@ h1 {
 }
 
 .Home_byNghi{
+  
   font-size: clamp(0.3em, 1.5em, 1em);
 
   overflow: auto; /* Ngăn chặn thanh cuộn toàn trang */
@@ -126,6 +127,7 @@ h1 {
   }
   
   .login_button {
+    text-decoration: none !important;
     flex-shrink: 1;
     margin-top: 20px;
     padding: 10px 20px;
