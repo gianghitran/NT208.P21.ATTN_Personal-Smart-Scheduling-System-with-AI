@@ -9,6 +9,8 @@ const authRoute = require("./Routes/authRoute");
 const cookieParser = require("cookie-parser");
 
 const eventRoute = require("./Routes/eventRoute");
+const chatboxRoute = require("./Routes/chatboxRoute");
+
 
 dotenv.config();
 
@@ -34,6 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoute);
 app.use("/api/event", eventRoute);
+app.use("/api/chatbox", chatboxRoute);
 
 
 app.listen(port, () => {
