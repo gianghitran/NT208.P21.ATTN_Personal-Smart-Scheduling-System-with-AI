@@ -28,6 +28,11 @@ const Event = new mongoose.Schema(
             type: String,
             required: true,
             enum: ["work", "school", "relax", "todo", "other"]
+        },
+
+        completed: {
+            type: Boolean,
+            default: false
         }
     }
 );
