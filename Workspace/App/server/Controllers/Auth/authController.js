@@ -119,13 +119,13 @@ const authController = {
         }
 
         // Verify refresh token
-        jwt.verify(token, process.env.REFRESH_KEY, (error, user) => {
+        jwt.verify(token, process.env.REFRESH_KEY, async (error, user) => {
             if (error) {
                 return res.status(403).json({message: "Token is not valid"});
             }
 
             // Delete old refresh token
-            RefreshToken.deleteOne({refreshToken: token});
+            await RefreshToken.deleteOne({refreshToken: token});
 
             const fixUser = {
                 _id: user.id,
