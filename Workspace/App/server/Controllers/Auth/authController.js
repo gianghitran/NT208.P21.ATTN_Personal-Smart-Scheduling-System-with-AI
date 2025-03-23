@@ -7,9 +7,20 @@ const cookieParser = require('cookie-parser');
 
 const authController = {
     registerUser: async (req, res) => {
+        const { full_name, email, password } = req.body;
+
+        if (!full_name || !email || !password) {
+            return res.status(400).json({message: "All fields are required"});
+        }
+
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
-        const userEmail = validator.isEmail(req.body.email);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const userEmail = validator.isEmail(email);
+
+        
+        if (!full_name.match(/^[A-ZÀ-Ỹa-zà-ỹ]+([ '-][A-ZÀ-Ỹa-zà-ỹ]+)*$/)) {
+            return res.status(400).json({message: "Invalid full name"});
+        }
 
         if (!userEmail) {
             return res.status(400).json({message: "Invalid email"});
@@ -17,12 +28,12 @@ const authController = {
 
         const userExists = await User.findOne({email: req.body.email});
         if (userExists) {
-            return res.status(400).json({message: "User already exists"});
+            return res.status(400).json({message: "Email already exists"});
         }
 
         const newUser = new User({
-            full_name: req.body.full_name,
-            email: req.body.email,
+            full_name: full_name,
+            email: email,
             password: hashedPassword
         });
 
@@ -75,9 +86,15 @@ const authController = {
 
     loginUser: async (req, res) => {
         try {
-            const validUser = await User.findOne({email: req.body.email});
+            const { email, password } = req.body; 
+
+            if (!email || !password) {
+                return res.status(400).json({message: "Please fill all the fields"});
+            }
+
+            const validUser = await User.findOne({email: email});
             if (!validUser) {
-                return res.status(400).json({message: "User not found"});
+                return res.status(400).json({message: "Email not found"});
             };
 
             const validPassword = await bcrypt.compare(req.body.password, validUser.password);

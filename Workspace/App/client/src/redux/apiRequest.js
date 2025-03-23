@@ -9,6 +9,13 @@ export const loginUser = async (user, dispatch, navigate) => {
         navigate("/Schedule");
     } catch (error) {
         dispatch(loginFailure());
+        if (error.response) {
+            return { success: false, message: error.response.data.message || "Login failed" };
+        } else if (error.request) {
+            return { success: false, message: "Server did not respond. Please try again later." };
+        } else {
+            return { success: false, message: "An unexpected error occurred." };
+        }
     }
 }
 
@@ -20,6 +27,13 @@ export const registerUser = async (user, dispatch, navigate) => {
         navigate("/login");
     } catch (error) {
         dispatch(registerFailure());
+        if (error.response) {
+            return { success: false, message: error.response.data.message || "Register failed" };
+        } else if (error.request) {
+            return { success: false, message: "Server did not respond. Please try again later." };
+        } else {
+            return { success: false, message: "An unexpected error occurred." };
+        }
     }
 }
 

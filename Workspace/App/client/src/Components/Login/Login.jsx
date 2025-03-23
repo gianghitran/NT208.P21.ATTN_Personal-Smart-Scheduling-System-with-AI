@@ -9,32 +9,46 @@ import { RiLockPasswordFill } from "react-icons/ri";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        
         const user = {
             email: email,
             password: password
+        };
+    
+        try {
+            const response = await loginUser(user, dispatch, navigate);
+    
+            if (response && !response.success) {
+                setError(response.message);
+            }
+        } catch (error) {
+            setError("An unexpected error occurred.");
         }
-        loginUser(user, dispatch, navigate);
-    }
+    };
 
     return (
         <div className={loginStyle.Wrapper}>
             <form className={loginStyle.loginForm} onSubmit={handleLogin}> 
                 <h1>Login</h1>
+
+                {error && <p className={loginStyle.error}>{error}</p>}
+
                 <div className={loginStyle.inputGroup}>
                     <IoIosMail className={loginStyle.icon} />
                     <input type="email" placeholder="Enter your email..." 
-                        onChange={(e) => {setEmail(e.target.value)}}/>
+                        onChange={(e) => {setEmail(e.target.value); setError("")}} />
                 </div>
 
                 <div className={loginStyle.inputGroup}>
                     <RiLockPasswordFill className={loginStyle.icon} />
                     <input type="password" placeholder="Enter your password..."
-                        onChange={(e) => {setPassword(e.target.value)}}/>
+                        onChange={(e) => {setPassword(e.target.value); setError("")}}/>
                 </div>
 
                 <div className={loginStyle.rememberForgot}>
