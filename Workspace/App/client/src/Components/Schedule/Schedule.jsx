@@ -47,7 +47,8 @@ export default function MyCalendar() {
 
   const onEventDrop = async ({ event, start, end }) => {
     const updatedEvent = { ...event, start, end, userId: user.userData._id };
-    const response = await saveEvents(updatedEvent, event.id);
+    const access_token = user?.access_token;
+    const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
       alert(`Sự kiện "${event.title}" đã được di chuyển!`);
@@ -58,7 +59,8 @@ export default function MyCalendar() {
 
   const onEventResize = async ({ event, start, end }) => {
     const updatedEvent = { ...event, start, end, userId: user.userData._id };
-    const response = await saveEvents(updatedEvent, event.id);
+    const access_token = user?.access_token;
+    const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
       alert(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
