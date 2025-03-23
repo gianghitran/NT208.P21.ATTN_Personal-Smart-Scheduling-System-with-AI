@@ -88,7 +88,7 @@ const Chatbox = () => {
   
       // Cập nhật tin nhắn ngay lập tức trước khi gửi lên server
       setMessages((prev) => [
-        { text: input, type: "user" },
+        { text: userMessage, type: "user" },
         { text: DOMPurify.sanitize(botReply), type: "response" },
         ...prev,
       ]);
@@ -97,12 +97,12 @@ const Chatbox = () => {
       await fetch(`http://localhost:4000/api/chatbox/history/${userId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, message: userMessage, botReply }),
+        body: JSON.stringify({ userId, message: input, botReply }),
       });
     fetchChatHistory();
   
     } catch (error) {
-      setMessages((prev) => [{ text: `Lỗi: ${error.message}`, type: "error" }, ...prev]);
+      setMessages((prev) => [{ text: `Error: ${error.message}`, type: "error" }, ...prev]);
     }
   
     setLoading(false);
