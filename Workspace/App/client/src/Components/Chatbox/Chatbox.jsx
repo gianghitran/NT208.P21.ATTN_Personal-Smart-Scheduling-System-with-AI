@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 const Chatbox = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
 
-  const userId = user?.userData._id; // Giả sử user đã đăng nhập, cần thay bằng user thực tế
+  const userId = user?.userData._id; 
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
