@@ -37,15 +37,15 @@ const Chatbox = () => {
       fetchChatHistory();
     }, [userId]);
 
-  // Hàm gửi tin nhắn đến OpenRouter AI và lưu vào MongoDB
+  // Hàm gửi tin nhắn đến AI và lưu vào MongoDB
   const sendMessage = async () => {
     if (!input.trim()) {
-      setMessages((prev) => [{ text: "Vui lòng nhập tin nhắn.", type: "error" }, ...prev]);
+      setMessages((prev) => [{ text: "Messages noy found!.", type: "error" }, ...prev]);
       return;
     }
   
     if (!userId) {
-      setMessages((prev) => [{ text: "Vui lòng đăng nhập để chat!", type: "error" }, ...prev]);
+      setMessages((prev) => [{ text: "Sign in to chat!", type: "error" }, ...prev]);
       return;
     }
   
@@ -120,7 +120,6 @@ const Chatbox = () => {
 
   return (
     <div className={chatbox.container}>
-          {/* Tiêu đề động */}
           <div className={chatbox.title}>
             <motion.h1
               className="text-6xl font-bold"
