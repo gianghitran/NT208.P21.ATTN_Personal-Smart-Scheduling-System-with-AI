@@ -26,7 +26,7 @@ export const registerUser = async (user, dispatch, navigate) => {
 export const logoutUser = async (dispatch, navigate, access_token, axiosJWT) => {
     dispatch(logoutRequest());
     try {
-        await axiosJWT.post("/api/auth/logout", {
+        await axios.post("/api/auth/logout", {
             headers: { token: `Bearer ${access_token}` },
         });
         dispatch(logoutSuccess());
