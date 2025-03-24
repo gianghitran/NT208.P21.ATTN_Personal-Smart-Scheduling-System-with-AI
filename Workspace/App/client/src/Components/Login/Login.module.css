@@ -43,6 +43,7 @@
 .inputGroup {
     display: flex;
     gap: 5px;
+    position: relative;
     width: 100%;
 }
 
@@ -135,4 +136,29 @@
     font-weight: 700;
     text-align: center;
     margin-top: -10px;
+}
+
+
+@media screen and (max-width: 768px) {
+    .loginForm {
+        padding: 50px;
+        padding-top: 70px;
+        padding-bottom: 70px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .inputGroup {
+        left: -10px;
+    }
+
+    .inputGroup input {
+        width: 300px;
+    }
+
+    .loginButton {
+        padding-right: 40px;
+        padding-left: 40px;
+    }
+    
 }

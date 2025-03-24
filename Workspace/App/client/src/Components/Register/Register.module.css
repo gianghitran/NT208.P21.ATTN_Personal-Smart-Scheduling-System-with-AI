@@ -40,7 +40,7 @@
 .registerForm h1 {
     font-size: 2rem;
     position: relative;
-    top: -30px;
+    top: -10px;
     font-weight: 700;
     color: #333;
 }
@@ -49,6 +49,7 @@
     display: flex;
     /* background-color: #E6E6E6; */
     /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    position: relative;
     gap: 5px;
 }
 
@@ -129,4 +130,40 @@
     font-weight: 700;
     text-align: center;
     margin-top: -10px;
+}
+
+@media screen and (max-width: 768px) {
+    .registerForm {
+        padding: 50px;
+        padding-top: 70px;
+        padding-bottom: 70px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .registerForm h1 {
+        font-size: 1.5rem;
+    }
+
+    .inputGroup {
+        left: -10px;
+    }
+
+    .inputGroup input {
+        width: 300px;
+        
+    }
+
+    .registerButton {
+        padding: 10px;
+        padding-right: 40px;
+        padding-left: 40px;
+        font-size: 1rem;
+    }
+
+    .loginLink {
+        font-size: 1rem;
+        top: 30px;
+    }
+    
 }
