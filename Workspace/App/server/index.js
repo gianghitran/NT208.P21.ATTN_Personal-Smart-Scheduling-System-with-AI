@@ -11,7 +11,6 @@ const cookieParser = require("cookie-parser");
 const eventRoute = require("./Routes/eventRoute");
 const chatboxRoute = require("./Routes/chatboxRoute");
 
-
 const os = require("os");
 
 dotenv.config();
@@ -45,15 +44,15 @@ function getLocalIPs() {
     return ips;
   }
   
-  const allowedOrigins = ["http://localhost:3000", ...getLocalIPs()];
-  
-  
-  app.use(
-    cors({
-      credentials: true,
-      origin: allowedOrigins,
-    })
-  );
+const allowedOrigins = ["http://localhost:3000", ...getLocalIPs()];
+
+
+app.use(
+  cors({
+    credentials: true,
+    origin: allowedOrigins,
+  })
+);
   
 // app.use(cors({
 //     credentials: true,
@@ -65,7 +64,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoute);
 app.use("/api/event", eventRoute);
 app.use("/api/chatbox", chatboxRoute);
-
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
