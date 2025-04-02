@@ -2,7 +2,8 @@ import loginStyle from "./Login.module.css";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../../redux/apiRequest";
+import { loginUser, loginGoogle } from "../../redux/apiRequest";
+import { GoogleLogin } from "@react-oauth/google";
 import { IoIosMail } from "react-icons/io";
 import { RiLockPasswordFill } from "react-icons/ri";
 
@@ -32,6 +33,17 @@ const Login = () => {
         }
     };
 
+    const handleSuccess = async (credentialResponse) => {
+        try {
+            const response = await loginGoogle(credentialResponse, dispatch, navigate);
+            if (response && !response.success) {
+                setError(response.message);
+            }
+        } catch (error) {
+            setError("Google login failed. Please try again.");
+        }
+    }
+
     return (
         <div className={loginStyle.Wrapper}>
             <form className={loginStyle.loginForm} onSubmit={handleLogin}> 
@@ -57,6 +69,9 @@ const Login = () => {
                 </div>
 
                 <input type="submit" value="Login" className={loginStyle.loginButton}/>
+                <GoogleLogin
+                    onSuccess={handleSuccess}
+                />
 
                 <div className={loginStyle.registerLink}>
                     <p>Don't have an account? <Link to="/Register">Register</Link></p>

@@ -4,6 +4,22 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const cookieParser = require('cookie-parser');
+const { OAuth2Client } = require('google-auth-library');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const clientID = process.env.GG_CLIENT_ID;
+const client = new OAuth2Client(clientID);
+
+async function verify(token) {
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: clientID,
+    });
+    const payload = ticket.getPayload();
+    return payload;
+}
 
 const authController = {
     registerUser: async (req, res) => {
@@ -82,6 +98,41 @@ const authController = {
             {expiresIn: "365d"}
         );
         return token;
+    },
+
+    googleAuth: async (req, res) => {
+        try {
+            const token = req.body.credential;
+            const payload = await verify(token);
+            const { email, name, sub} = payload;
+            let account = await User.findOne({email: email, oauth_id: sub});
+
+            if (!account) {
+                const newUser = new User({
+                    full_name: name,
+                    email: email,
+                    oauth_provider: "google",
+                    oauth_id: sub
+                });
+                account = await newUser.save();
+            }
+
+            const access_token = authController.generateAccessToken(account);
+            const refresh_token = authController.generateRefreshToken(account);
+            RefreshToken.create({userId: account._id, refreshToken: refresh_token});
+
+            res.cookie("refresh_token", refresh_token, {
+                httpOnly: true,
+                secure: false,
+                path: "/",
+                sameSite: "strict",
+            });
+
+            const {oauth_id, ...userData} = account._doc;
+            res.status(200).json({userData, access_token});
+        } catch (error) {
+            res.status(500).json({message: error});
+        }
     },
 
     loginUser: async (req, res) => {
