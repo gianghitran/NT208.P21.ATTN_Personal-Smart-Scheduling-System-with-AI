@@ -54,10 +54,6 @@ app.use(
   })
 );
   
-// app.use(cors({
-//     credentials: true,
-//     origin: ["http://localhost:3000","http://172.18.112.1:3000"],
-// }))
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
