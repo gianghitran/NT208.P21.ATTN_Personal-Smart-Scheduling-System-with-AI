@@ -42,7 +42,15 @@ const User = new mongoose.Schema(
     admin: {
         type: Boolean,
         default: false
-    }
+    },
+
+    googleAccessToken: {
+        type: String,
+    },
+      googleRefreshToken: {
+        type: String,
+    },
+      
 },
 
 {

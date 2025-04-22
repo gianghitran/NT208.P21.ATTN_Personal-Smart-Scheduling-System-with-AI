@@ -12,6 +12,7 @@ import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import OAuthCallback from './Components/OAuthCallback/OAuthCallback';
 
 function App() {
     const isLoggedIn = useSelector((state) => state.auth.login.currentUser);
@@ -42,6 +43,8 @@ function App() {
                     <Route path="/Myteam" element={<Myteam/>} />
                     <Route path="/Setting" element={<Setting/>} />
                 </Route>
+
+                <Route path="/oauth2callback" element={<OAuthCallback />} />
               </Routes>
             </div>
       </>

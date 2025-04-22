@@ -24,7 +24,7 @@ export default function MyCalendar() {
   const [events, setEvents] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work", description: "" });
-  const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax", "todo", "others"]);
+  const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax", "todo", "other"]);
   const fileInputRef = useRef(null);
   const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
 
@@ -32,11 +32,12 @@ export default function MyCalendar() {
 
   const renderEvents = async () => {
     const data = await getEvents(user?.userData._id);
+    console.log("✅ Events fetched from DB:", data);
     const items = data.map(({ _id, userId, __v, start, end, ...rest }) => ({
       id: _id,
       title: rest.title,
-      start: new Date(start),
-      end: new Date(end),
+      start: moment(start).toDate(),
+      end: moment(end).toDate(),
       category: rest.category,
       ...rest,
       resource: { description: rest.description },
@@ -46,7 +47,7 @@ export default function MyCalendar() {
 
   useEffect(() => {
     renderEvents();
-  }, [events]);
+  }, []);
 
   const onEventDrop = async ({ event, start, end }) => {
     const updatedEvent = { ...event, start, end, userId: user.userData._id };
@@ -80,7 +81,7 @@ export default function MyCalendar() {
 
   const handleAllChange = (event) => {
     const checked = event.target.checked;
-    setSelectedCategories(checked ? ["work", "school", "relax", "todo", "others"] : []);
+    setSelectedCategories(checked ? ["work", "school", "relax", "todo", "other"] : []);
   };
 
   const handleCategoryChange = (category) => {
@@ -88,7 +89,7 @@ export default function MyCalendar() {
       const newCategories = prev.includes(category)
         ? prev.filter(c => c !== category)
         : [...prev, category];
-      return newCategories.length === 5 ? ["work", "school", "relax", "todo", "others"] : newCategories;
+      return newCategories.length === 5 ? ["work", "school", "relax", "todo", "other"] : newCategories;
     });
   };
 
@@ -139,9 +140,10 @@ export default function MyCalendar() {
     setEvents(events.filter(event => event.id !== eventId));
     setModalIsOpen(false);
   };
+  
 
   const getEventStyle = (event) => {
-    const colors = { school: "#08ccc2", work: "#2196F3", relax: "#FF9800", todo: "#4CAF50", others: "#9E9E9E" };
+    const colors = { school: "#08ccc2", work: "#2196F3", relax: "#FF9800", todo: "#4CAF50", other: "#9E9E9E" };
     return { style: { backgroundColor: colors[event.category], borderRadius: "8px", color: "white", padding: "5px" } };
   };
 
@@ -167,10 +169,10 @@ export default function MyCalendar() {
   };
 
   const handleDrop = (e) => {
-    e.preventDefault(); // Ngăn trình duyệt mở file mặc định
-    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+    e.preventDefault();
+    e.stopPropagation();
 
-    const file = e.dataTransfer.files[0]; // Lấy file được thả
+    const file = e.dataTransfer.files[0];
     if (!file) {
       alert("No file detected!");
       return;
@@ -213,10 +215,10 @@ export default function MyCalendar() {
       complete: async (result) => {
         const importedEvents = result.data.map(row => ({
           title: row.Title,
-          start: new Date(`${row["Start Day"]}T${row["Start Time"]}`), // Ghép ngày và giờ bắt đầu
-          end: new Date(`${row["End Day"]}T${row["End Time"]}`), // Ghép ngày và giờ kết thúc
+          start: new Date(`${row["Start Day"]}T${row["Start Time"]}`),
+          end: new Date(`${row["End Day"]}T${row["End Time"]}`),
           category: row.Category,
-          description: row.Description || "", // Mô tả
+          description: row.Description || "",
           userId: user?.userData._id,
         }));
 
@@ -232,12 +234,12 @@ export default function MyCalendar() {
   const handleSaveClick = async () => {
     const csvData = events.map(event => ({
       Title: event.title,
-      "Start Day": moment(event.start).format("YYYY-MM-DD"), // Ngày bắt đầu
-      "Start Time": moment(event.start).format("HH:mm"), // Giờ bắt đầu
-      "End Day": moment(event.end).format("YYYY-MM-DD"), // Ngày kết thúc
-      "End Time": moment(event.end).format("HH:mm"), // Giờ kết thúc
+      "Start Day": moment(event.start).format("YYYY-MM-DD"),
+      "Start Time": moment(event.start).format("HH:mm"),
+      "End Day": moment(event.end).format("YYYY-MM-DD"),
+      "End Time": moment(event.end).format("HH:mm"),
       Category: event.category,
-      Description: event.description || "" // Mô tả
+      Description: event.description || ""
     }));
 
     const csv = Papa.unparse(csvData);
@@ -247,6 +249,40 @@ export default function MyCalendar() {
     link.download = "events.csv";
     link.click();
   };
+
+  const syncWithGoogleCalendar = async () => {
+    try {
+      const response = await fetch('/api/google-calendar/sync', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.access_token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('✅ Google Calendar synced successfully!');
+        console.log(data);
+        await renderEvents(); // 🔥 Hiển thị lại
+      } else {
+        const errorData = await response.json();
+        if (response.status === 403 || errorData.message?.includes("googleAccessToken")) {
+          alert('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
+
+          const urlRes = await fetch('/api/auth/connect-google');
+          const { url } = await urlRes.json();
+          window.location.href = url;
+        } else {
+          alert('❌ Failed to sync with Google Calendar');
+        }
+      }
+    } catch (error) {
+      console.error('Error syncing with Google Calendar:', error);
+      alert('❌ Lỗi khi đồng bộ Google Calendar');
+    }
+  };
+
+
 
   return (
     <div className={styles.container}>
@@ -286,7 +322,7 @@ export default function MyCalendar() {
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#9E9E9E" }}>
             <label>
-              <input type="checkbox" checked={selectedCategories.includes("others")} onChange={() => handleCategoryChange("others")} />
+              <input type="checkbox" checked={selectedCategories.includes("other")} onChange={() => handleCategoryChange("other")} />
               <span style={{ fontWeight: "bold" }}>Others</span>
             </label>
           </div>
@@ -295,6 +331,7 @@ export default function MyCalendar() {
         <div className={styles.csv}>
           <button onClick={handleUploadClick} className={styles.uploadButton}>Upload</button>
           <button onClick={handleSaveClick} className={styles.uploadButton}>Save</button>
+          <button onClick={syncWithGoogleCalendar} className={styles.uploadButton}>Sync</button>
         </div>
       </div>
 
@@ -399,7 +436,7 @@ export default function MyCalendar() {
                   <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
                   <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
                   <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
-                  <option value="others" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
+                  <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
                 </select>
               </div>
             </div>
@@ -512,7 +549,7 @@ export default function MyCalendar() {
                 <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
                 <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
                 <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
-                <option value="others" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
+                <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
               </select>
             </div>
             <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
@@ -530,7 +567,7 @@ export default function MyCalendar() {
         style={{
           display: 'flex', justifyContent: 'center', alignItems: 'center',
           content: {
-            width: '450px', // 👈 chỉ áp dụng cho content của modal này
+            width: '450px',
             maxWidth: '90vw',
             margin: 'auto',
           }
