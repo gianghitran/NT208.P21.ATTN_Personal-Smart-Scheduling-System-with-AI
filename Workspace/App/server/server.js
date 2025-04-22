@@ -46,8 +46,7 @@ function getLocalIPs() {
   return ips;
 }
 
-const allowedOrigins = ["http://localhost:3000", ...getLocalIPs()];
-
+const allowedOrigins = ["http://localhost:3000", "https://bearlander.onrender.com", ...getLocalIPs()];
 
 app.use(
   cors({
