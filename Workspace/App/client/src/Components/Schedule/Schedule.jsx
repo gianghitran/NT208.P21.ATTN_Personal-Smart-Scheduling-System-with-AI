@@ -544,8 +544,9 @@ export default function MyCalendar() {
             onClick={() => fileInputRef.current.click()}
             className={styles.dropZone}
           >
-            <p>Drag and drop your csv file to upload</p>
+            <p>Drag and drop your csv file or click Upload button to upload</p>
           </div>
+          <p style={{ fontSize: "12px", color: "red", fontStyle: "italic" }}>Notes: Do not edit csv with excel!</p>
           <button onClick={() => fileInputRef.current.click()} className={styles.addButton}>Upload</button>
           <input
             type="file"
