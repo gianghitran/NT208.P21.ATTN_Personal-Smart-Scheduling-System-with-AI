@@ -13,37 +13,39 @@ const chatboxRoute = require("./Routes/chatboxRoute");
 
 const os = require("os");
 
+const syncRoute = require('./Routes/syncRoute');
+
 dotenv.config();
 
 // Connect to MongoDB
 const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGOSV);
-        console.log("MongoDB is connected");
-    } catch (error) {
-        console.log(error);
-        process.exit(1);
-    }
+  try {
+    await mongoose.connect(process.env.MONGOSV);
+    console.log("MongoDB is connected");
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
 }
 
 connectDB();
 
 
 function getLocalIPs() {
-    const interfaces = os.networkInterfaces();
-    const ips = [];
-  
-    Object.values(interfaces).forEach((iface) => {
-      iface.forEach((info) => {
-        if (info.family === "IPv4" && !info.internal) {
-          ips.push(`http://${info.address}:3000`);
-        }
-      });
+  const interfaces = os.networkInterfaces();
+  const ips = [];
+
+  Object.values(interfaces).forEach((iface) => {
+    iface.forEach((info) => {
+      if (info.family === "IPv4" && !info.internal) {
+        ips.push(`http://${info.address}:3000`);
+      }
     });
-  
-    return ips;
-  }
-  
+  });
+
+  return ips;
+}
+
 const allowedOrigins = ["http://localhost:3000", ...getLocalIPs()];
 
 
@@ -53,7 +55,7 @@ app.use(
     origin: allowedOrigins,
   })
 );
-  
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -62,6 +64,7 @@ app.use("/api/event", eventRoute);
 app.use("/api/chatbox", chatboxRoute);
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
 
+app.use('/api/google-calendar', syncRoute);
