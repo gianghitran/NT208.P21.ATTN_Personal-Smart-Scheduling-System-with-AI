@@ -87,7 +87,7 @@ export const saveEvents = async (selectedEvent, _id, access_token, axiosJWT) => 
             return { success: false };
         }
         await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {
-            headers: { token: `Bearer ${access_token}` }
+            headers: { Authorization: `Bearer ${access_token}` }
         });
         return;
     } catch (error) {
@@ -106,8 +106,11 @@ export const getEvents = async (userId) => {
 
 export const deleteEvents = async (_id, userId, access_token, axiosJWT) => {
     try {
+        if (!access_token) {
+            throw new Error("Access token is missing");
+        }
         await axiosJWT.delete(`/api/event/delete/${_id}`, {
-            headers: { token: `Bearer ${access_token}` },
+            headers: { Authorization: `Bearer ${access_token}` },
             data: { userId },
         });
         return;
