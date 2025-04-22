@@ -24,3 +24,8 @@ connectToMongo();
 ```
 
 ![image](https://github.com/user-attachments/assets/a18ed740-e0d5-4300-b406-c15f0f6c4112)
+
+
+
+key meta lama: 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
+key gpt4o: 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
