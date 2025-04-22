@@ -33,6 +33,11 @@ const Event = new mongoose.Schema(
         completed: {
             type: Boolean,
             default: false
+        },
+
+        description: {
+            type: String,
+            default: ""
         }
     }
 );
