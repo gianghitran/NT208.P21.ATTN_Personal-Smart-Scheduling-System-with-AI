@@ -74,7 +74,17 @@ const Chatbox = () => {
               content: msg.content,
             }))
         : [];
-        const messagesToSend = [...filteredMessages, { role: "user", content: input }];
+        const format_JSON = `Just give me only the JSON of this statement in this format:
+        {
+          "title": (string),
+          "start": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
+          "end": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
+          "category": ("work"/"school"/"relax"/"todo"/"others"),
+          "description": (string),
+          "userId": "${user?.userData._id}"
+        }`;
+        
+        const messagesToSend = [...filteredMessages, { role: "user", content: input },{ role: "user", content:format_JSON }];
 
 
       
