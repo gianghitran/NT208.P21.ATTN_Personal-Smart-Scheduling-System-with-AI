@@ -64,20 +64,48 @@ const Chatbox = () => {
     setLoading(true);
   
     try {
+      const historyRes = await fetch(`http://localhost:4000/api/chatbox/send/${userId}`);
+      const historyData = await historyRes.json();      
+      const filteredMessages = Array.isArray(historyData.history)
+        ? historyData.history
+            .slice(-30)
+            .map((msg) => ({
+              role: msg.role,
+              content: msg.content,
+            }))
+        : [];
+        const format_JSON = `Just give me only the JSON of this statement in this format:
+        {
+          "title": (string),
+          "start": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
+          "end": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
+          "category": ("work"/"school"/"relax"/"todo"/"others"),
+          "description": (string),
+          "userId": "${user?.userData._id}"
+        }`;
+        
+        const messagesToSend = [...filteredMessages, { role: "user", content: input },{ role: "user", content:format_JSON }];
+
+
+      
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: "Bearer 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",
+          Authorization: "Bearer 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",
+          // nvidia llama: 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
           "HTTP-Referer": "http://localhost:3000",
-          "X-Title": "mistral_24b_free",
+          "X-Title": "BearCalendar",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free",
-          messages: [{ role: "user", content: input }],
+          model: "openai/gpt-4o-mini-2024-07-18",
+          // nvidia/llama-3.1-nemotron-ultra-253b-v1:free
+          messages: messagesToSend,//Câu hỏi user vừa gửi
+        
         }),
         signal,
       });
+      
   
       if (!res.ok) {
         throw new Error(`API Error: ${res.status} - ${res.statusText}`);
@@ -102,7 +130,11 @@ const Chatbox = () => {
     fetchChatHistory();
   
     } catch (error) {
-      setMessages((prev) => [{ text: `Error: ${error.message}`, type: "error" }, ...prev]);
+      if (error.response && error.response.status === 429) {
+        console.log("Rate limit hit: token usage");
+        throw new Error("Token limit exceeded. Try again later.");}
+      else{
+      setMessages((prev) => [{ text: `Error: ${error.message}`, type: "error" }, ...prev]);}
     }
   
     setLoading(false);
