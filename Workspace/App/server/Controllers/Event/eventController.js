@@ -7,7 +7,8 @@ const eventController = {
             title: req.body.title,
             start: req.body.start,
             end: req.body.end,
-            category: req.body.category
+            category: req.body.category,
+            description: req.body.description
         });
 
         try {

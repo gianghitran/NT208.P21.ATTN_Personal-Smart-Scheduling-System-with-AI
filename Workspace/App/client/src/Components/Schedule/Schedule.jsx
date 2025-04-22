@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import moment from "moment";
@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { createAxios } from "../../utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice";
+import Papa from "papaparse";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -22,11 +23,12 @@ export default function MyCalendar() {
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work" });
+  const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work", description: "" });
   const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax", "todo", "others"]);
+  const fileInputRef = useRef(null);
+  const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess);
-
 
   const renderEvents = async () => {
     const data = await getEvents(user?.userData._id);
@@ -37,6 +39,7 @@ export default function MyCalendar() {
       end: new Date(end),
       category: rest.category,
       ...rest,
+      resource: { description: rest.description },
     }));
     setEvents(items);
   };
@@ -78,7 +81,6 @@ export default function MyCalendar() {
   const handleAllChange = (event) => {
     const checked = event.target.checked;
     setSelectedCategories(checked ? ["work", "school", "relax", "todo", "others"] : []);
-
   };
 
   const handleCategoryChange = (category) => {
@@ -102,7 +104,8 @@ export default function MyCalendar() {
       title: newEvent.title,
       start: newEvent.start,
       end: newEvent.end,
-      category: newEvent.category
+      category: newEvent.category,
+      description: newEvent.description
     }
 
     await addEvents(event);
@@ -120,14 +123,14 @@ export default function MyCalendar() {
       title: selectedEvent.title,
       start: selectedEvent.start,
       end: selectedEvent.end,
-      category: selectedEvent.category
+      category: selectedEvent.category,
+      description: selectedEvent.description
     }
 
     const access_token = user?.access_token;
 
     await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
     setModalIsOpen(false);
-
   };
 
   const deleteEvent = async (eventId) => {
@@ -135,7 +138,6 @@ export default function MyCalendar() {
     const response = await deleteEvents(eventId, user?.userData._id, access_token, axiosJWT);
     setEvents(events.filter(event => event.id !== eventId));
     setModalIsOpen(false);
-
   };
 
   const getEventStyle = (event) => {
@@ -147,6 +149,7 @@ export default function MyCalendar() {
   const [modalType, setModalType] = useState("add");
 
   const onSelectEvent = (event) => {
+    console.log("📌 selectedEvent.resource:", event.resource);
     setSelectedEvent(event);
     setModalType("details");
     setModalIsOpen(true);
@@ -157,6 +160,93 @@ export default function MyCalendar() {
     setModalIsOpen(true);
     setNewEvent({ title: "", start: new Date(), end: new Date(), category: "work" });
   }
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault(); // Ngăn trình duyệt mở file mặc định
+    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+
+    const file = e.dataTransfer.files[0]; // Lấy file được thả
+    if (!file) {
+      alert("No file detected!");
+      return;
+    }
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      transformHeader: (header) => header.trim().replace(/^\uFEFF/, ""),
+      complete: async (result) => {
+        const importedEvents = result.data.map(row => ({
+          title: row.Title,
+          start: moment(`${row["Start Day"]} ${row["Start Time"]}`, "YYYY-MM-DD HH:mm", true).toDate(),
+          end: moment(`${row["End Day"]} ${row["End Time"]}`, "YYYY-MM-DD HH:mm", true).toDate(),
+          category: row["Category"]?.toLowerCase(),
+          description: row["Description"]?.trim() || "",
+          userId: user?.userData._id,
+        }));
+
+        for (const event of importedEvents) {
+          await addEvents(event);
+        }
+        renderEvents();
+        alert("Import thành công!");
+      },
+    });
+  };
+
+  const handleUploadClick = () => {
+    setUploadModalIsOpen(true);
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (result) => {
+        const importedEvents = result.data.map(row => ({
+          title: row.Title,
+          start: new Date(`${row["Start Day"]}T${row["Start Time"]}`), // Ghép ngày và giờ bắt đầu
+          end: new Date(`${row["End Day"]}T${row["End Time"]}`), // Ghép ngày và giờ kết thúc
+          category: row.Category,
+          description: row.Description || "", // Mô tả
+          userId: user?.userData._id,
+        }));
+
+        for (const event of importedEvents) {
+          await addEvents(event);
+        }
+        renderEvents();
+        alert("Upload thành công!");
+      },
+    });
+  };
+
+  const handleSaveClick = async () => {
+    const csvData = events.map(event => ({
+      Title: event.title,
+      "Start Day": moment(event.start).format("YYYY-MM-DD"), // Ngày bắt đầu
+      "Start Time": moment(event.start).format("HH:mm"), // Giờ bắt đầu
+      "End Day": moment(event.end).format("YYYY-MM-DD"), // Ngày kết thúc
+      "End Time": moment(event.end).format("HH:mm"), // Giờ kết thúc
+      Category: event.category,
+      Description: event.description || "" // Mô tả
+    }));
+
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "events.csv";
+    link.click();
+  };
 
   return (
     <div className={styles.container}>
@@ -201,6 +291,11 @@ export default function MyCalendar() {
             </label>
           </div>
         </div>
+
+        <div className={styles.csv}>
+          <button onClick={handleUploadClick} className={styles.uploadButton}>Upload</button>
+          <button onClick={handleSaveClick} className={styles.uploadButton}>Save</button>
+        </div>
       </div>
 
       <DnDCalendar
@@ -239,6 +334,16 @@ export default function MyCalendar() {
                   type="text"
                   value={newEvent.title}
                   onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Description:</label>
+                <textarea
+                  value={newEvent.description}
+                  onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                  className={styles.description}
+                  placeholder="Enter event description"
                 />
               </div>
 
@@ -313,6 +418,9 @@ export default function MyCalendar() {
               <p><label>Title:</label> {selectedEvent.title}</p>
             </div>
             <div className={styles.formGroup}>
+              <p><label>Description:</label> {selectedEvent.resource?.description || "No description provided"}</p>
+            </div>
+            <div className={styles.formGroup}>
               <p><label>Start:</label> {moment(selectedEvent.start).format("YYYY-MM-DD HH:mm A")}</p>
             </div>
             <div className={styles.formGroup}>
@@ -339,6 +447,16 @@ export default function MyCalendar() {
                 type="text"
                 value={selectedEvent.title}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Description:</label>
+              <textarea
+                value={selectedEvent.description}
+                onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
+                className={styles.description}
+                placeholder="Enter event description"
               />
             </div>
 
@@ -401,6 +519,51 @@ export default function MyCalendar() {
             <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        isOpen={uploadModalIsOpen}
+        onRequestClose={() => setUploadModalIsOpen(false)}
+        ariaHideApp={false}
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+        style={{
+          display: 'flex', justifyContent: 'center', alignItems: 'center',
+          content: {
+            width: '450px', // 👈 chỉ áp dụng cho content của modal này
+            maxWidth: '90vw',
+            margin: 'auto',
+          }
+        }}
+      >
+        <div>
+          <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Upload File</h2>
+          <div
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current.click()}
+            className={styles.dropZone}
+          >
+            <p>Drag and drop your csv file to upload</p>
+          </div>
+          <button onClick={() => fileInputRef.current.click()} className={styles.addButton}>Upload</button>
+          <input
+            type="file"
+            accept=".csv"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            style={{ display: "none" }}
+          />
+          <a
+            href="/assets/template.csv"
+            download="template.csv"
+            className={styles.templateButton}
+          >
+            Template
+          </a>
+
+          <button onClick={() => setUploadModalIsOpen(false)} className={styles.closeButton}>Close</button>
+        </div>
       </Modal>
     </div>
   );
