@@ -67,14 +67,24 @@ const Chatbox = () => {
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: "Bearer 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",
+          Authorization: "Bearer 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",
           "HTTP-Referer": "http://localhost:3000",
-          "X-Title": "mistral_24b_free",
+          "X-Title": "nvidia/llama",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free",
-          messages: [{ role: "user", content: input }],
+          model: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
+          messages: [
+              ...messages
+              .filter((msg) => msg.type === "user" || msg.type === "response")
+              .slice(-30) // Lấy 30 tin nhắn gần nhất
+              .reverse()
+              .map((msg) => ({
+                role: msg.type === "user" ? "user" : "assistant",
+                content: msg.text,
+              })),
+              { role: "user", content: input },//Câu hỏi user vừa gửi
+        ],
         }),
         signal,
       });
