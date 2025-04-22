@@ -70,6 +70,31 @@ button {
   background: #c82333;
 }
 
+.btnWarning {
+  background: #ffcf7d;
+  color: black;
+  padding: 1px;
+  position: relative;
+
+  
+}
+.btnWarning:hover {
+  background: #f8a617;
+}
+
+.tickbox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px; 
+  border: 5px solid black ; 
+  border-radius: 5px; 
+ 
+}
+
+
 
 /* ----- Respone----- */
 .response_ans {
