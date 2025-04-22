@@ -13,8 +13,22 @@ const Chatbox = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const controllerRef = useRef(null);
+  const [CheckBox, setTicked] = useState(false);
+  const format_JSON = `Just give me only the JSON of this statement in this format:
+        {
+          "title": (string),
+          "start": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
+          "end": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
+          "category": ("work"/"school"/"relax"/"todo"/"others"),
+          "description": (string),
+          "userId": "${user?.userData._id}"
+        }`;
+  const CheckboxTick = (e) =>{
+    const CheckBox = e.target.checked;
+    setTicked(CheckBox); //update state
+  };
+  const NormalFormat=`do not give JSON, give nomarl respone`
 
-    
   // Hàm lấy lịch sử chat từ MongoDB khi người dùng mở chat
  // Hàm lấy lịch sử chat từ MongoDB
     const fetchChatHistory = async () => {
@@ -74,18 +88,17 @@ const Chatbox = () => {
               content: msg.content,
             }))
         : [];
-        const format_JSON = `Just give me only the JSON of this statement in this format:
-        {
-          "title": (string),
-          "start": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
-          "end": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
-          "category": ("work"/"school"/"relax"/"todo"/"others"),
-          "description": (string),
-          "userId": "${user?.userData._id}"
-        }`;
-        
-        const messagesToSend = [...filteredMessages, { role: "user", content: input },{ role: "user", content:format_JSON }];
 
+      let messagesToSend
+      if(CheckBox){
+        messagesToSend = [...filteredMessages, { role: "user", content: input },{ role: "user", content:format_JSON }];
+        console.log("Respone with JSON")
+      }
+      else{
+        messagesToSend = [...filteredMessages, { role: "user", content: input },{ role: "user", content:NormalFormat}];
+        console.log("Respone without JSON")
+        
+      }
 
       
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -152,26 +165,30 @@ const Chatbox = () => {
 
   return (
     <div className={chatbox.container}>
-          <div className={chatbox.title}>
-            <motion.h1
-              className="text-6xl font-bold"
-              animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1.5] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              style={{
-                fontSize: "2rem",
-                fontWeight: "900",
-                background:
-                  "linear-gradient(90deg, #ff4b2b,rgb(253, 126, 8),rgb(252, 213, 41))",
-                backgroundSize: "200% 100%",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              [SMART] [Chatbox]<a></a>🔥To do list
-            </motion.h1>
-          </div>
+      
 
-          {/* Input và Button */}
+
+            <div className={chatbox.title}>
+          <motion.h1
+            className="text-6xl font-bold"
+            animate={{ backgroundPosition: "200% 0", opacity: [0.5, 1, 1.5] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            style={{
+              fontSize: "2rem",
+              fontWeight: "900",
+              background:
+            "linear-gradient(90deg, #ff4b2b,rgb(253, 126, 8),rgb(252, 213, 41))",
+              backgroundSize: "200% 100%",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            [SMART] [Chatbox]<a></a>🔥To do list
+          </motion.h1>
+            </div>
+
+          
+            {/* Input và Button */}
           <div className={chatbox.form_group}>
             <input
               type="text"
@@ -182,13 +199,27 @@ const Chatbox = () => {
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
           </div >
+          {/* /* select button event render: */}
+          <div style={{marginTop: "10px"}}>
+          <button className={chatbox.btnWarning}>
+            <label  style={{ margin: "10px", display: "flex", alignItems: "center" }}>
+              <span style={{ marginRight: "10px", fontWeight: "bold" }}>Events Schedule Mode</span>
+              <input className={chatbox.tickbox} type="checkbox" onChange={CheckboxTick} checked={CheckBox}/>
+            </label>
+          </button>
+          </div>
+
           <button className={chatbox.btnSuccess} onClick={sendMessage} disabled={loading}>
             {loading ? "Loading..." : "Ask!"}
           </button>
           <button className={chatbox.btnDanger} onClick={stopChat} disabled={!loading}>
             Stop
           </button>
+
           
+
+      
+              
 
           {/* Hiển thị phản hồi từ chatbot */}
           {messages.filter(msg => msg.text && msg.text.trim()).length > 0 &&<div className={chatbox.response}>

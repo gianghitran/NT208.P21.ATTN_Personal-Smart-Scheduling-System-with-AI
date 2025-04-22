@@ -10,7 +10,7 @@ exports.saveMessage = async (req, res) => {
         }
 
         console.log("Get message:", message);
-        console.log("Resposnse from chatbot:", botReply);
+        console.log("Response from chatbot:", botReply);
 
         // Tìm lịch sử chat của user
         let chatHistory = await ChatHistory.findOne({ userId });
@@ -22,7 +22,7 @@ exports.saveMessage = async (req, res) => {
         chatHistory.messages.push({ role: "user", content: message });
         chatHistory.messages.push({ role: "assistant", content: botReply });
 
-        // Giới hạn lịch sử chat tối đa 10 tin nhắn
+        // Giới hạn lịch sử chat tối đa 30 tin nhắn
         if (chatHistory.messages.length > 30) {
             chatHistory.messages = chatHistory.messages.slice(-30);
         }
