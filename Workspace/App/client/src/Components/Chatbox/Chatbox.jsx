@@ -101,21 +101,12 @@ const Chatbox = () => {
       }
 
       
-      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const res = await fetch(`http://localhost:4000/api/chatbox/ask/${userId}`, {
         method: "POST",
         headers: {
-          Authorization: "Bearer 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",
-          // nvidia llama: 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
-          "HTTP-Referer": "http://localhost:3000",
-          "X-Title": "BearCalendar",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          model: "openai/gpt-4o-mini-2024-07-18",
-          // nvidia/llama-3.1-nemotron-ultra-253b-v1:free
-          messages: messagesToSend,//Câu hỏi user vừa gửi
-        
-        }),
+        body: JSON.stringify({ messages: messagesToSend }),
         signal,
       });
       
