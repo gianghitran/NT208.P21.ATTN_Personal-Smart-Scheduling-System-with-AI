@@ -32,7 +32,6 @@ export default function MyCalendar() {
 
   const renderEvents = async () => {
     const data = await getEvents(user?.userData._id);
-    console.log("✅ Events fetched from DB:", data);
     const items = data.map(({ _id, userId, __v, start, end, ...rest }) => ({
       id: _id,
       title: rest.title,
@@ -94,6 +93,7 @@ export default function MyCalendar() {
   };
 
   const filteredEvents = events.filter(event => selectedCategories.includes(event.category));
+  const access_token = user?.access_token;
 
   const addEvent = async () => {
     if (newEvent.end < newEvent.start) {
@@ -101,16 +101,20 @@ export default function MyCalendar() {
       return;
     }
     const event = {
-      userId: user?.userData._id,
       title: newEvent.title,
       start: newEvent.start,
       end: newEvent.end,
       category: newEvent.category,
       description: newEvent.description
     }
-
-    await addEvents(event);
-    setModalIsOpen(false);
+    try {
+      await addEvents(event, access_token, axiosJWT);
+      setModalIsOpen(false);
+      renderEvents();
+    } catch (error) {
+      alert("❌ Lỗi khi thêm sự kiện!");
+      setModalIsOpen(false);
+    }
   };
 
   const saveEditedEvent = async () => {
@@ -135,12 +139,15 @@ export default function MyCalendar() {
   };
 
   const deleteEvent = async (eventId) => {
-    const access_token = user?.access_token;
-    const response = await deleteEvents(eventId, user?.userData._id, access_token, axiosJWT);
-    setEvents(events.filter(event => event.id !== eventId));
-    setModalIsOpen(false);
+    try {
+      await deleteEvents(eventId, user?.userData._id, user?.access_token, axiosJWT);
+      setEvents(events.filter(event => event.id !== eventId));
+      setModalIsOpen(false);
+    } catch (error) {
+      alert("❌ Lỗi khi xóa sự kiện!");
+    }
   };
-  
+
 
   const getEventStyle = (event) => {
     const colors = { school: "#08ccc2", work: "#2196F3", relax: "#FF9800", todo: "#4CAF50", other: "#9E9E9E" };
@@ -151,7 +158,6 @@ export default function MyCalendar() {
   const [modalType, setModalType] = useState("add");
 
   const onSelectEvent = (event) => {
-    console.log("📌 selectedEvent.resource:", event.resource);
     setSelectedEvent(event);
     setModalType("details");
     setModalIsOpen(true);
@@ -251,6 +257,11 @@ export default function MyCalendar() {
   };
 
   const syncWithGoogleCalendar = async () => {
+    if (!user?.access_token) {
+      alert("Bạn chưa đăng nhập hoặc token không tồn tại.");
+      return;
+    }
+
     try {
       const response = await fetch('/api/google-calendar/sync', {
         method: 'POST',
@@ -259,28 +270,30 @@ export default function MyCalendar() {
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        alert('✅ Google Calendar synced successfully!');
-        console.log(data);
-        await renderEvents(); // 🔥 Hiển thị lại
-      } else {
-        const errorData = await response.json();
-        if (response.status === 403 || errorData.message?.includes("googleAccessToken")) {
-          alert('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
+      const data = await response.json();
 
+      if (response.ok) {
+        alert(`✅ ${data.message || "Đã đồng bộ Google Calendar thành công!"}`);
+        await renderEvents(); 
+      } else {
+        if (
+          response.status === 403 ||
+          data.message?.toLowerCase().includes("google calendar") ||
+          data.message?.toLowerCase().includes("token")
+        ) {
+          alert('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
           const urlRes = await fetch('/api/auth/connect-google');
           const { url } = await urlRes.json();
           window.location.href = url;
         } else {
-          alert('❌ Failed to sync with Google Calendar');
+          alert(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`);
         }
       }
     } catch (error) {
-      console.error('Error syncing with Google Calendar:', error);
       alert('❌ Lỗi khi đồng bộ Google Calendar');
     }
   };
+
 
 
 

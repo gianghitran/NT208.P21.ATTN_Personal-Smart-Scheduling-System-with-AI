@@ -68,9 +68,17 @@ export const logoutUser = async (dispatch, navigate, access_token, axiosJWT) => 
     }
 }
 
-export const addEvents = async (newEvent) => {
+export const addEvents = async (newEvent, access_token, axiosJWT) => {
     try {
-        await axios.post("/api/event/create", newEvent);
+        await axiosJWT.post("/api/event/create", newEvent, {
+            headers: { Authorization: `Bearer ${access_token}` },
+        });
+        if (googleConnected) {
+            await axiosJWT.post("/api/sync/add-event", newEvent, {
+                headers: { Authorization: `Bearer ${access_token}` },
+            });
+        }
+
         return;
     } catch (error) {
         if (!newEvent.title.trim()) {
@@ -89,9 +97,9 @@ export const saveEvents = async (selectedEvent, _id, access_token, axiosJWT) => 
         await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {
             headers: { Authorization: `Bearer ${access_token}` }
         });
-        return;
+        return { success: true }; 
     } catch (error) {
-        return;
+        return { success: false };
     }
 }
 

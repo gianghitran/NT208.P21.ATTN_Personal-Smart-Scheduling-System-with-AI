@@ -27,21 +27,20 @@ const OAuthCallback = () => {
       let res = await connectGoogle(user.access_token);
 
       if (res.status === 403) {
-        // Token đã hết hạn → gọi refresh
         const refreshRes = await fetch("/api/auth/refresh", {
           method: "POST",
-          credentials: "include", // để gửi cookie chứa refresh_token
+          credentials: "include",
         });
 
         if (refreshRes.ok) {
           const { access_token: newToken } = await refreshRes.json();
-
-          // 🔥 Cập nhật token mới vào Redux store
-          dispatch(loginSuccess({ ...user, access_token: newToken }));
-
           res = await connectGoogle(newToken);
           if (res.ok) {
+            const { userData, access_token } = await res.json();
+            dispatch(loginSuccess({ userData, access_token })); 
             alert("✅ Kết nối Google Calendar sau khi làm mới token thành công!");
+            navigate("/Schedule");
+            return;
           } else {
             alert("❌ Token mới nhưng vẫn không kết nối được Google Calendar.");
           }
@@ -52,9 +51,10 @@ const OAuthCallback = () => {
         }
       } else if (res.ok) {
         const { userData, access_token } = await res.json();
-        dispatch(loginSuccess({ userData, access_token })); // 🔥 cập nhật Redux
+        dispatch(loginSuccess({ userData, access_token }));
         alert("✅ Kết nối Google Calendar thành công!");
         navigate("/Schedule");
+        return;
       } else {
         alert("❌ Lỗi không xác định khi kết nối Google Calendar.");
       }
