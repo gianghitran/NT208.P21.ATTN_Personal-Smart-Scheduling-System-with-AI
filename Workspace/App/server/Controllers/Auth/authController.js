@@ -174,25 +174,21 @@ const authController = {
     },
 
     requestRefreshToken: async (req, res) => {
-        // Check if refresh token exists in cookies
         const token = req.cookies.refresh_token;
         if (!token) {
             return res.status(401).json({ message: "User not authenticated" });
         }
 
-        // Check if refresh token is valid (of user)
         const validToken = await RefreshToken.findOne({ refreshToken: token });
         if (!validToken) {
             return res.status(403).json({ message: "Refresh token is not valid" });
         }
 
-        // Verify refresh token
         jwt.verify(token, process.env.REFRESH_KEY, async (error, user) => {
             if (error) {
                 return res.status(403).json({ message: "Token is not valid" });
             }
 
-            // Delete old refresh token
             await RefreshToken.deleteOne({ refreshToken: token });
 
             const fixUser = {
@@ -200,7 +196,6 @@ const authController = {
                 admin: user.admin,
             };
 
-            // Generate new refresh token and access token; and save new refresh token
             const newAccessToken = authController.generateAccessToken(fixUser);
             const newRefreshToken = authController.generateRefreshToken(fixUser);
             RefreshToken.create({ userId: user.id, refreshToken: newRefreshToken });
@@ -248,12 +243,9 @@ authController.googleOAuthCallback = async (req, res) => {
         const { tokens } = await oauth2Client.getToken(code);
         oauth2Client.setCredentials(tokens);
 
-        // Lấy user từ token (bạn cần middleware để xác thực người dùng)
         const userId = req.user.id;
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
-
-        console.log("User in googleOAuthCallback:", req.user);
 
         user.googleAccessToken = tokens.access_token;
         user.googleRefreshToken = tokens.refresh_token;
@@ -280,7 +272,6 @@ authController.googleOAuthCallback = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("OAuth callback error:", error);
         res.status(500).json({ message: "Failed to connect Google Calendar" });
     }
 };

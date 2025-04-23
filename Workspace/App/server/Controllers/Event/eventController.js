@@ -3,7 +3,7 @@ const Event = require("../../Models/Event");
 const eventController = {
     createEvent: async (req, res) => {
         const newEvent = new Event({
-            userId: req.body.userId,
+            userId: req.user._id,
             title: req.body.title,
             start: req.body.start,
             end: req.body.end,
@@ -44,27 +44,22 @@ const eventController = {
                 res.status(403).json({ message: "You can only update your own events" });
             }
         } catch (error) {
-            console.error("Error updating event:", error);
             res.status(500).json({ message: "Internal server error" });
         }
     },
 
     deleteEvent: async (req, res) => {
         try {
-            const event = await Event.findById(req.params.id);
+            const event = await Event.findOneAndDelete({
+                _id: req.params.id,
+                userId: req.user._id,
+            });
             if (!event) {
-                return res.status(404).json({ message: "Event not found" });
+                return res.status(404).json({ message: "Event not found or not authorized" });
             }
-
-            if (event.userId.toString() === req.body.userId.toString()) {
-                await event.deleteOne();
-                res.status(200).json({ message: "Event deleted" });
-            } else {
-                res.status(403).json({ message: "You can only delete your own events" });
-            }
+            res.status(200).json({ message: "Event deleted" });
         } catch (error) {
-            console.error("Error deleting event:", error);
-            res.status(500).json({ message: "Internal server error" });
+            res.status(500).json({ message: "Server error" });
         }
     }
 }
