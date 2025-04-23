@@ -125,7 +125,7 @@ const Chatbox = () => {
         ...prev,
       ]);
   
-      // Gửi tin nhắn lên MongoDB
+      // Gửi lên MongoDB
       await fetch(`http://localhost:4000/api/chatbox/history/${userId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
