@@ -189,6 +189,8 @@ export default function MyCalendar() {
       skipEmptyLines: true,
       transformHeader: (header) => header.trim().replace(/^\uFEFF/, ""),
       complete: async (result) => {
+        const currentEvents = await getEvents(user?.userData._id);
+
         const importedEvents = result.data.map(row => ({
           title: row.Title,
           start: moment(`${row["Start Day"]} ${row["Start Time"]}`, "YYYY-MM-DD HH:mm", true).toDate(),
@@ -199,10 +201,19 @@ export default function MyCalendar() {
         }));
 
         for (const event of importedEvents) {
-          await addEvents(event);
+          if (!event.title || isNaN(event.start) || isNaN(event.end)) continue;
+          const isDuplicate = currentEvents.some(ev =>
+            ev.title === event.title &&
+            new Date(ev.start).getTime() === new Date(event.start).getTime() &&
+            new Date(ev.end).getTime() === new Date(event.end).getTime()
+          );
+          if (!isDuplicate) {
+            await addEvents(event, user?.access_token, axiosJWT);
+          }
         }
-        renderEvents();
+        await renderEvents();
         alert("Import thành công!");
+        setUploadModalIsOpen(false);
       },
     });
   };
@@ -219,19 +230,29 @@ export default function MyCalendar() {
       header: true,
       skipEmptyLines: true,
       complete: async (result) => {
+        const currentEvents = await getEvents(user?.userData._id);
+
         const importedEvents = result.data.map(row => ({
           title: row.Title,
-          start: new Date(`${row["Start Day"]}T${row["Start Time"]}`),
-          end: new Date(`${row["End Day"]}T${row["End Time"]}`),
-          category: row.Category,
+          start: moment(`${row["Start Day"]} ${row["Start Time"]}`, "YYYY-MM-DD HH:mm").toDate(),
+          end: moment(`${row["End Day"]} ${row["End Time"]}`, "YYYY-MM-DD HH:mm").toDate(),
+          category: row.Category?.toLowerCase(),
           description: row.Description || "",
           userId: user?.userData._id,
         }));
 
         for (const event of importedEvents) {
-          await addEvents(event);
+          if (!event.title || isNaN(event.start) || isNaN(event.end)) continue;
+          const isDuplicate = currentEvents.some(ev =>
+            ev.title === event.title &&
+            new Date(ev.start).getTime() === new Date(event.start).getTime() &&
+            new Date(ev.end).getTime() === new Date(event.end).getTime()
+          );
+          if (!isDuplicate) {
+            await addEvents(event, user?.access_token, axiosJWT);
+          }
         }
-        renderEvents();
+        await renderEvents();
         alert("Upload thành công!");
       },
     });
@@ -274,7 +295,7 @@ export default function MyCalendar() {
 
       if (response.ok) {
         alert(`✅ ${data.message || "Đã đồng bộ Google Calendar thành công!"}`);
-        await renderEvents(); 
+        await renderEvents();
       } else {
         if (
           response.status === 403 ||
