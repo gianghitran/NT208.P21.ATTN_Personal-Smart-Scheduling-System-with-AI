@@ -52,7 +52,7 @@ export const sendMessageAPI = async (message, dispatch) => {
 export const loadOldMessagesAPI = async (userId,dispatch) => {
   dispatch(setLoading(true));
   try {
-
+    
     const res = await axios.get(`/api/chatbox/history/${userId}`);
     const messages =  Array.isArray(res.data) ? res.data : [];
 

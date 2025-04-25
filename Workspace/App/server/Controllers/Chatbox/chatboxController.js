@@ -87,7 +87,7 @@ exports.getChatHistory = async (req, res) => {
         res.status(200).json({ history: chatHistory ? chatHistory.messages : [] });
         
         console.log("Get chat history from user:", userId);
-        
+        console.log("Get chat history:", chatHistory ? chatHistory.messages : []);
       } catch (error) {
         console.error("Error in getChatHistory:", error);
         res.status(500).json({ error: "Internal server error" });
