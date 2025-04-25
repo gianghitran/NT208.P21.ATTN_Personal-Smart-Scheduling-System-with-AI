@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice";
 import styles from "../Schedule/Schedule.module.css";
 import moment from "moment";
-import Modal from "react-modal";
 import { addMessage, setLoading } from "../../redux/chatSlide";
 import { sendMessageAPI, loadOldMessagesAPI } from "../../redux/apiRequest";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
@@ -28,10 +27,7 @@ const Chatbox = () => {
   
   const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work", description: "" });
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalType, setModalType] = useState("add");
   const [loadTime, setLoadTime] = useState(new Date());
-  const [selectedEvent, setSelectedEvent] = useState(null);
   
   const [parsedJson, setParsedJson] = useState({
     title: '',
@@ -92,12 +88,10 @@ const Chatbox = () => {
       alert("Sự kiện được thêm thành công")
       console.log("Thêm thành công sự kiện");
 
-      setModalIsOpen(false);
 
     } catch (error) {
       console.error("Lỗi khi thêm sự kiện:", error);
       alert("Lỗi khi thêm sự kiện!");
-      setModalIsOpen(false);
     }
   };
   
@@ -176,27 +170,20 @@ const Chatbox = () => {
     setLoading(true);
   
     try {
-      const historyRes = await fetch(`/api/chatbox/send/${userId}`);
-      const historyData = await historyRes.json();      
+      const historyRes = await fetch(`/api/chatbox/send/${userId}`, {
+        method: "GET", // Cập nhật lại phương thức lấy lịch sử
+      });
+      const historyData = await historyRes.json();
       const filteredMessages = Array.isArray(historyData.history)
-        ? historyData.history
-            .slice(-30)
-            .map((msg) => ({
-              role: msg.role,
-              content: msg.content,
-            }))
+        ? historyData.history.slice(-30).map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+        }))
         : [];
 
-      let messagesToSend
-      if(isChecked){
-        messagesToSend = [...filteredMessages, { role: "user", content: input },{ role: "user", content:format_JSON }];
-        console.log("Respone with JSON")
-      }
-      else{
-        messagesToSend = [...filteredMessages, { role: "user", content: input },{ role: "user", content:NormalFormat}];
-        console.log("Respone without JSON")
-        
-      }
+        const messagesToSend = isChecked 
+        ? [...filteredMessages, { role: "user", content: input }, { role: "user", content: format_JSON }]
+        : [...filteredMessages, { role: "user", content: input }, { role: "user", content: NormalFormat }];
 
       
       const res = await fetch(`http://localhost:4000/api/chatbox/ask/${userId}`, {
@@ -232,7 +219,6 @@ const Chatbox = () => {
           end: new Date(parsed.end),
           category: parsed.category || "work",
         });
-        setModalIsOpen(true);
           }
         } catch (err) {
           console.error("⚠️ Không thể phân tích JSON từ phản hồi:", err);
@@ -259,7 +245,7 @@ const Chatbox = () => {
     } catch (error) {
       if (error.response && error.response.status === 429) {
         console.log("Rate limit hit: token usage");
-        throw new Error("Token limit exceeded. Try again later.");}
+        setMessages((prev) => [{ text: "Rate limit hit. Try again later.", type: "error" }, ...prev]);}
       else{
       setMessages((prev) => [{ text: `Error: ${error.message}`, type: "error" }, ...prev]);}
     }
