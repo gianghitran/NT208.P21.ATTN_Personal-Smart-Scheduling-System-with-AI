@@ -10,6 +10,8 @@ import { loginSuccess } from "../../redux/authSlice";
 import styles from "../Schedule/Schedule.module.css";
 import moment from "moment";
 import Modal from "react-modal";
+import { addMessage, setLoading } from "../../redux/chatSlide";
+import { sendMessageAPI, loadOldMessagesAPI } from "../../redux/apiRequest";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
 
 const Chatbox = () => {
@@ -31,6 +33,21 @@ const Chatbox = () => {
   const [loadTime, setLoadTime] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
   
+  const [parsedJson, setParsedJson] = useState({
+    title: '',
+    description: '',
+    start: '',
+    end: '',
+  });
+  // Hàm xử lý thay đổi chung cho tất cả các trường
+  const handleInputChange = (e) => {
+    const { name, value } = e.target; // Lấy tên và giá trị từ input
+    setParsedJson({
+      ...parsedJson, // Giữ nguyên các thuộc tính cũ
+      [name]: value, // Cập nhật giá trị mới cho trường tương ứng
+    });
+  };
+  
   useEffect(() => {
     setLoadTime(new Date());
   }, []);
@@ -40,30 +57,64 @@ const Chatbox = () => {
     setModalIsOpen(true);
     setNewEvent({ title: "", start: new Date(), end: new Date(), category: "work" });
   }
-
+  const renderEvents = async () => {
+    try {
+      const data = await getEvents(user?.userData._id);
+      const items = data.map(({ _id, userId, __v, start, end, ...rest }) => ({
+        id: _id,
+        title: rest.title,
+        start: new Date(start),
+        end: new Date(end),
+        category: rest.category,
+        description: rest.description,
+      }));
+      setEvents(items);
+    } catch (err) {
+      console.error("Lỗi khi tải sự kiện:", err);
+    }
+  };
+  useEffect(() => {
+    if (userId) {
+      renderEvents();
+    }
+  }, [userId]);
   const addEvent = async () => {
     if (newEvent.end < newEvent.start) {
-      alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      alert("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      console.log("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      return;
+    }
+    if (!newEvent.title?.trim()) {
+      console.log("Tiêu đề sự kiện rỗng ( log từ Chatbox.jsx)")
       return;
     }
     const event = {
-      title: newEvent.title,
-      start: newEvent.start,
-      end: newEvent.end,
-      category: newEvent.category,
-      description: newEvent.description
-    }
+      userId: userId,
+      title: newEvent.title.trim(),
+      start: newEvent.start ? newEvent.start : new Date(),
+      end: newEvent.end ? newEvent.end : new Date(),
+      category: newEvent.category || "other",
+      description: newEvent.description?.trim() || ""
+    };
     try {
+      console.log("Gửi sự kiện:", event);
       await addEvents(event, access_token, axiosJWT);
+      await renderEvents();
+      alert("Sự kiện được thêm thành công")
+      console.log("Thêm thành công sự kiện");
+
       setModalIsOpen(false);
-      renderEvents();
+
     } catch (error) {
-      alert("❌ Lỗi khi thêm sự kiện!");
+      console.error("Lỗi khi thêm sự kiện:", error);
+      alert("Lỗi khi thêm sự kiện!");
       setModalIsOpen(false);
     }
   };
-  const today = moment().format('YYYY-MM-DD');
-  const format_JSON = `Today is ${today}.Just give me only the JSON of this statement in this format:
+  
+  
+  const now = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); 
+  const format_JSON = `Now timestamp is ${now}.Just give me only the JSON of this statement in this format:
         {
           "title": (string),
           "start": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
@@ -76,7 +127,7 @@ const Chatbox = () => {
     const isChecked = e.target.checked;
     setTicked(isChecked); //update state
   };
-  const NormalFormat=`do not give JSON, give nomarl respone. Today is ${today}`
+  const NormalFormat=`do not give JSON, give nomarl respone. Now timestamp is ${now}`
 
 
 
@@ -102,9 +153,11 @@ const Chatbox = () => {
 
     // Gọi lịch sử chat khi component mount
     useEffect(() => {
-      fetchChatHistory();
-    }, [userId]);
-
+    if (userId) {
+      loadOldMessagesAPI(dispatch);
+      renderEvents();
+    }
+  }, [userId, dispatch]);
   // Hàm gửi tin nhắn đến AI và lưu vào MongoDB
   const sendMessage = async () => {
     if (!input.trim()) {
@@ -172,22 +225,26 @@ const Chatbox = () => {
       const data = await res.json();
       const botReply = data.choices?.[0]?.message?.content || "Not response";
       
-      
       if (isChecked && botReply.includes('"title"') && botReply.includes('"start"')) {
         try {
-          const parsedEvent = JSON.parse(botReply);
-          if (parsedEvent && parsedEvent.title && parsedEvent.start && parsedEvent.end) {
-            setNewEvent({
-              title: parsedEvent.title,
-              description: parsedEvent.description || "",
-              start: new Date(parsedEvent.start),
-              end: new Date(parsedEvent.end),
-              category: parsedEvent.category || "work",
-            });
-            setModalIsOpen(true);
+          const jsonStart = botReply.indexOf("{");
+          const jsonEnd = botReply.lastIndexOf("}") + 1;
+          const jsonStr = botReply.substring(jsonStart, jsonEnd);
+          const parsed = JSON.parse(jsonStr);
+
+          if (parsed.title && parsed.start && parsed.end) {
+        setParsedJson(parsed); // Cập nhật state trung gian nếu cần
+        setNewEvent({
+          title: parsed.title,
+          description: parsed.description || "",
+          start: new Date(parsed.start),
+          end: new Date(parsed.end),
+          category: parsed.category || "work",
+        });
+        setModalIsOpen(true);
           }
         } catch (err) {
-          console.error("⚠️ Không thể phân tích JSON:", err);
+          console.error("⚠️ Không thể phân tích JSON từ phản hồi:", err);
         }
       }
 
@@ -206,6 +263,7 @@ const Chatbox = () => {
         body: JSON.stringify({ userId, message: input, botReply }),
       });
     fetchChatHistory();
+    
   
     } catch (error) {
       if (error.response && error.response.status === 429) {
@@ -265,7 +323,11 @@ const Chatbox = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
+            
           </div >
+          
+
+          
           {/* /* select button event render: */}
           <div style={{marginTop: "10px"}}>
           <button className={chatbox.btnWarning}>
@@ -274,6 +336,8 @@ const Chatbox = () => {
               <input className={chatbox.tickbox} type="checkbox" onChange={CheckboxTick} checked={isChecked} disabled={loading}/>
             </label>
           </button>
+
+          
           </div>
 
           <button className={chatbox.btnSuccess} onClick={sendMessage} disabled={loading}>
@@ -324,88 +388,78 @@ const Chatbox = () => {
                       new Date(msg.time || Date.now()) > loadTime
                     )
                     .map((msg, index) => {
-                      let parsedJson = null;
-                      try {
-                        const jsonStart = msg.text.indexOf("{");
-                        const jsonEnd = msg.text.lastIndexOf("}") + 1;
-                        const jsonStr = msg.text.substring(jsonStart, jsonEnd);
-                        parsedJson = JSON.parse(jsonStr);
-                      } catch (e) {
-                        alert("⚠️ Không thể phân tích JSON:", e);
-                      }
+                      
                         return (
                           
                         <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
                           {parsedJson ? (
                           <div className={chatbox.event_card}>
+                          <div className={chatbox.formGroup}>
                           <label>
                             <strong>Title:</strong>
                             <input
                               type="text"
-                              value={parsedJson.title}
+                              name="title"
+                              value={newEvent.title}
                               className={chatbox.input_field}
-                              onChange={(e) => {
-                                parsedJson.title = e.target.value;
-                              }}
+                              onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
                             />
                           </label>
+                          </div>
+                          <div className={chatbox.formGroup}>
                           <label>
                             <strong>Start Date:</strong>
                             <input
-                            type="datetime-local"
-                            value={new Date(parsedJson.start).toISOString().slice(0, 16)}
-                            className={chatbox.input_field}
-                            onChange={(e) => {
-                            parsedJson.start = new Date(e.target.value).toISOString();
-                            }}
+                              type="datetime-local"
+                              value={moment(newEvent.start).format("YYYY-MM-DDTHH:mm")}
+                              className={chatbox.input_field}
+                              onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
                             />
                           </label>
+                          </div>
+                          <div className={chatbox.formGroup}>
                           <label>
                             <strong>End Date:</strong>
                             <input
-                            type="datetime-local"
-                            value={new Date(parsedJson.end).toISOString().slice(0, 16)}
-                            className={chatbox.input_field}
-                            onChange={(e) => {
-                            parsedJson.end = new Date(e.target.value).toISOString();
-                            }}
+                              type="datetime-local"
+                              value={moment(newEvent.end).format("YYYY-MM-DDTHH:mm")}
+                              className={chatbox.input_field}
+                              onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
                             />
                           </label>
+                          </div>
+                          <div className={chatbox.formGroup}>
                           <label>
                             <strong>Category:</strong>
-                            <input
-                            type="text"
-                            value={parsedJson.category}
-                            className={chatbox.input_field}
-                            onChange={(e) => {
-                            parsedJson.category = e.target.value;
-                            }}
-                            />
+                            <select
+                              value={newEvent.category}
+                              className={chatbox.input_field}
+                              onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
+                            >
+                              <option value="work">Work</option>
+                              <option value="school">School</option>
+                              <option value="relax">Relax</option>
+                              <option value="todo">Todo</option>
+                              <option value="others">Others</option>
+                            </select>
                           </label>
+                          </div>
+                          <div className={chatbox.formGroup}>
                           <label>
                             <strong>Description:</strong>
-                            <input
-                            type="text"
-                            value={parsedJson.description}
-                            className={chatbox.input_field}
-                            onChange={(e) => {
-                            parsedJson.description = e.target.value;
-                            }}
+                            <textarea
+                              type="text"
+                              name="description"
+                              value={newEvent.description}
+                              className={chatbox.input_field}
+                              onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
                             />
                           </label>
+                          </div>
                           <button
                             className={chatbox.btnSuccess}
-                            onClick={() => {
-                            setNewEvent({
-                              title: parsedJson.title,
-                              start: new Date(parsedJson.start),
-                              end: new Date(parsedJson.end),
-                              category: parsedJson.category,
-                              description: parsedJson.description,
-                            });
-                            setModalType("add");
-                            setModalIsOpen(true);
-                            }}
+                            onClick={addEvent}
+                          
                           >
                             Add event (+)
                           </button>
