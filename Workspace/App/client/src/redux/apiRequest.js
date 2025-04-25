@@ -49,12 +49,16 @@ export const sendMessageAPI = async (message, dispatch) => {
 };
 
 // Lấy lịch sử tin nhắn cũ từ DB và đẩy vào Redux
-export const loadOldMessagesAPI = async (dispatch) => {
+export const loadOldMessagesAPI = async (userId,dispatch) => {
   dispatch(setLoading(true));
   try {
-    const res = await axios.get("/api/chat/history");
-    const messages = res.data || [];
 
+    const res = await axios.get(`/api/chatbox/history/${userId}`);
+    const messages =  Array.isArray(res.data) ? res.data : [];
+
+    if (messages.length === 0) {
+      console.log("Không có tin nhắn cũ.");
+    }
     messages.forEach(m =>
       dispatch(addMessage({
         id: Date.now() + Math.random(),

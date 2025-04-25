@@ -79,15 +79,16 @@ exports.getChatHistory = async (req, res) => {
     try {
         const { userId } = req.params;
         if (!userId) {
-            return res.status(400).json({ error: "User ID is required" });
+            return res.status(400).json({ error: "Missing User ID " });
         }
 
-        console.log("Get chat history from user:", userId);
 
         const chatHistory = await ChatHistory.findOne({ userId });
-
         res.status(200).json({ history: chatHistory ? chatHistory.messages : [] });
-    } catch (error) {
+        
+        console.log("Get chat history from user:", userId);
+        
+      } catch (error) {
         console.error("Error in getChatHistory:", error);
         res.status(500).json({ error: "Internal server error" });
     }
