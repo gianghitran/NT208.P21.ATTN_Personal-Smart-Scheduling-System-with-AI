@@ -54,7 +54,7 @@ export const loadOldMessagesAPI = async (userId,dispatch) => {
   try {
     
     const res = await axios.get(`/api/chatbox/history/${userId}`);
-    const messages =  Array.isArray(res.data) ? res.data : [];
+    const messages =  Array.isArray(res.data.history) ? res.data.history : [];
 
     if (messages.length === 0) {
       console.log("Không có tin nhắn cũ.");
