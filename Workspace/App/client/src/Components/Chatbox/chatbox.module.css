@@ -97,6 +97,11 @@ button {
 
 
 /* ----- Respone----- */
+.response {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 .response_ans {
   overflow-wrap: break-word;
   
@@ -148,8 +153,8 @@ button {
 
 /* Chatbot hiển thị từng tin nhắn */
 .chat_bubble {
-  background: #ff4b2b;
-  color: white;
+  background: #f8d7da;
+  color: Black;
   padding: 10px;
   border-radius: 10px;
   margin-bottom: 10px;
