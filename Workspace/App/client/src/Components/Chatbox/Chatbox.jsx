@@ -39,24 +39,13 @@ const Chatbox = () => {
     start: '',
     end: '',
   });
-  // Hàm xử lý thay đổi chung cho tất cả các trường
-  const handleInputChange = (e) => {
-    const { name, value } = e.target; // Lấy tên và giá trị từ input
-    setParsedJson({
-      ...parsedJson, // Giữ nguyên các thuộc tính cũ
-      [name]: value, // Cập nhật giá trị mới cho trường tương ứng
-    });
-  };
+ 
   
   useEffect(() => {
     setLoadTime(new Date());
   }, []);
 
-  const addButton = () => {
-    setModalType("add");
-    setModalIsOpen(true);
-    setNewEvent({ title: "", start: new Date(), end: new Date(), category: "work" });
-  }
+
   const renderEvents = async () => {
     try {
       const data = await getEvents(user?.userData._id);
@@ -152,9 +141,11 @@ const Chatbox = () => {
     };
 
     // Gọi lịch sử chat khi component mount
+  
     useEffect(() => {
     if (userId) {
-      loadOldMessagesAPI(dispatch);
+      
+      loadOldMessagesAPI(userId,dispatch);
       renderEvents();
     }
   }, [userId, dispatch]);
@@ -185,7 +176,7 @@ const Chatbox = () => {
     setLoading(true);
   
     try {
-      const historyRes = await fetch(`http://localhost:4000/api/chatbox/send/${userId}`);
+      const historyRes = await fetch(`/api/chatbox/send/${userId}`);
       const historyData = await historyRes.json();      
       const filteredMessages = Array.isArray(historyData.history)
         ? historyData.history
