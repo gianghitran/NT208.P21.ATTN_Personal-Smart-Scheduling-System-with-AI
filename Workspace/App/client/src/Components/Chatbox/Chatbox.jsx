@@ -20,7 +20,8 @@ const Chatbox = () => {
   const [input, setInput] = useState("");
   const access_token = user?.access_token;
   let axiosJWT = createAxios(user, dispatch, loginSuccess);
-  const [messages, setMessages] = useState([]);
+  
+  const messages = useSelector((state) => state.chat.messages);
   const [loading, setLoading] = useState(false);
   const controllerRef = useRef(null);
   const [isChecked, setTicked] = useState(false);
@@ -127,7 +128,7 @@ const Chatbox = () => {
     
         if (Array.isArray(data.history)) {
           // Chỉ cập nhật nếu có tin nhắn mới, không ghi đè toàn bộ
-          setMessages((prevMessages) => [...prevMessages, ...data.history]);
+          dispatch(addMessage(data.history));
         }
       } catch (error) {
         console.error("Error fetching chat history:", error);
@@ -146,12 +147,22 @@ const Chatbox = () => {
   // Hàm gửi tin nhắn đến AI và lưu vào MongoDB
   const sendMessage = async () => {
     if (!input.trim()) {
-      setMessages((prev) => [{ text: "Messages not found!.", type: "error" }, ...prev]);
+      dispatch(addMessage({
+        content: "Messages not found!.",
+        sender: "system",
+        timestamp: new Date().toISOString(),
+        status: "error"
+      }));
       return;
     }
   
     if (!userId) {
-      setMessages((prev) => [{ text: "Sign in to chat!", type: "error" }, ...prev]);
+      dispatch(addMessage({
+        content: "Sign in to chat!",
+        sender: "system",
+        timestamp: new Date().toISOString(),
+        status: "error"
+      }));
       return;
     }
   
@@ -165,7 +176,13 @@ const Chatbox = () => {
   
     // Hiển thị tin nhắn của người dùng ngay lập tức
     const user_ask= `[Asking:]\n ${input}`;
-    setMessages((prev) => [{ text: user_ask, type: "user" }, ...prev]);
+    dispatch(addMessage({
+      content: user_ask,
+      sender: "user",
+      timestamp: new Date().toISOString(),
+      status: "loading"
+    }));
+    
     setInput("");
     setLoading(true);
   
@@ -227,11 +244,26 @@ const Chatbox = () => {
 
       
       // Cập nhật tin nhắn ngay lập tức trước khi gửi lên server
-      setMessages((prev) => [
-        { text: userMessage, type: "user" },
-        { text: DOMPurify.sanitize(botReply), type: "response" },
-        ...prev,
-      ]);
+        
+
+        // Gửi tin nhắn từ AI (assistant)
+        const chatbox_Res=`[Chatbox Reply:]\n ${DOMPurify.sanitize(botReply)}`
+        dispatch(addMessage({
+          content: chatbox_Res,
+          sender: "assistant",
+          timestamp: new Date().toISOString(),
+          status: "sent"
+        }));
+      // Câu hỏi người dùng
+
+        dispatch(addMessage({
+          content: userMessage,
+          sender: "user",
+          timestamp: new Date().toISOString(),
+          status: "sent"
+        }));
+        
+        
   
       // Gửi lên MongoDB
       await fetch(`http://localhost:4000/api/chatbox/history/${userId}`, {
@@ -245,15 +277,29 @@ const Chatbox = () => {
     } catch (error) {
       if (error.response && error.response.status === 429) {
         console.log("Rate limit hit: token usage");
-        setMessages((prev) => [{ text: "Rate limit hit. Try again later.", type: "error" }, ...prev]);}
+        //Lỗi
+        dispatch(addMessage({
+          content: `Error: rate limit token`,
+          sender: "system",
+          timestamp: new Date().toISOString(),
+          status: "error"
+        }));
+      }
       else{
-      setMessages((prev) => [{ text: `Error: ${error.message}`, type: "error" }, ...prev]);}
+      //Lỗi
+      dispatch(addMessage({
+        content: `Error: ${error.message}`,
+        sender: "system",
+        timestamp: new Date().toISOString(),
+        status: "error"
+      }));
     }
 
     
   
     setLoading(false);
   };
+};
 
   // Hàm dừng chat
   const stopChat = () => {
@@ -262,8 +308,15 @@ const Chatbox = () => {
       controllerRef.current = null;
     }
     setLoading(false);
-    setMessages((prev) => [{ text: "Chat stopped. You can ask another question.", type: "error" }, ...prev]);
-  };
+    dispatch(addMessage({
+      content: "Chat stopped. You can ask another question.",
+      sender: "system",
+      timestamp: new Date().toISOString(),
+      status: "error"
+    }));
+
+    };
+  
 
   return (
     <div className={chatbox.container}>
@@ -331,23 +384,41 @@ const Chatbox = () => {
               
 
           {/* Hiển thị phản hồi từ chatbot */}
-          {!isChecked&&messages.filter(msg => msg.text && msg.text.trim()).length > 0 &&<div className={chatbox.response}>
-              {messages.filter(msg => msg.text && msg.text.trim()).map((msg, index) => (
-                //  <div key={index} className={`${chatbox.response_ans} ${msg.type}`}>
-                <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
-                  
-                 <ReactMarkdown
-                   components={{
-                    pre: ({ children }) => <pre className={`${chatbox.code_block}`}>{children}</pre>,
-                    code: ({ children }) => <code className={`${chatbox.inline_code}`}>{children}</code>
+          {!isChecked && messages.length > 0 && (
+            <div className={chatbox.response}>
+            {[...messages]
+            .slice(-12)
+            .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+            .map((msg, index) => {
+              let messageClass = chatbox.response_ans;
+              if (msg.sender === "user") {
+                messageClass += ` ${chatbox.user}`;
+              } else if (msg.sender === "assistant") {
+                messageClass += ``;
+              } else if (msg.sender === "system") {
+                messageClass += ` ${chatbox.error}`;
+              }
+        
+              if (msg.status === "loading") {
+                messageClass += ` ${chatbox.loading}`;
+              }
+        
+              return (
+                <div key={index} className={messageClass}>
+                  <ReactMarkdown
+                    components={{
+                      pre: ({ children }) => <pre className={`${chatbox.code_block}`}>{children}</pre>,
+                      code: ({ children }) => <code className={`${chatbox.inline_code}`}>{children}</code>
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
+              );
+            })}
+            </div>
+          )}
 
-                   }}
-                 >
-                   {msg.text}
-                 </ReactMarkdown>
-               </div>
-              ))}
-            </div>}
             
 
             {isChecked &&

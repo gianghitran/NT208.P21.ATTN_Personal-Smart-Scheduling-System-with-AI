@@ -56,8 +56,10 @@ exports.saveMessage = async (req, res) => {
         }
 
         // Lưu tin nhắn của user và phản hồi của bot
-        chatHistory.messages.push({ role: "user", content: message });
-        chatHistory.messages.push({ role: "assistant", content: botReply });
+        const formattedBotReply = `[Chat Reply:]\n${botReply}`;
+        const formattedMessage = `[User Message:]\n${message}`;
+        chatHistory.messages.push({ role: "assistant", content: formattedBotReply });
+        chatHistory.messages.push({ role: "user", content: formattedMessage });
 
         // Giới hạn lịch sử chat tối đa 30 tin nhắn
         if (chatHistory.messages.length > 30) {

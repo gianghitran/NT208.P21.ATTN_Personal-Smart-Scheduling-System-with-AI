@@ -59,18 +59,19 @@ export const loadOldMessagesAPI = async (userId,dispatch) => {
     if (messages.length === 0) {
       console.log("Không có tin nhắn cũ.");
     }
-    messages.forEach(m =>
+    const sortedMessages = messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    sortedMessages.forEach((m) =>
       dispatch(addMessage({
         id: Date.now() + Math.random(),
         content: m.content,
         sender: m.role,
         timestamp: m.timestamp || new Date().toISOString(),
-        status: 'sent'
+        status:   m.role === "user" ? "loading" : "sent"
       }))
     );
 
-    dispatch(loadMoreMessages(messages));
-    return { success: true, messages };
+    dispatch(loadMoreMessages(sortedMessages));
+    return { success: true, sortedMessages };
   } catch (err) {
     console.error("❌ Lỗi khi load tin nhắn:", err);
     return { success: false, error: err };
