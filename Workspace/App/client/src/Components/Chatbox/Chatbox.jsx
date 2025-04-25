@@ -423,19 +423,26 @@ const Chatbox = () => {
 
             {isChecked &&
               messages.filter(msg =>
-                msg.type === "response" &&
-                msg.text?.trim() &&
-                new Date(msg.time || Date.now()) > loadTime
+                msg.sender === "assistant" 
               ).length > 0 && (
                 <div className={chatbox.response}>
-                  {messages
-                    .filter(msg =>
-                      msg.text && 
-                      msg.type == "response" &&
-                      msg.text?.trim() &&
-                      new Date(msg.time || Date.now()) > loadTime
-                    )
-                    .map((msg, index) => {
+                  {[...messages]
+                .slice(-12)
+                .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                .map((msg, index) => {
+                  let messageClass = chatbox.response_ans;
+                  if (msg.sender === "user") {
+                    messageClass += ` ${chatbox.user}`;
+                  } else if (msg.sender === "assistant") {
+                    messageClass += ``;
+                  } else if (msg.sender === "system") {
+                    messageClass += ` ${chatbox.error}`;
+                  }
+            
+                  if (msg.status === "loading") {
+                    messageClass += ` ${chatbox.loading}`;
+                  }
+            
                       
                         return (
                           
