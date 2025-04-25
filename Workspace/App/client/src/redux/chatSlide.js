@@ -1,42 +1,51 @@
-const initialState = {
-    messages: [], // Danh sách tin nhắn
-    loading: false, // Trạng thái tải dữ liệu (nếu có)
-    hasMore: true, // Trạng thái có thêm tin nhắn hay không
-  };
-  
-  const chatSlice = createSlice({
-    name: 'chat',
-    initialState,
-    reducers: {
-        addMessage: (state, action) => {
-            const newMessage = {
-              ...action.payload,
-              status: action.payload.status || 'sending', // 👈 chỉ mặc định nếu không có
-            };
-            state.messages.push(newMessage);
-          },
-          
-      setMessages: (state, action) => {
-        const newMessages = action.payload;
-        state.messages = newMessages.length > 30 ? newMessages.slice(-30) : newMessages;
-        state.hasMore = newMessages.length === 30;
-      },
-      loadMoreMessages: (state, action) => {
-        const oldMessages = action.payload;
-        state.messages = [...oldMessages, ...state.messages];
-        state.hasMore = oldMessages.length > 0;
-      },
-      updateMessageStatus: (state, action) => {
-        const { id, status } = action.payload;
-        const msg = state.messages.find(m => m.id === id);
-        if (msg) msg.status = status;
-      },
-      setLoading: (state, action) => {
-        // Cập nhật trạng thái loading
-        state.loading = action.payload;
-      },
-    },
-  });
-  export const { addMessage, setMessages, setLoading, loadMoreMessages, updateMessageStatus } = chatSlice.actions;
+import { createSlice } from '@reduxjs/toolkit';
 
-  export default chatSlice.reducer;
+const chatSlice = createSlice({
+  name: 'chat',
+  initialState: {
+    messages: [],   // Danh sách tin nhắn
+    loading: false  // Trạng thái loading
+  },
+
+  reducers: {
+    // Thêm một message mới vào danh sách
+    addMessage: (state, action) => {
+      state.messages.push(action.payload);
+    },
+
+    // Cập nhật trạng thái của message (ví dụ: từ sending → sent)
+    updateMessageStatus: (state, action) => {
+      const { id, status } = action.payload;
+      const msg = state.messages.find((m) => m.id === id);
+      if (msg) {
+        msg.status = status;
+      }
+    },
+
+    // Load thêm messages cũ (append vào đầu danh sách)
+    loadMoreMessages: (state, action) => {
+      const oldMessages = action.payload;
+      state.messages = [...oldMessages, ...state.messages];
+    },
+
+    // Bật hoặc tắt trạng thái loading
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+
+    // Xóa toàn bộ messages (clear chat)
+    clearMessages: (state) => {
+      state.messages = [];
+    },
+  },
+});
+
+export const {
+  addMessage,
+  updateMessageStatus,
+  loadMoreMessages,
+  setLoading,
+  clearMessages
+} = chatSlice.actions;
+
+export default chatSlice.reducer;
