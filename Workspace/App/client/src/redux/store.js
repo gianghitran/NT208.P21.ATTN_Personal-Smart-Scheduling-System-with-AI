@@ -13,11 +13,11 @@ import {
   } from 'redux-persist'
   import storage from 'redux-persist/lib/storage'
   import { PersistGate } from 'redux-persist/integration/react'
-
+  import storage_handelFull from './Handel_Full_LocalStorage' 
 const persistConfig = {
     key: 'root',
     version: 1,
-    storage,
+    storage: storage_handelFull,
 }
 
 const rootReducer = combineReducers({

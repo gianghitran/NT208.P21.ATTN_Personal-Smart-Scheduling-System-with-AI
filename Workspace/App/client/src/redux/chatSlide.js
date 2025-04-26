@@ -9,6 +9,9 @@ const chatSlice = createSlice({
 
   reducers: {
     addMessage: (state, action) => {
+      if (state.messages.length > 29) {
+        state.messages.pop(); // đảm bảo lưu 30 tin nhắn gần nhất thôi
+      }
       state.messages.push(action.payload);
     },
 

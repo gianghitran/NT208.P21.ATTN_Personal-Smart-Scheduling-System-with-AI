@@ -114,7 +114,21 @@ const Chatbox = () => {
     setTicked(isChecked); //update state
   };
   const NormalFormat=`do not give JSON, give nomarl respone. Now timestamp is ${now}`
-
+  const checkIfJSON = (str) => {
+    try { 
+      if (str.includes('"title"') && str.includes('"start"')) {
+        const jsonStart = str.indexOf("{");
+        const jsonEnd = str.lastIndexOf("}") + 1;
+        const jsonStr = str.substring(jsonStart, jsonEnd);
+        const parsed = JSON.parse(jsonStr);
+        return parsed && typeof parsed === "object";
+      } else {
+        return false;
+      }
+    } catch (err) {
+      return false;
+    }
+  };
 
 
 
@@ -222,7 +236,9 @@ const Chatbox = () => {
       const data = await res.json();
       const botReply = data.choices?.[0]?.message?.content || "Not response";
       
-      if (isChecked && botReply.includes('"title"') && botReply.includes('"start"')) {
+      
+            
+      if (isChecked && checkIfJSON(botReply)) {
         try {
           const jsonStart = botReply.indexOf("{");
           const jsonEnd = botReply.lastIndexOf("}") + 1;
@@ -394,7 +410,7 @@ const Chatbox = () => {
               
 
           {/* Hiển thị phản hồi từ chatbot */}
-          {!isChecked && messages.length > 0 && (
+          {messages.length > 0 && (
             <div className={chatbox.response}>
             {[...messages]
             .slice(-12)
@@ -412,52 +428,25 @@ const Chatbox = () => {
               if (msg.status === "loading") {
                 messageClass += ` ${chatbox.loading}`;
               }
-        
+            if (!(checkIfJSON(msg.content))){
+                return (
+                  <div key={index} className={messageClass}>
+                    <ReactMarkdown
+                      components={{
+                        pre: ({ children }) => <pre className={`${chatbox.code_block}`}>{children}</pre>,
+                        code: ({ children }) => <code className={`${chatbox.inline_code}`}>{children}</code>
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  </div>
+                );
+              }
+            else{
               return (
-                <div key={index} className={messageClass}>
-                  <ReactMarkdown
-                    components={{
-                      pre: ({ children }) => <pre className={`${chatbox.code_block}`}>{children}</pre>,
-                      code: ({ children }) => <code className={`${chatbox.inline_code}`}>{children}</code>
-                    }}
-                  >
-                    {msg.content}
-                  </ReactMarkdown>
-                </div>
-              );
-            })}
-            </div>
-          )}
-
-            
-
-            {isChecked &&
-              messages.filter(msg =>
-                msg.sender === "assistant" 
-              ).length > 0 && (
-                <div className={chatbox.response}>
-                  {[...messages]
-                .slice(-12)
-                .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-                .map((msg, index) => {
-                  let messageClass = chatbox.response_ans;
-                  if (msg.sender === "user") {
-                    messageClass += ` ${chatbox.user}`;
-                  } else if (msg.sender === "assistant") {
-                    messageClass += ``;
-                  } else if (msg.sender === "system") {
-                    messageClass += ` ${chatbox.error}`;
-                  }
-            
-                  if (msg.status === "loading") {
-                    messageClass += ` ${chatbox.loading}`;
-                  }
-            
-                      
-                        return (
                           
-                        <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
-                          {parsedJson ? (
+                    <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
+                         
                           <div className={chatbox.event_card}>
                           <div className={chatbox.formGroup}>
                           <label>
@@ -527,38 +516,16 @@ const Chatbox = () => {
                           
                           >
                             Add event (+)
-                          </button>
-                          </div>
-                          ) : (
-                          <>
-                          <ReactMarkdown
-                          components={{
-                          pre: ({ children }) => (
-                            <pre className={chatbox.code_block}>{children}</pre>
-                          ),
-                          code: ({ children }) => (
-                            <code className={chatbox.inline_code}>{children}</code>
-                          ),
-                          }}
-                          >
-                          {msg.text}
-                          </ReactMarkdown>
-                          </>
-                          )}
-                        </div>
-                        );
-                    })}
-                  
-                  
-                </div>
-                
-                
-            )}
-
-
-
-    </div>
-  );
+                            </button>
+                              </div>
+                            </div>
+                          );
+                        }
+                      })}
+                  </div>
+                )}
+              </div>
+);
 };
 
 export default Chatbox;
