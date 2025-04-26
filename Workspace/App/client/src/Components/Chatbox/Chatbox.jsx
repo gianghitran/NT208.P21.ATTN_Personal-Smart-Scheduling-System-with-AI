@@ -190,7 +190,7 @@ const Chatbox = () => {
   
     try {
       const historyRes = await fetch(`/api/chatbox/send/${userId}`, {
-        method: "GET", // Cập nhật lại phương thức lấy lịch sử
+        method: "GET", 
       });
       const historyData = await historyRes.json();
       const filteredMessages = Array.isArray(historyData.history)
@@ -275,6 +275,7 @@ const Chatbox = () => {
       });
     fetchChatHistory();
     
+    setLoading(false);
   
     } catch (error) {
       if (error.response && error.response.status === 429) {
