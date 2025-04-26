@@ -12,6 +12,8 @@ import moment from "moment";
 import { addMessage, setLoading } from "../../redux/chatSlide";
 import { sendMessageAPI, loadOldMessagesAPI } from "../../redux/apiRequest";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
+import RecordButton from "../VoiceAsk/Record_Button";
+
 
 const Chatbox = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
@@ -344,18 +346,24 @@ const Chatbox = () => {
 
           
             {/* Input và Button */}
-          <div className={chatbox.form_group}>
-            <input
-              type="text"
-              className={chatbox.form_control}
-              placeholder="Enter your question"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            />
-            
-          </div >
-          
+            <div className={chatbox.wrapper}>
+              <div className={chatbox.form_group}>
+                <input
+                  type="text"
+                  className={chatbox.form_control}
+                  placeholder="Enter your question"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                />
+
+
+              </div >
+
+              <di className={chatbox.record_button}>
+              <RecordButton/>
+              </di>
+          </div>
 
           
           {/* /* select button event render: */}
@@ -367,15 +375,18 @@ const Chatbox = () => {
             </label>
           </button>
 
+
           
           </div>
 
           <button className={chatbox.btnSuccess} onClick={sendMessage} disabled={loading}>
             {loading ? "Loading..." : "Ask!"}
           </button>
+          
           <button className={chatbox.btnDanger} onClick={stopChat} disabled={!loading}>
             Stop
           </button>
+
 
          
 
