@@ -1,0 +1,28 @@
+.StopButton {
+  background-color: #f39d9d;
+    border: none;
+    padding: 10px 10px;
+    background-image: url('../../assets/stop-icon.png');
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.StartButton {
+    background-color: #9da89d;
+    border: none;
+    padding: 10px 10px;
+    background-image: url('../../assets/microphone-icon.png');
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
