@@ -428,24 +428,9 @@ const Chatbox = () => {
               if (msg.status === "loading") {
                 messageClass += ` ${chatbox.loading}`;
               }
-            if (!(checkIfJSON(msg.content))){
+            if (checkIfJSON(msg.content)){
                 return (
-                  <div key={index} className={messageClass}>
-                    <ReactMarkdown
-                      components={{
-                        pre: ({ children }) => <pre className={`${chatbox.code_block}`}>{children}</pre>,
-                        code: ({ children }) => <code className={`${chatbox.inline_code}`}>{children}</code>
-                      }}
-                    >
-                      {msg.content}
-                    </ReactMarkdown>
-                  </div>
-                );
-              }
-            else{
-              return (
-                          
-                    <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
+                  <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
                          
                           <div className={chatbox.event_card}>
                           <div className={chatbox.formGroup}>
@@ -519,6 +504,22 @@ const Chatbox = () => {
                             </button>
                               </div>
                             </div>
+                );
+              }
+            else{
+              return (
+                <div key={index} className={messageClass}>
+                    <ReactMarkdown
+                      components={{
+                        pre: ({ children }) => <pre className={`${chatbox.code_block}`}>{children}</pre>,
+                        code: ({ children }) => <code className={`${chatbox.inline_code}`}>{children}</code>
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  </div>
+                          
+                    
                           );
                         }
                       })}
