@@ -356,13 +356,11 @@ const Chatbox = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 />
-
-
               </div >
 
-              <di className={chatbox.record_button}>
-              <RecordButton/>
-              </di>
+              <div className={chatbox.record_button}>
+                <RecordButton/>
+              </div>
           </div>
 
           
