@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import styles from './Record.module.css'; // Import CSS Module
 import { useRecorder } from './record'; 
+import fs from "fs";
+import OpenAI from "openai";
+const openai = new OpenAI();
+        
+const translation = async (audio) => {
+  return await openai.audio.translations.create({
+    file: fs.createReadStream(audio),
+    model: "whisper-1",
+  });
+};
+
+console.log(translation.text);
 
 function RecordButton() {
     
@@ -20,7 +32,14 @@ function RecordButton() {
           </button>
         )}
       </div>
+      {audioURL && (
+        <div>
+          <audio controls src={audioURL} />
+        </div>
+      )}
+      {audioURL && translation(audioURL)}
     </div>
+    
   );
 }
 

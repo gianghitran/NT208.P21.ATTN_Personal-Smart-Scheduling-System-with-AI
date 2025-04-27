@@ -12,35 +12,13 @@ const chatSlice = createSlice({
       state.messages.push(action.payload);
     },
 
-    updateMessageStatus: (state, action) => {
-      const { id, status } = action.payload;
-      const msg = state.messages.find((m) => m.id === id);
-      if (msg) {
-        msg.status = status;
-      }
-    },
-
-    loadMoreMessages: (state, action) => {
-      const oldMessages = action.payload;
-      state.messages = [...oldMessages, ...state.messages];
-    },
-
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
-
-    clearMessages: (state) => {
-      state.messages = [];
-    },
+    
   },
 });
 
 export const {
-  addMessage,
-  updateMessageStatus,
-  loadMoreMessages,
-  setLoading,
-  clearMessages
+  addMessage
+  
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
