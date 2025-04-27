@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice";
 import styles from "../Schedule/Schedule.module.css";
 import moment from "moment";
-import { addMessage, setLoading } from "../../redux/chatSlide";
+import { addMessage } from "../../redux/chatSlide";
 import { sendMessageAPI, loadOldMessagesAPI } from "../../redux/apiRequest";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
 import RecordButton from "../VoiceAsk/Record_Button";
@@ -413,7 +413,7 @@ const Chatbox = () => {
           {messages.length > 0 && (
             <div className={chatbox.response}>
             {[...messages]
-            .slice(-12)
+            .slice(-24)
             .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
             .map((msg, index) => {
               let messageClass = chatbox.response_ans;
