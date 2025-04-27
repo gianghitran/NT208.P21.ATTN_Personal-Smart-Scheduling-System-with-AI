@@ -3,16 +3,16 @@ import styles from './Record.module.css'; // Import CSS Module
 import { useRecorder } from './record'; 
 import fs from "fs";
 import OpenAI from "openai";
-const openai = new OpenAI();
+// const openai = new OpenAI();
         
-const translation = async (audio) => {
-  return await openai.audio.translations.create({
-    file: fs.createReadStream(audio),
-    model: "whisper-1",
-  });
-};
+// const translation = async (audio) => {
+//   return await openai.audio.translations.create({
+//     file: fs.createReadStream(audio),
+//     model: "whisper-1",
+//   });
+// };
 
-console.log(translation.text);
+// console.log(translation.text);
 
 function RecordButton() {
     
@@ -37,7 +37,7 @@ function RecordButton() {
           <audio controls src={audioURL} />
         </div>
       )}
-      {audioURL && translation(audioURL)}
+      {/* {audioURL && translation(audioURL)} */}
     </div>
     
   );
