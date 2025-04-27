@@ -35,6 +35,9 @@ export const useRecorder = () => {
         console.error("Lỗi lưu audio:", error);
     };    
     };
+//Kiểm tra file đã lưu bằng console:
+//     const url = URL.createObjectURL(temp1);
+//     window.open(url);
 
       mediaRecorderRef.current.start();
       setRecording(true);
