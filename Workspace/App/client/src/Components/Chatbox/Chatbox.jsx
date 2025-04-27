@@ -10,7 +10,7 @@ import { loginSuccess } from "../../redux/authSlice";
 import styles from "../Schedule/Schedule.module.css";
 import moment from "moment";
 import { addMessage } from "../../redux/chatSlide";
-import { sendMessageAPI, loadOldMessagesAPI } from "../../redux/apiRequest";
+import { loadOldMessagesAPI } from "../../redux/apiRequest";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
 import RecordButton from "../VoiceAsk/Record_Button";
 

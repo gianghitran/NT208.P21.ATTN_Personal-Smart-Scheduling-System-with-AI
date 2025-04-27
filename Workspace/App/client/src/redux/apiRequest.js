@@ -1,52 +1,8 @@
 import { loginRequest, loginSuccess, loginFailure, registerFailure, registerRequest, registerSuccess, logoutRequest, logoutSuccess, logoutFailure } from "./authSlice";
 import axios from "axios";
-import {  addMessage,  loadMoreMessages,  updateMessageStatus,  setLoading,} from "./chatSlide";
+import {  addMessage,  loadMoreMessages,  setLoading,} from "./chatSlide";
 
-// Gửi tin nhắn tới AI và lưu vào Redux
-export const sendMessageAPI = async (message, dispatch) => {
-  const tempId = Date.now();
 
-  dispatch(addMessage({
-    id: tempId,
-    content: message,
-    sender: 'user',
-    timestamp: new Date().toISOString(),
-    status: 'sending'
-  }));
-
-  dispatch(setLoading(true));
-
-  try {
-    const res = await axios.post("/api/chat/send", { message });
-    const reply = res.data.reply || "Bot chưa trả lời.";
-
-    dispatch(addMessage({
-      id: tempId + 1,
-      content: reply,
-      sender: 'bot',
-      timestamp: new Date().toISOString(),
-      status: 'sent'
-    }));
-
-    dispatch(updateMessageStatus({ id: tempId, status: "sent" }));
-
-    return { success: true, reply };
-  } catch (err) {
-    dispatch(updateMessageStatus({ id: tempId, status: "failed" }));
-
-    dispatch(addMessage({
-      id: tempId + 2,
-      content: `❌ Error: ${err.message}`,
-      sender: 'system',
-      timestamp: new Date().toISOString(),
-      status: 'failed'
-    }));
-
-    return { success: false, error: err };
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
 
 // Lấy lịch sử tin nhắn cũ từ DB và đẩy vào Redux
 export const loadOldMessagesAPI = async (userId,dispatch) => {
