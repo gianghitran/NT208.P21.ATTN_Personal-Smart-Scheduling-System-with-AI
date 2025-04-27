@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
+import { setRecord } from '../../redux/recordSlide'; // Import your addRecord function
 
 export const useRecorder = () => {
   const [recording, setRecording] = useState(false);
-  const [audioURL, setAudioURL] = useState('');
+  const [audioFile, setAudioFile] = useState('');
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
 
@@ -16,18 +17,35 @@ export const useRecorder = () => {
     };
 
     mediaRecorderRef.current.onstop = () => {
-      const blob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
-      setAudioURL(URL.createObjectURL(blob));
+      try{
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        setAudioFile(blob);
+
+        // Lưu vào sessionStorage
+        const reader = new FileReader();
+        reader.onload = () => {
+          sessionStorage.setItem('audioFile', reader.result);
+        };
+        reader.readAsDataURL(blob);
+
+        //luuw vào session storage
+        setRecord(blob);
+        console.log("Lưu audio thành công:", blob);
+      }catch (error) {
+        console.error("Lỗi lưu audio:", error);
+    };    
     };
 
-    mediaRecorderRef.current.start();
-    setRecording(true);
-  };
+      mediaRecorderRef.current.start();
+      setRecording(true);
+    };
+  
+
 
   const stopRecording = () => {
     mediaRecorderRef.current.stop();
     setRecording(false);
   };
 
-  return { recording, audioURL, startRecording, stopRecording };
+  return { recording, audioFile, startRecording, stopRecording };
 };

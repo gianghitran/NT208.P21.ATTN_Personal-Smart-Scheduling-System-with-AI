@@ -16,7 +16,7 @@ import OpenAI from "openai";
 
 function RecordButton() {
     
-    const { recording, audioURL, startRecording, stopRecording } = useRecorder();
+    const { recording, audioFile, startRecording, stopRecording } = useRecorder();
   
 
   return (
@@ -32,12 +32,12 @@ function RecordButton() {
           </button>
         )}
       </div>
-      {audioURL && (
+      {audioFile && (
+        console.log("Đã tìm thấy file audio") && (
         <div>
-          <audio controls src={audioURL} />
+          {/* <audio controls src={audioFile} /> */}
         </div>
-      )}
-      {/* {audioURL && translation(audioURL)} */}
+      ))}
     </div>
     
   );
