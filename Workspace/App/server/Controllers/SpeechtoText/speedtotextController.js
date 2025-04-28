@@ -3,13 +3,13 @@ require("dotenv").config(); // Đọc biến môi trường từ .env
 exports.sendRecordtoAPI= async (req, res) => {
     
     try {
-        const { audioFile } = req.body; // Nhận file âm thanh từ client
+        const { messages } = req.body; // Nhận file âm thanh từ client
 
-        if (!audioFile) {
+        if (!messages) {
             return res.status(400).json({ error: "Không tìm thấy file audio" });
         }
 
-        const res = await fetch("https://api.openai.com/v1/audio/translations", {
+        const responseFromOpenAI  = await fetch("https://api.openai.com/v1/audio/translations", {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${process.env.WHISPER_API_KEY}`,
@@ -17,12 +17,12 @@ exports.sendRecordtoAPI= async (req, res) => {
                 "X-Title": "SpeechToText",
             },
             body: JSON.stringify({
-                file: audioFile,
+                file: messages,
                 model: "whisper-1",
             }),
         });
 
-        res.status(200).json({ text: res.text });
+        res.status(200).json({ text: responseFromOpenAI.text });
     } catch (error) {
         console.error("Lỗi audio file:", error.message);
         res.status(500).json({ error: "Audio processing error" });
