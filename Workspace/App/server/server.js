@@ -10,6 +10,8 @@ const cookieParser = require("cookie-parser");
 
 const eventRoute = require("./Routes/eventRoute");
 const chatboxRoute = require("./Routes/chatboxRoute");
+const SpeechtoTextRoute = require("./Routes/SpeechtoTextRoute");
+
 
 const os = require("os");
 
@@ -61,6 +63,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoute);
 app.use("/api/event", eventRoute);
 app.use("/api/chatbox", chatboxRoute);
+app.use("/api/speech", SpeechtoTextRoute);
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
