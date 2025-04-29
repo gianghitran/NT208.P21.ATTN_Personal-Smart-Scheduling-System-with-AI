@@ -8,6 +8,7 @@ exports.sendRecordtoAPI= async (req, res) => {
         if (!messages) {
             return res.status(400).json({ error: "Không tìm thấy file audio" });
         }
+        console.log("Get audio file name", messages);
 
         const responseFromOpenAI  = await fetch("https://api.openai.com/v1/audio/translations", {
             method: "POST",
