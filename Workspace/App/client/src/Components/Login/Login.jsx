@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { loginUser, loginGoogle } from "../../redux/apiRequest";
 import { GoogleLogin } from "@react-oauth/google";
 import { IoIosMail } from "react-icons/io";
+import { FaEye } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 
 const Login = () => {
@@ -61,6 +62,7 @@ const Login = () => {
                     <RiLockPasswordFill className={loginStyle.icon} />
                     <input type="password" placeholder="Enter your password..."
                         onChange={(e) => {setPassword(e.target.value); setError("")}}/>
+                    <FaEye className={loginStyle.icon} />
                 </div>
 
                 <div className={loginStyle.rememberForgot}>
