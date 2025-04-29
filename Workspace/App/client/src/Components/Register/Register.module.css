@@ -27,11 +27,11 @@
     gap: 20px;
     justify-content: center;
     align-items: center;
-    padding: 70px;
-    padding-top: 100px;
-    padding-bottom: 100px;
-    padding-left: 50px;
-    padding-right: 50px;
+    /* padding: min(70px; */
+    padding-top: min(100px, 20%);
+    padding-bottom: min(100px, 20%);
+    padding-left: min(50px, 2.7%);
+    padding-right: min(50px, 2.7%);
     border-radius: 10px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -141,13 +141,13 @@
 }
 
 @media screen and (max-width: 768px) {
-    .registerForm {
+    /* .registerForm {
         padding: 50px;
         padding-top: 70px;
         padding-bottom: 70px;
         padding-left: 20px;
         padding-right: 20px;
-    }
+    } */
 
     .registerForm h1 {
         font-size: 1.5rem;
