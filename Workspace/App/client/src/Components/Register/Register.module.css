@@ -51,6 +51,7 @@
     /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     position: relative;
     gap: 5px;
+    width: 100%;
 }
 
 .inputGroup input {
@@ -73,6 +74,13 @@
     left: 45px;
     height: 18px;
     width: 18px;
+}
+
+.inputGroup .icon.eyeIcon {
+    left: auto;
+    right: 45px;
+    top: 30%;
+    cursor: pointer;
 }
 
 .inputGroup .mail {
