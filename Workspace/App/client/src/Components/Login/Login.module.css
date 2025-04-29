@@ -69,6 +69,14 @@
     width: 20px;
 }
 
+.inputGroup .icon.eyeIcon {
+    position: relative;
+    left: auto;
+    right: 45px;
+    top: 30%;
+    cursor: pointer;
+}
+
 .rememberForgot {
     display: flex;
     justify-content: space-between;

@@ -6,11 +6,13 @@ import { loginUser, loginGoogle } from "../../redux/apiRequest";
 import { GoogleLogin } from "@react-oauth/google";
 import { IoIosMail } from "react-icons/io";
 import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -45,6 +47,13 @@ const Login = () => {
         }
     }
 
+    const handleShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
+    const EyeIcon = showPassword ? FaEyeSlash : FaEye;
+
+
     return (
         <div className={loginStyle.Wrapper}>
             <form className={loginStyle.loginForm} onSubmit={handleLogin}> 
@@ -60,9 +69,9 @@ const Login = () => {
 
                 <div className={loginStyle.inputGroup}>
                     <RiLockPasswordFill className={loginStyle.icon} />
-                    <input type="password" placeholder="Enter your password..."
+                    <input type={showPassword ? "text" : "password"} placeholder="Enter your password..."
                         onChange={(e) => {setPassword(e.target.value); setError("")}}/>
-                    <FaEye className={loginStyle.icon} />
+                    <EyeIcon onClick={handleShowPassword} className={`${loginStyle.icon} ${loginStyle.eyeIcon}`} />
                 </div>
 
                 <div className={loginStyle.rememberForgot}>
