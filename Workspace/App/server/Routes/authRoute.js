@@ -7,6 +7,7 @@ const { verifyToken } = require('../Controllers/Auth/middlewareController');
 route.post('/register', authController.registerUser);
 route.post('/login', authController.loginUser);
 route.post('/logout', authController.logoutUser);
+route.post('/verify-email', authController.verifyEmail);
 route.post('/refresh', authController.requestRefreshToken);
 route.post('/google-auth', authController.googleAuth);
 route.get('/connect-google', authController.getGoogleOAuthURL);

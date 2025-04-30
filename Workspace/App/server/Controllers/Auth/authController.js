@@ -6,6 +6,7 @@ const validator = require('validator');
 const cookieParser = require('cookie-parser');
 const { OAuth2Client } = require('google-auth-library');
 const dotenv = require('dotenv');
+const { sendVerificationEmail } = require('../../Utils/emails');
 
 dotenv.config();
 
@@ -47,15 +48,20 @@ const authController = {
             return res.status(400).json({ message: "Email already exists" });
         }
 
+        const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+
         const newUser = new User({
             full_name: full_name,
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            verificationToken: verificationToken,
+            verificationTokenExpires: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
         });
 
         try {
             const user = await newUser.save();
-            const { password, ...userData } = user._doc;
+            const { password, verificationToken, verificationTokenExpires, ...userData } = user._doc;
+            await sendVerificationEmail(email, verificationToken);
             res.status(200).json(userData);
         } catch (error) {
             res.status(500).json({ message: error });
@@ -105,9 +111,14 @@ const authController = {
             const token = req.body.credential;
             const payload = await verify(token);
             const { email, name, sub } = payload;
-            let account = await User.findOne({ email: email, oauth_id: sub });
+            let account = await User.findOne({ email: email });
 
-            if (!account) {
+            if (account) {
+                if (account.oauth_provider !== "google") {
+                    return res.status(400).json({ message: "Email already exists" });
+                }
+            }
+            else {
                 const newUser = new User({
                     full_name: name,
                     email: email,
@@ -173,6 +184,38 @@ const authController = {
         }
     },
 
+    verifyEmail: async (req, res) => {
+        // 1 2 3 4 5 6
+        const { code } = req.body;
+        try {
+            const user = await User.findOne({ 
+                verificationToken: code,
+                verificationTokenExpires: { $gt: Date.now() } 
+            })
+
+            if (!user) {
+                return res.status(400).json({ message: "Invalid or expired token" });
+            }
+
+            user.isVerified = true;
+            user.verificationToken = undefined;
+            user.verificationTokenExpires = undefined;
+            await user.save();
+
+            res.status(200).json({
+                success: true,
+                message: "Email verified successfully" ,
+                user: {
+                    ...user._doc,
+                    admin: undefined,
+                    password: undefined,
+                },
+            });
+        } catch (error) {
+            return res.status(500).json({ message: error });
+        }
+    },
+
     requestRefreshToken: async (req, res) => {
         const token = req.cookies.refresh_token;
         if (!token) {
@@ -211,6 +254,7 @@ const authController = {
 };
 
 const { google } = require('googleapis');
+const { admin } = require('googleapis/build/src/apis/admin');
 
 authController.getGoogleOAuthURL = (req, res) => {
     const oauth2Client = new google.auth.OAuth2(

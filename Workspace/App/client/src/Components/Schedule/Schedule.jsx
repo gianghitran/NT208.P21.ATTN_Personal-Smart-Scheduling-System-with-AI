@@ -9,6 +9,7 @@ import Modal from "react-modal";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
 import { useSelector } from "react-redux";
 import { createAxios } from "../../utils/axiosConfig";
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice";
 import Papa from "papaparse";
@@ -54,7 +55,7 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      alert(`Sự kiện "${event.title}" đã được di chuyển!`);
+      // alert(`Sự kiện "${event.title}" đã được di chuyển!`);
     } else {
       alert("⛔ Lỗi: Không thể cập nhật sự kiện!");
     }
@@ -66,7 +67,7 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      alert(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
+      // alert(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
     } else {
       alert("⛔ Lỗi: Không thể cập nhật sự kiện!");
     }
@@ -134,7 +135,13 @@ export default function MyCalendar() {
 
     const access_token = user?.access_token;
 
-    await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
+    const response = await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
+    if (response.success) {
+      setEvents(events.map(e => e.id === selectedEvent.id ? { ...e, ...event } : e));
+      // alert(`Sự kiện "${selectedEvent.title}" đã được cập nhật!`);
+    } else {
+      alert("⛔ Lỗi: Không thể cập nhật sự kiện!");
+    }
     setModalIsOpen(false);
   };
 
@@ -284,16 +291,26 @@ export default function MyCalendar() {
     }
 
     try {
-      const response = await fetch('/api/google-calendar/sync', {
-        method: 'POST',
+      // const response = await fetch('/api/google-calendar/sync', {
+      //   method: 'POST',
+      //   headers: {
+      //     Authorization: `Bearer ${user.access_token}`,
+      //   },
+      // });
+
+      const response = await axiosJWT.post('/api/google-calendar/sync', {}, {
         headers: {
           Authorization: `Bearer ${user.access_token}`,
         },
-      });
+        withCredentials: true,
+        validateStatus: (status) => {
+          return status === 200 || status === 403; // Resolve only if the status code is 200 or 403
+        }
+      });      
 
-      const data = await response.json();
+      const data = response.data;
 
-      if (response.ok) {
+      if (response.status === 200) {
         alert(`✅ ${data.message || "Đã đồng bộ Google Calendar thành công!"}`);
         await renderEvents();
       } else {
@@ -303,8 +320,8 @@ export default function MyCalendar() {
           data.message?.toLowerCase().includes("token")
         ) {
           alert('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
-          const urlRes = await fetch('/api/auth/connect-google');
-          const { url } = await urlRes.json();
+          const urlRes = await axios('/api/auth/connect-google', { withCredentials: true });
+          const { url } = await urlRes.data;
           window.location.href = url;
         } else {
           alert(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`);
@@ -314,8 +331,6 @@ export default function MyCalendar() {
       alert('❌ Lỗi khi đồng bộ Google Calendar');
     }
   };
-
-
 
 
   return (
