@@ -3,7 +3,7 @@ const Event = require("../../Models/Event");
 const User = require("../../Models/User");
 
 const syncGoogleCalendar = async (req, res) => {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
 
     if (!user?.googleAccessToken || !user?.googleRefreshToken) {
         return res.status(403).json({ message: "Google Calendar chưa được kết nối." });
@@ -105,6 +105,7 @@ const syncGoogleCalendar = async (req, res) => {
 
         return res.status(200).json({ message: `Đã thêm ${addedCount} sự kiện từ Google Calendar và đẩy ${pushedCount} sự kiện lên Google Calendar.` });
     } catch (error) {
+        console.error("Error syncing Google Calendar:", error);
         return res.status(500).json({ message: "Không thể lấy dữ liệu từ Google Calendar." });
     }
 };

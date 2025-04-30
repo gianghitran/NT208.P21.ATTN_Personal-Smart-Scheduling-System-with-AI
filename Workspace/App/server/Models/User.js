@@ -50,7 +50,16 @@ const User = new mongoose.Schema(
       googleRefreshToken: {
         type: String,
     },
-      
+    
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+    verificationToken: String,
+    verificationTokenExpires: Date,
 },
 
 {
