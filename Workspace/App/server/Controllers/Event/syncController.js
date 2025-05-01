@@ -10,7 +10,7 @@ const syncGoogleCalendar = async (req, res) => {
     }
 
     const oauth2Client = new google.auth.OAuth2(
-        process.env.GG_CLIENT_ID,
+        process.env.VITE_GG_CLIENT_ID,
         process.env.GG_CLIENT_SECRET,
         process.env.GG_REDIRECT_URI
     );
@@ -120,7 +120,7 @@ const addEventToGoogleCalendar = async (req, res) => {
     const { title, description, start, end } = req.body;
 
     const oauth2Client = new google.auth.OAuth2(
-        process.env.GG_CLIENT_ID,
+        process.env.VITE_GG_CLIENT_ID,
         process.env.GG_CLIENT_SECRET,
         process.env.GG_REDIRECT_URI
     );
@@ -169,7 +169,7 @@ const refreshGoogleToken = async (req, res) => {
 
     try {
         const response = await axios.post("https://oauth2.googleapis.com/token", {
-            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_id: process.env.VITE_GOOGLE_CLIENT_ID,
             client_secret: process.env.GOOGLE_CLIENT_SECRET,
             refresh_token: refreshToken,
             grant_type: "refresh_token",
