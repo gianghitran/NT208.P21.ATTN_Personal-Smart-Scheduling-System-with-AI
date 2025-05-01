@@ -306,7 +306,7 @@ export default function MyCalendar() {
         validateStatus: (status) => {
           return status === 200 || status === 403; // Resolve only if the status code is 200 or 403
         }
-      });      
+      });
 
       const data = response.data;
 
@@ -401,6 +401,7 @@ export default function MyCalendar() {
         onEventResize={onEventResize}
         resizable
         draggableAccessor={() => true}
+        views={['month', 'week']}
       />
       <Modal
         isOpen={modalIsOpen}
