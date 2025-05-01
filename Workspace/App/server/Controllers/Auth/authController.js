@@ -258,7 +258,7 @@ const { admin } = require('googleapis/build/src/apis/admin');
 
 authController.getGoogleOAuthURL = (req, res) => {
     const oauth2Client = new google.auth.OAuth2(
-        process.env.GG_CLIENT_ID,
+        process.env.VITE_GG_CLIENT_ID,
         process.env.GG_CLIENT_SECRET,
         process.env.GG_REDIRECT_URI
     );
@@ -278,7 +278,7 @@ authController.googleOAuthCallback = async (req, res) => {
     const { code } = req.body;
 
     const oauth2Client = new google.auth.OAuth2(
-        process.env.GG_CLIENT_ID,
+        process.env.VITE_GG_CLIENT_ID,
         process.env.GG_CLIENT_SECRET,
         process.env.GG_REDIRECT_URI
     );
