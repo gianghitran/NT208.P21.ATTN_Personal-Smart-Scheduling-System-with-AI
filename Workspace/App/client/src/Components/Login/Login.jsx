@@ -82,6 +82,9 @@ const Login = () => {
                 <input type="submit" value="Login" className={loginStyle.loginButton}/>
                 <GoogleLogin
                     onSuccess={handleSuccess}
+                    onError={() => {
+                        setError("Google login failed. Please try again.");
+                    }}
                 />
 
                 <div className={loginStyle.registerLink}>
