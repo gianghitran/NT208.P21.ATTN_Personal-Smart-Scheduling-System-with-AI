@@ -90,11 +90,11 @@ export const registerUser = async (user, dispatch, navigate) => {
     }
 }
 
-export const logoutUser = async (dispatch, navigate, access_token, axiosJWT) => {
+export const logoutUser = async (dispatch, navigate) => {
     dispatch(logoutRequest());
     try {
-        await axios.post("/api/auth/logout", {
-            headers: { token: `Bearer ${access_token}` },
+        await axios.post("/api/auth/logout", {}, {
+            withCredentials: true,
         });
         dispatch(logoutSuccess());
         navigate("/");
