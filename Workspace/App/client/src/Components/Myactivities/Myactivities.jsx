@@ -1,5 +1,5 @@
 import styles from "./Myactivities.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 const CATEGORY_COLORS = {
@@ -19,7 +19,12 @@ const Myactivities = () => {
     const user = useSelector((state) => state.auth.login?.currentUser);
     const [events, setEvents] = useState([]);
     const [currentTime, setCurrentTime] = useState(new Date());
-    const today = new Date();
+
+    const today = useMemo(() => {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }, []);
 
     const dayStr = today.toLocaleDateString("en-US", {
         weekday: "long",
@@ -28,7 +33,6 @@ const Myactivities = () => {
         day: "numeric",
     });
 
-    // Lấy sự kiện trong ngày hiện tại
     useEffect(() => {
         if (!user?.userData?._id) return;
         fetch(`/api/event/get?userId=${user.userData._id}`)
@@ -42,8 +46,7 @@ const Myactivities = () => {
                             end: new Date(ev.end)
                         }))
                         .filter(ev => {
-                            // Lọc sự kiện trong ngày hiện tại
-                            const start = ev.start;
+                            const start = new Date(ev.start);
                             return (
                                 start.getFullYear() === today.getFullYear() &&
                                 start.getMonth() === today.getMonth() &&
@@ -55,8 +58,18 @@ const Myactivities = () => {
     }, [user, today]);
 
     useEffect(() => {
-        const timer = setInterval(() => setCurrentTime(new Date()), 60000);
-        return () => clearInterval(timer);
+        const now = new Date();
+        const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+
+        const timeout = setTimeout(() => {
+            setCurrentTime(new Date());
+            const interval = setInterval(() => {
+                setCurrentTime(new Date());
+            }, 60000);
+            return () => clearInterval(interval);
+        }, msToNextMinute);
+
+        return () => clearTimeout(timeout);
     }, []);
 
     const now = currentTime;
@@ -88,7 +101,7 @@ const Myactivities = () => {
                             }}
                         >
                             <div className={styles.eventTime}>
-                                {event.start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} - {event.end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                {event.start.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })} {event.end.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}
                             </div>
                             <div className={styles.verticalLine}></div>
                             <div className={styles.eventTitleInfo}>
@@ -109,7 +122,7 @@ const Myactivities = () => {
         <div className={styles.container}>
             <div className={styles.headerSection}>
                 <h1 className={styles.header}>My Activities</h1>
-                <div className={styles.date}>{dayStr}</div>
+                <div className={styles.header}>{dayStr}</div>
             </div>
             {renderEvents(pastEvents, "Past Events", "past")}
             {renderEvents(ongoingEvents, "Ongoing Events", "ongoing")}
