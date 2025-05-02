@@ -124,7 +124,7 @@
 }
 
 .formGroup label {
-  width: 100px;
+  width: 105px;
   font-weight: bold;
   margin-bottom: 5px;
   max-width: 100%;
@@ -270,6 +270,12 @@
   cursor: pointer;
 }
 
+:global(.Toastify__toast) {
+  min-width: 300px;  
+  max-width: 500px;
+  font-size: 1rem;  
+  padding: 16px 20px; 
+}
 
 @media (max-width: 768px) {
   .container {
