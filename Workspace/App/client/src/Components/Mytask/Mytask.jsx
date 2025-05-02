@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import mytask from './mytask.module.css'; // Import CSS Module
+import mytask from './mytask.module.css';
 
 import threebears from "../../assets/threebears.jpg";
 import React, { useState, useEffect } from "react";
@@ -10,6 +10,8 @@ import { createAxios } from "../../utils/axiosConfig";
 import { loginSuccess } from "../../redux/authSlice";
 import Modal from "react-modal";
 import moment from "moment";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Mytask = () => {
   const [showCalendar, setShowCalendar] = useState(false);
@@ -38,16 +40,35 @@ const Mytask = () => {
   const todoEvents = events
     .filter(event => event.category === "todo" && !event.completed)
     .sort((a, b) => new Date(a.end) - new Date(b.end));
+
   const completedEvents = events.filter(event => event.completed);
 
   const toggleTaskCompletion = async (eventId) => {
     const updatedEvents = events.map(event => {
       if (event._id === eventId) {
         event.completed = !event.completed;
+        toast.success(`"${event.title}" đã được đánh dấu là ${event.completed ? 'hoàn thành' : 'chưa hoàn thành'}!`);
       }
       return event;
     });
+
     setEvents(updatedEvents);
+
+    const eventToUpdate = updatedEvents.find(event => event._id === eventId);
+    await saveEvents(eventToUpdate, eventId, access_token, axiosJWT);
+  };
+
+  const handleReturnTask = async (eventId) => {
+    const updatedEvents = events.map(event => {
+      if (event._id === eventId) {
+        event.completed = false;
+        toast.success(`"${event.title}" đã được chuyển về danh sách cần làm!`);
+      }
+      return event;
+    });
+
+    setEvents(updatedEvents);
+
     const eventToUpdate = updatedEvents.find(event => event._id === eventId);
     await saveEvents(eventToUpdate, eventId, access_token, axiosJWT);
   };
@@ -59,9 +80,10 @@ const Mytask = () => {
 
   return (
     <div className={mytask.app_container}>
+      <ToastContainer position="bottom-right" autoClose={3000} />
       <div className={mytask.notebox}>
-          <span className={`${mytask.dot} ${mytask.green}`}></span> Valid
-          <span className={`${mytask.dot} ${mytask.red}`}></span> Expired
+        <span className={`${mytask.dot} ${mytask.green}`}></span> Valid
+        <span className={`${mytask.dot} ${mytask.red}`}></span> Expired
       </div>
       <div className={mytask.main_content}>
         {/* Task Dashboard */}
@@ -75,19 +97,20 @@ const Mytask = () => {
               <input
                 type="checkbox"
                 className={mytask.task_checkbox}
-                checked={event.completed || false} // Đảm bảo giá trị luôn được xác định
+                checked={event.completed || false}
+                onClick={(e) => e.stopPropagation()}
                 onChange={() => toggleTaskCompletion(event._id)}
               />
             </div>
           ))}
         </div>
 
-        {/* Button để ẩn/hiện Calendar */}
+        {/* Toggle Calendar Button */}
         <button className={mytask.toggle_btn} onClick={toggleCalendar}>
           {showCalendar ? "Hide" : "Completed Tasks"}
         </button>
 
-        {/* Calendar */}
+        {/* Calendar Section */}
         {showCalendar && (
           <div className={mytask.calendar}>
             <div className={mytask.calshow}>
@@ -98,6 +121,15 @@ const Mytask = () => {
                 {completedEvents.map(event => (
                   <div key={event._id} className={mytask.task} onClick={() => handleTaskClick(event)}>
                     <span className={new Date(event.end) > new Date() ? `${mytask.dot} ${mytask.green}` : `${mytask.dot} ${mytask.red}`}></span> {event.title}
+                    <button
+                      className={mytask.return_btn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleReturnTask(event._id);
+                      }}
+                    >
+                      Return
+                    </button>
                   </div>
                 ))}
               </div>
@@ -105,7 +137,7 @@ const Mytask = () => {
           </div>
         )}
 
-        {/* Modal hiển thị chi tiết thông tin task */}
+        {/* Modal */}
         {modalIsOpen && selectedEvent && (
           <Modal
             isOpen={modalIsOpen}
@@ -126,7 +158,7 @@ const Mytask = () => {
                 <p><label>End:</label> {moment(selectedEvent.end).format("YYYY-MM-DD HH:mm A")}</p>
               </div>
               <div className={mytask.formGroup}>
-                <p><label>Status:</label> {new Date(selectedEvent.end) < new Date() ? <span style={{color: "#F44336"}}>Expired</span> : <span style={{color: "green"}}>Valid</span>}</p>
+                <p><label>Status:</label> {new Date(selectedEvent.end) < new Date() ? <span style={{ color: "#F44336" }}>Expired</span> : <span style={{ color: "green" }}>Valid</span>}</p>
               </div>
               <button onClick={() => setModalIsOpen(false)} className={mytask.closeButton}>Close</button>
             </div>
