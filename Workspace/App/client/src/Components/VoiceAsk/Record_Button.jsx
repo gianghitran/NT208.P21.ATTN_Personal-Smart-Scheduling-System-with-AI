@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 
 
 
-const RecordButton=() =>{
+const RecordButton=({onTransfer, onTransfering }) =>{
     const user = useSelector((state) => state.auth.login?.currentUser);
     const userId = user?.userData._id; 
-
+    const [textTransfer, settextTransfer] = useState(null);
     
     const { recording, audioFile, startRecording, stopRecording } = useRecorder();
     
@@ -17,24 +17,31 @@ const RecordButton=() =>{
         if (!audioFile) {
           return res.status(400).json({ error: "Không tìm thấy file audio" });
         }
+        if (onTransfering) onTransfering(true);
+        const formData = new FormData();
+        formData.append("file", audioFile, "audio.wav");
         const resTextfromAPI = await fetch(`http://localhost:4000/api/speech/send/${userId}`, {
           method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ messages: audioFile }),
+          body: formData,
         });
         const data = await resTextfromAPI.json();
-        console.log("Data từ API:", data);
-
+        console.log("Nhận data từ API, type:", data);
+        settextTransfer(data);
+        console.log("Transfering..");
+        if (onTransfer && data?.text) {
+          onTransfer(data.text);// guwri duwx lieeuj ra ngoài component
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
+      }
+      finally {
+        if (onTransfering) onTransfering(false); // Kết thúc transferring
       }
     };
     
     useEffect(() => {
       if (audioFile) {
-        console.log("Audio file found, fetching data...");
+        console.log("Đã tìm thấy file audio, fetching data...");
         fetchResponse(audioFile);
       }
     }, [audioFile]);
@@ -53,13 +60,12 @@ const RecordButton=() =>{
           </button>
         )}
       </div>
-      {audioFile && (
-        console.log("Đã tìm thấy file audio") &&  (
+      {audioFile &&   (
         <div>
           
           {/* <audio controls src={audioFile} /> */}
         </div>
-      ))}
+      )}
     </div>
     
   );

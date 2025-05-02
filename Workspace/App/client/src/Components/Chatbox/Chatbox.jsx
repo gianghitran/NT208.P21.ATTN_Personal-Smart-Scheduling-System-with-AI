@@ -336,7 +336,13 @@ const Chatbox = () => {
 
     };
   
-
+    const [voiceText, setVoiceText] = useState("");
+    const [isTransferring, setIsTransferring] = useState(false);
+    const handleTranscribedText = (text) => {
+      console.log("Nhận từ RecordButton:", text);
+      setVoiceText(text);
+      setInput(text);  
+    };
   return (
     <div className={chatbox.container}>
       
@@ -369,14 +375,15 @@ const Chatbox = () => {
                   type="text"
                   className={chatbox.form_control}
                   placeholder="Enter your question"
-                  value={input}
+                  value={isTransferring ? "Transferring..." : input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  disabled={isTransferring}
                 />
               </div >
 
               <div className={chatbox.record_button}>
-                <RecordButton/>
+                <RecordButton onTransfer={handleTranscribedText} onTransfering={(val) => setIsTransferring(val)}/>
               </div>
           </div>
 
