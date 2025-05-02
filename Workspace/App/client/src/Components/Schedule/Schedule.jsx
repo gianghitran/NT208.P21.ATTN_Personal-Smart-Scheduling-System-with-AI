@@ -13,6 +13,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice";
 import Papa from "papaparse";
+import { useNavigate } from "react-router-dom";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -20,6 +21,7 @@ const DnDCalendar = withDragAndDrop(Calendar);
 export default function MyCalendar() {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [view, setView] = useState(Views.WEEK);
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState([]);
@@ -29,7 +31,7 @@ export default function MyCalendar() {
   const fileInputRef = useRef(null);
   const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
 
-  let axiosJWT = createAxios(user, dispatch, loginSuccess);
+  let axiosJWT = createAxios(user, dispatch, loginSuccess, navigate);
 
   const renderEvents = async () => {
     const data = await getEvents(user?.userData._id);

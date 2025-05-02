@@ -14,8 +14,7 @@ const Navbar = () => {
     let axiosJWT = createAxios(user, dispatch, logoutSuccess);
 
     const handleLogout = () => {
-        const access_token = user?.access_token;
-        logoutUser(dispatch, navigate, access_token, axiosJWT);
+        logoutUser(dispatch, navigate);
     }
     return (  
         <>  
