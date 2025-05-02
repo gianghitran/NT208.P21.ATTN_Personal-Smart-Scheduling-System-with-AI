@@ -29,7 +29,7 @@ const Chatbox = () => {
   const [isChecked, setTicked] = useState(false);
   
   const [events, setEvents] = useState([]);
-  const [newEvent, setNewEvent] = useState({ title: "", start: new Date(), end: new Date(), category: "work", description: "" });
+  const [newEvent, setNewEvent] = useState(false);
   const [loadTime, setLoadTime] = useState(new Date());
   
   const [parsedJson, setParsedJson] = useState({
@@ -57,6 +57,7 @@ const Chatbox = () => {
         description: rest.description,
       }));
       setEvents(items);
+      
     } catch (err) {
       console.error("Lỗi khi tải sự kiện:", err);
     }
@@ -66,32 +67,19 @@ const Chatbox = () => {
       renderEvents();
     }
   }, [userId]);
-  const addEvent = async () => {
-    if (newEvent.end < newEvent.start) {
-      alert("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
-      console.log("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+  const addEvent = async (event) => {
+    if (!event || !event.title || !event.start || !event.end) {
+      alert("Event data không hợp lệ!");
       return;
     }
-    if (!newEvent.title?.trim()) {
-      console.log("Tiêu đề sự kiện rỗng ( log từ Chatbox.jsx)")
-      return;
-    }
-    const event = {
-      userId: userId,
-      title: newEvent.title.trim(),
-      start: newEvent.start ? newEvent.start : new Date(),
-      end: newEvent.end ? newEvent.end : new Date(),
-      category: newEvent.category || "other",
-      description: newEvent.description?.trim() || ""
-    };
+    
     try {
       console.log("Gửi sự kiện:", event);
       await addEvents(event, access_token, axiosJWT);
+      
       await renderEvents();
-      alert("Sự kiện được thêm thành công")
+      alert("Sự kiện được thêm thành công");
       console.log("Thêm thành công sự kiện");
-
-
     } catch (error) {
       console.error("Lỗi khi thêm sự kiện:", error);
       alert("Lỗi khi thêm sự kiện!");
@@ -238,28 +226,7 @@ const Chatbox = () => {
       
       
             
-      if (isChecked && checkIfJSON(botReply)) {
-        try {
-          const jsonStart = botReply.indexOf("{");
-          const jsonEnd = botReply.lastIndexOf("}") + 1;
-          const jsonStr = botReply.substring(jsonStart, jsonEnd);
-          const parsed = JSON.parse(jsonStr);
-
-          if (parsed.title && parsed.start && parsed.end) {
-        setParsedJson(parsed); // Cập nhật state trung gian nếu cần
-        setNewEvent({
-          title: parsed.title,
-          description: parsed.description || "",
-          start: new Date(parsed.start),
-          end: new Date(parsed.end),
-          category: parsed.category || "work",
-        });
-          }
-        } catch (err) {
-          console.error("⚠️ Không thể phân tích JSON từ phản hồi:", err);
-        }
-      }
-
+      
       
       // Cập nhật tin nhắn ngay lập tức trước khi gửi lên server
         
@@ -270,7 +237,7 @@ const Chatbox = () => {
           content: chatbox_Res,
           sender: "assistant",
           timestamp: new Date().toISOString(),
-          status: "sent"
+          status: "Chatboxsent"
         }));
       // Câu hỏi người dùng
 
@@ -289,7 +256,7 @@ const Chatbox = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, message: input, botReply }),
       });
-    fetchChatHistory();
+    // fetchChatHistory();
     
     setLoading(false);
   
@@ -297,21 +264,12 @@ const Chatbox = () => {
       if (error.response && error.response.status === 429) {
         console.log("Rate limit hit: token usage");
         //Lỗi
-        dispatch(addMessage({
-          content: `Error: rate limit token`,
-          sender: "system",
-          timestamp: new Date().toISOString(),
-          status: "error"
-        }));
+        alert("Rate limit hit: token usage");
       }
       else{
       //Lỗi
-      dispatch(addMessage({
-        content: `Error: ${error.message}`,
-        sender: "system",
-        timestamp: new Date().toISOString(),
-        status: "error"
-      }));
+      alert("Error: " + error.message);
+      console.error("Error:", error.message);
     }
 
     
@@ -335,7 +293,25 @@ const Chatbox = () => {
     }));
 
     };
-  
+
+    const [editableEvents, setEditableEvents] = useState({});
+
+    const parseEventFromJSON = (str) => {
+      try {
+        const jsonStart = str.indexOf("{");
+        const jsonEnd = str.lastIndexOf("}") + 1;
+        const jsonStr = str.substring(jsonStart, jsonEnd);
+        const parsed = JSON.parse(jsonStr);
+    
+        if (parsed.title && parsed.start && parsed.end) {
+          return parsed;
+        }
+        return null;
+      } catch (err) {
+        return null;
+      }
+    };
+    
     const [voiceText, setVoiceText] = useState("");
     const [isTransferring, setIsTransferring] = useState(false);
     const handleTranscribedText = (text) => {
@@ -423,6 +399,7 @@ const Chatbox = () => {
             .slice(-24)
             .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
             .map((msg, index) => {
+              
               let messageClass = chatbox.response_ans;
               if (msg.sender === "user") {
                 messageClass += ` ${chatbox.user}`;
@@ -435,7 +412,27 @@ const Chatbox = () => {
               if (msg.status === "loading") {
                 messageClass += ` ${chatbox.loading}`;
               }
-            if (checkIfJSON(msg.content)){
+              let parsedEvent = null;
+              if (typeof msg.content === "string" && checkIfJSON(msg.content)) {
+                parsedEvent = parseEventFromJSON(msg.content);
+              }
+              if (parsedEvent) {
+                if (!editableEvents[index]) {
+                  setEditableEvents((prev) => ({
+                    ...prev,
+                    [index]: parsedEvent,
+                  }));
+                }
+                const handleFieldChange = (field, value,index) => {
+                  setEditableEvents((prev) => ({
+                    ...prev,
+                    [index]: {
+                      ...prev[index],
+                      [field]: value,
+                    },
+                  }));
+                };
+                
                 return (
                   <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
                          
@@ -446,9 +443,10 @@ const Chatbox = () => {
                             <input
                               type="text"
                               name="title"
-                              value={newEvent.title}
+                              value={editableEvents[index]?.title || ""}
                               className={chatbox.input_field}
-                              onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                              onChange={(e) => handleFieldChange("title", e.target.value,index)}
+                              // onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
                             />
                           </label>
                           </div>
@@ -457,9 +455,10 @@ const Chatbox = () => {
                             <strong>Start Date:</strong>
                             <input
                               type="datetime-local"
-                              value={moment(newEvent.start).format("YYYY-MM-DDTHH:mm")}
+                              value={moment(editableEvents[index]?.start).format("YYYY-MM-DDTHH:mm")}
                               className={chatbox.input_field}
-                              onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
+                              onChange={(e) => handleFieldChange("start", e.target.value,index)}
+                              // onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
                             />
                           </label>
                           </div>
@@ -468,9 +467,10 @@ const Chatbox = () => {
                             <strong>End Date:</strong>
                             <input
                               type="datetime-local"
-                              value={moment(newEvent.end).format("YYYY-MM-DDTHH:mm")}
+                              value={moment(editableEvents[index]?.end).format("YYYY-MM-DDTHH:mm")}
                               className={chatbox.input_field}
-                              onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
+                              onChange={(e) => handleFieldChange("end", e.target.value,index)}
+                              // onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
                             />
                           </label>
                           </div>
@@ -478,9 +478,10 @@ const Chatbox = () => {
                           <label>
                             <strong>Category:</strong>
                             <select
-                              value={newEvent.category}
+                              value={editableEvents[index]?.category}
                               className={chatbox.input_field}
-                              onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
+                              onChange={(e) => handleFieldChange("category", e.target.value,index)}
+                              // onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
                             >
                               <option value="work">Work</option>
                               <option value="school">School</option>
@@ -496,19 +497,31 @@ const Chatbox = () => {
                             <textarea
                               type="text"
                               name="description"
-                              value={newEvent.description}
+                              value={editableEvents[index]?.description}
                               className={chatbox.input_field}
-                              onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                              onChange={(e) => handleFieldChange("description", e.target.value,index)}
+                              // onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
                             />
                           </label>
                           </div>
                           <button
                             className={chatbox.btnSuccess}
-                            onClick={addEvent}
-                          
+                            onClick={() => {
+                              const newevent = {
+                                title: editableEvents[index]?.title,
+                                start: new Date(editableEvents[index]?.start),
+                                end: new Date(editableEvents[index]?.end),
+                                category: editableEvents[index]?.category,
+                                description: editableEvents[index]?.description,
+                              };
+                              setNewEvent(newevent);
+                              addEvent(newevent);
+                            }}
+                            
                           >
-                            Add event (+)
-                            </button>
+                            Add event to Calendar (+)
+                          </button>
+
                               </div>
                             </div>
                 );
