@@ -60,9 +60,11 @@ export const sessionStore = configureStore({
   reducer: persistedReducer2,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    },
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, 'record/setRecord'],
+        ignoredActionPaths: ['payload'], // ignore payload của action
+        ignoredPaths: ['record.record']  // ignore path này trong state 
+      },
     }),
   })
 
