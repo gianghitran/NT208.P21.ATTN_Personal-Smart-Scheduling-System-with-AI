@@ -12,11 +12,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 1rem 1rem 1rem 0;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
 }
 
 .header {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 800;
     color: #7a1a08;
 }
@@ -41,7 +45,7 @@
 .eventTime {
     font-weight: bold;
     font-size: 1.2rem;
-    width: 130px;
+    width: 140px;
     text-align: center;
     flex-shrink: 0;
 }
@@ -87,16 +91,11 @@
 .eventDesc {
     font-size: 0.95rem;
     color: #e0e0e0;
-    margin-left: auto;
+    margin-left: 10px;
     white-space: pre-line;
-    max-width: 60%;
+    max-width: 80%;
     text-align: right;
     word-break: break-word;
-}
-
-.iconSection {
-    display: flex;
-    gap: 0.5rem;
 }
 
 .group {
@@ -115,4 +114,56 @@
 .empty {
     font-style: italic;
     color: #aaa;
+}
+
+
+
+@media (max-width: 768px) {
+    .container {
+      width: 100%;
+      margin-left: 5px;
+    }
+
+    .headerSection {
+      padding: 2rem 0.5rem 0.5rem 0;
+    }
+
+    .header {
+      font-size: 1.1rem;
+    }
+
+    .groupTitle {
+      font-size: 1rem;
+    }
+
+    .eventTime {
+        font-size: 80%;
+        width: 70px;
+        margin-left: -15px;
+    }
+
+    .verticalLine {
+        width: 1px;
+        margin-left: 0;
+        margin-right: 5px;
+    }
+
+    .eventTitle {
+        font-size: 80%;
+    }
+
+    .eventCategory {
+        font-size: 70%;
+    }
+    .eventBlock {
+        margin-right: 0.5rem;
+    }
+    .eventDesc {
+        font-size: 80%;
+    }
+    .group {
+        margin-bottom: 0.5rem;
+    }
+
+
 }
