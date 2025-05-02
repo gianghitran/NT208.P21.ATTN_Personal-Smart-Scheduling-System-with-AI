@@ -2,11 +2,12 @@ const User = require('../../Models/User');
 const RefreshToken = require('../../Models/Token');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const validator = require('validator');
 const cookieParser = require('cookie-parser');
 const { OAuth2Client } = require('google-auth-library');
 const dotenv = require('dotenv');
-const { sendVerificationEmail } = require('../../Utils/emails');
+const { sendVerificationEmail, sendResetPasswordEmail } = require('../../Utils/emails');
 
 dotenv.config();
 
@@ -70,11 +71,11 @@ const authController = {
 
     logoutUser: async (req, res) => {
         try {
-
             await RefreshToken.deleteOne({ refreshToken: req.cookies.refresh_token });
             res.clearCookie("refresh_token", {
                 httpOnly: true,
                 secure: false,
+                sameSite: "strict",
             });
             return res.status(200).json({ message: "User logged out" });
         } catch (error) {
@@ -214,6 +215,60 @@ const authController = {
         } catch (error) {
             return res.status(500).json({ message: error });
         }
+    },
+
+    resetPassword: async (req, res) => {
+        try {
+            const { token } = req.params;
+            const { password } = req.body;
+
+            const user = await User.findOne({
+                resetPasswordToken: token,
+                resetPasswordExpires: { $gt: Date.now() }
+            })
+
+            if (!user) {
+                return res.status(400).json({ message: "Invalid or expired token" });
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            user.password = hashedPassword;
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpires = undefined;
+            await user.save();
+            return res.status(200).json({ message: "Password reset successfully" });
+        } catch (error) {
+            console.error("Error resetting password:", error);
+            return res.status(500).json({ message: error });
+        }
+    },
+
+    forgotPassword: async (req, res) => {
+        const { email } = req.body;
+        try {
+            const user = await User.findOne({ email: email });
+
+            if (!user) {
+                return res.status(400).json({ message: "User not found" });
+            }
+
+            // Generate reset token
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            const resetTokenExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+            user.resetPasswordToken = resetToken;
+            user.resetPasswordExpires = resetTokenExpires;
+            
+            await user.save();
+
+            // Send email
+            await sendResetPasswordEmail(email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);
+            return res.status(200).json({ message: "Reset password email sent" });
+        } catch (error) {
+            console.error("Error sending reset password email:", error);
+            return res.status(500).json({ message: "Error sending email" });   
+        }   
+
     },
 
     requestRefreshToken: async (req, res) => {
