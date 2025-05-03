@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice";
 import Papa from "papaparse";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -57,9 +59,9 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      // alert(`Sự kiện "${event.title}" đã được di chuyển!`);
+      toast.success(`Sự kiện "${event.title}" đã được di chuyển!`);
     } else {
-      alert("⛔ Lỗi: Không thể cập nhật sự kiện!");
+      toast.error("⛔ Lỗi: Không thể cập nhật sự kiện!");
     }
   };
 
@@ -69,9 +71,9 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      // alert(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
+      toast.success(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
     } else {
-      alert("⛔ Lỗi: Không thể cập nhật sự kiện!");
+      toast.error("⛔ Lỗi: Không thể cập nhật sự kiện!");
     }
   };
 
@@ -100,7 +102,7 @@ export default function MyCalendar() {
 
   const addEvent = async () => {
     if (newEvent.end < newEvent.start) {
-      alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      toast.error("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
       return;
     }
     const event = {
@@ -115,14 +117,14 @@ export default function MyCalendar() {
       setModalIsOpen(false);
       renderEvents();
     } catch (error) {
-      alert("❌ Lỗi khi thêm sự kiện!");
+      toast.error("❌ Lỗi khi thêm sự kiện!");
       setModalIsOpen(false);
     }
   };
 
   const saveEditedEvent = async () => {
     if (selectedEvent.end < selectedEvent.start) {
-      alert("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      toast.error("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
       return;
     }
 
@@ -140,9 +142,8 @@ export default function MyCalendar() {
     const response = await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === selectedEvent.id ? { ...e, ...event } : e));
-      // alert(`Sự kiện "${selectedEvent.title}" đã được cập nhật!`);
     } else {
-      alert("⛔ Lỗi: Không thể cập nhật sự kiện!");
+      toast.error("⛔ Lỗi: Không thể cập nhật sự kiện!");
     }
     setModalIsOpen(false);
   };
@@ -153,7 +154,7 @@ export default function MyCalendar() {
       setEvents(events.filter(event => event.id !== eventId));
       setModalIsOpen(false);
     } catch (error) {
-      alert("❌ Lỗi khi xóa sự kiện!");
+      toast.error("❌ Lỗi khi xóa sự kiện!");
     }
   };
 
@@ -189,7 +190,7 @@ export default function MyCalendar() {
 
     const file = e.dataTransfer.files[0];
     if (!file) {
-      alert("No file detected!");
+      toast.error("No file detected!");
       return;
     }
 
@@ -221,7 +222,7 @@ export default function MyCalendar() {
           }
         }
         await renderEvents();
-        alert("Import thành công!");
+        toast.success("Import thành công!");
         setUploadModalIsOpen(false);
       },
     });
@@ -262,7 +263,7 @@ export default function MyCalendar() {
           }
         }
         await renderEvents();
-        alert("Upload thành công!");
+        toast.success("Upload thành công!");
       },
     });
   };
@@ -288,32 +289,25 @@ export default function MyCalendar() {
 
   const syncWithGoogleCalendar = async () => {
     if (!user?.access_token) {
-      alert("Bạn chưa đăng nhập hoặc token không tồn tại.");
+      toast.error("Bạn chưa đăng nhập hoặc token không tồn tại.");
       return;
     }
 
     try {
-      // const response = await fetch('/api/google-calendar/sync', {
-      //   method: 'POST',
-      //   headers: {
-      //     Authorization: `Bearer ${user.access_token}`,
-      //   },
-      // });
-
       const response = await axiosJWT.post('/api/google-calendar/sync', {}, {
         headers: {
           Authorization: `Bearer ${user.access_token}`,
         },
         withCredentials: true,
         validateStatus: (status) => {
-          return status === 200 || status === 403; // Resolve only if the status code is 200 or 403
+          return status === 200 || status === 403;
         }
       });
 
       const data = response.data;
 
       if (response.status === 200) {
-        alert(`✅ ${data.message || "Đã đồng bộ Google Calendar thành công!"}`);
+        toast.success(`✅ ${data.message || "Đã đồng bộ Google Calendar thành công!"}`);
         await renderEvents();
       } else {
         if (
@@ -321,16 +315,16 @@ export default function MyCalendar() {
           data.message?.toLowerCase().includes("google calendar") ||
           data.message?.toLowerCase().includes("token")
         ) {
-          alert('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
+          toast.info('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
           const urlRes = await axios('/api/auth/connect-google', { withCredentials: true });
           const { url } = await urlRes.data;
           window.location.href = url;
         } else {
-          alert(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`);
+          toast.error(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`);
         }
       }
     } catch (error) {
-      alert('❌ Lỗi khi đồng bộ Google Calendar');
+      toast.error('❌ Lỗi khi đồng bộ Google Calendar');
     }
   };
 
@@ -655,6 +649,7 @@ export default function MyCalendar() {
           <button onClick={() => setUploadModalIsOpen(false)} className={styles.closeButton}>Close</button>
         </div>
       </Modal>
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </div>
   );
 }
