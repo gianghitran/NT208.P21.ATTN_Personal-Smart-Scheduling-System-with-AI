@@ -16,15 +16,17 @@ const chatSlice = createSlice({
       }
     },
 
-   
-
-    loadMoreMessages: (state, action) => {
-      const oldMessages = action.payload;
-      state.messages = [...oldMessages, ...state.messages];
-    },
+    // loadMoreMessages: (state, action) => {
+    //   const oldMessages = action.payload;
+    //   state.messages = [...oldMessages, ...state.messages];
+    // },
 
     setLoading: (state, action) => {
       state.loading = action.payload;
+    },
+
+    clearMessages: (state) => {
+      state.messages = [];
     },
 
   },
@@ -41,6 +43,7 @@ export const {
   addMessage,
   loadMoreMessages,
   setLoading,
+  clearMessages,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

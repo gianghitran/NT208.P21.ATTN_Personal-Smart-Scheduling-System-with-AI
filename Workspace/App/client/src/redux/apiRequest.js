@@ -1,6 +1,6 @@
 import { loginRequest, loginSuccess, loginFailure, registerFailure, registerRequest, registerSuccess, logoutRequest, logoutSuccess, logoutFailure } from "./authSlice";
 import axios from "axios";
-import {  addMessage,  loadMoreMessages,  setLoading,} from "./chatSlide";
+import {  addMessage,  loadMoreMessages,  setLoading, clearMessages} from "./chatSlide";
 import { resetApp } from "./resetAction";
 
 
@@ -16,6 +16,9 @@ export const loadOldMessagesAPI = async (userId,dispatch) => {
     if (messages.length === 0) {
       console.log("Không có tin nhắn cũ.");
     }
+
+    dispatch(clearMessages()); // Xóa tin nhắn cũ trong Redux trước khi thêm tin nhắn mới
+
     const sortedMessages = messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     sortedMessages.forEach((m) =>
       dispatch(addMessage({
@@ -27,7 +30,7 @@ export const loadOldMessagesAPI = async (userId,dispatch) => {
       }))
     );
 
-    dispatch(loadMoreMessages(sortedMessages));
+    // dispatch(loadMoreMessages(sortedMessages));
     return { success: true, sortedMessages };
   } catch (err) {
     console.error("❌ Lỗi khi load tin nhắn:", err);
