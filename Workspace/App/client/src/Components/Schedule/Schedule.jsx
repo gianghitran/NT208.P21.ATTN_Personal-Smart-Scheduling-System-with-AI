@@ -61,7 +61,7 @@ export default function MyCalendar() {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
       toast.success(`Sự kiện "${event.title}" đã được di chuyển!`);
     } else {
-      toast.error("⛔ Lỗi: Không thể cập nhật sự kiện!");
+      toast.error("Lỗi: Không thể cập nhật sự kiện!");
     }
   };
 
@@ -73,7 +73,7 @@ export default function MyCalendar() {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
       toast.success(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
     } else {
-      toast.error("⛔ Lỗi: Không thể cập nhật sự kiện!");
+      toast.error("Lỗi: Không thể cập nhật sự kiện!");
     }
   };
 
@@ -102,7 +102,7 @@ export default function MyCalendar() {
 
   const addEvent = async () => {
     if (newEvent.end < newEvent.start) {
-      toast.error("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
       return;
     }
     const event = {
@@ -116,15 +116,16 @@ export default function MyCalendar() {
       await addEvents(event, access_token, axiosJWT);
       setModalIsOpen(false);
       renderEvents();
+      toast.success(`Sự kiện "${event.title}" đã được thêm thành công!`);
     } catch (error) {
-      toast.error("❌ Lỗi khi thêm sự kiện!");
+      toast.error("Lỗi khi thêm sự kiện!");
       setModalIsOpen(false);
     }
   };
 
   const saveEditedEvent = async () => {
     if (selectedEvent.end < selectedEvent.start) {
-      toast.error("⛔ Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
       return;
     }
 
@@ -142,8 +143,9 @@ export default function MyCalendar() {
     const response = await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === selectedEvent.id ? { ...e, ...event } : e));
+      toast.success(`Sự kiện "${event.title}" đã được sửa thành công!`);
     } else {
-      toast.error("⛔ Lỗi: Không thể cập nhật sự kiện!");
+      toast.error("Lỗi: Không thể cập nhật sự kiện!");
     }
     setModalIsOpen(false);
   };
@@ -153,8 +155,9 @@ export default function MyCalendar() {
       await deleteEvents(eventId, user?.userData._id, user?.access_token, axiosJWT);
       setEvents(events.filter(event => event.id !== eventId));
       setModalIsOpen(false);
+      toast.success("🗑️ Xóa sự kiện thành công!");
     } catch (error) {
-      toast.error("❌ Lỗi khi xóa sự kiện!");
+      toast.error("Lỗi khi xóa sự kiện!");
     }
   };
 
