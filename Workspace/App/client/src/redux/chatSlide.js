@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { resetApp } from './resetAction';
 
 const chatSlice = createSlice({
   name: 'chat',
@@ -26,6 +27,13 @@ const chatSlice = createSlice({
       state.loading = action.payload;
     },
 
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(resetApp, (state) => {
+      state.messages = [];
+      state.loading = false;
+    })
   },
 });
 
