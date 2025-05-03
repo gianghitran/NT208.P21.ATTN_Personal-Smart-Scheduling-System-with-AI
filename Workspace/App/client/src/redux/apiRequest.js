@@ -1,6 +1,7 @@
 import { loginRequest, loginSuccess, loginFailure, registerFailure, registerRequest, registerSuccess, logoutRequest, logoutSuccess, logoutFailure } from "./authSlice";
 import axios from "axios";
 import {  addMessage,  loadMoreMessages,  setLoading,} from "./chatSlide";
+import { resetApp } from "./resetAction";
 
 
 
@@ -97,6 +98,7 @@ export const logoutUser = async (dispatch, navigate) => {
             withCredentials: true,
         });
         dispatch(logoutSuccess());
+        dispatch(resetApp());
         navigate("/");
     } catch (error) {
         dispatch(logoutFailure());
