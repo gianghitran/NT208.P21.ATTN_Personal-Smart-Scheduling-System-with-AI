@@ -80,6 +80,7 @@ const Chatbox = () => {
       await renderEvents();
       alert("Sự kiện được thêm thành công");
       console.log("Thêm thành công sự kiện");
+      
     } catch (error) {
       console.error("Lỗi khi thêm sự kiện:", error);
       alert("Lỗi khi thêm sự kiện!");
@@ -179,13 +180,13 @@ const Chatbox = () => {
     const userMessage = `[Question:]\n ${input}`;
   
     // Hiển thị tin nhắn của người dùng ngay lập tức
-    const user_ask= `[Asking:]\n ${input}`;
-    dispatch(addMessage({
-      content: user_ask,
-      sender: "user",
-      timestamp: new Date().toISOString(),
-      status: "loading"
-    }));
+    // const user_ask= `[Asking:]\n ${input}`;
+    // dispatch(addMessage({
+    //   content: user_ask,
+    //   sender: "user",
+    //   timestamp: new Date().toISOString(),
+    //   status: "loading"
+    // }));
     
     setInput("");
     setLoading(true);
@@ -237,7 +238,7 @@ const Chatbox = () => {
           content: chatbox_Res,
           sender: "assistant",
           timestamp: new Date().toISOString(),
-          status: "Chatboxsent"
+          status: "sent"
         }));
       // Câu hỏi người dùng
 
@@ -319,6 +320,25 @@ const Chatbox = () => {
       setVoiceText(text);
       setInput(text);  
     };
+    
+    // useEffect(() => {
+    //   const latestIndex = [...messages].reverse().findIndex(
+    //     (msg) => msg.sender === "assistant" && checkIfJSON(msg.content)
+    //   );
+    
+    //   if (latestIndex !== -1) {
+    //     const realIndex = messages.length - 1 - latestIndex;
+    //     const parsed = parseEventFromJSON(messages[realIndex].content);
+    //     if (parsed && !editableEvents[realIndex]) {
+    //       setEditableEvents((prev) => ({
+    //         ...prev,
+    //         [realIndex]: parsed,
+    //       }));
+    //     }
+    //   }
+    // }, [messages]);
+    
+    
   return (
     <div className={chatbox.container}>
       
@@ -399,7 +419,6 @@ const Chatbox = () => {
             .slice(-24)
             .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
             .map((msg, index) => {
-              
               let messageClass = chatbox.response_ans;
               if (msg.sender === "user") {
                 messageClass += ` ${chatbox.user}`;
@@ -416,7 +435,7 @@ const Chatbox = () => {
               if (typeof msg.content === "string" && checkIfJSON(msg.content)) {
                 parsedEvent = parseEventFromJSON(msg.content);
               }
-              if (parsedEvent) {
+              if (parsedEvent && msg.sender === "assistant") {
                 if (!editableEvents[index]) {
                   setEditableEvents((prev) => ({
                     ...prev,
@@ -434,7 +453,7 @@ const Chatbox = () => {
                 };
                 
                 return (
-                  <div key={index} className={`${chatbox.response_ans} ${chatbox[msg.type] || ""}`}>
+                  <div key={index} className={messageClass}>
                          
                           <div className={chatbox.event_card}>
                           <div className={chatbox.formGroup}>
@@ -522,7 +541,7 @@ const Chatbox = () => {
                             Add event to Calendar (+)
                           </button>
 
-                              </div>
+                              </div >
                             </div>
                 );
               }

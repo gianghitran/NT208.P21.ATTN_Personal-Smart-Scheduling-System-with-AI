@@ -10,6 +10,9 @@ const chatSlice = createSlice({
   reducers: {
     addMessage: (state, action) => {
       state.messages.push(action.payload);
+      if (state.messages.length > 24) {
+        state.messages = state.messages.slice(-24); // Chỉ giữ 18 tin nhắn cuối cùng
+      }
     },
 
    
