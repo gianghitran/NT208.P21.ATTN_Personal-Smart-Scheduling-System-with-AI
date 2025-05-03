@@ -14,6 +14,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import OAuthCallback from './Components/OAuthCallback/OAuthCallback';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
     const isLoggedIn = useSelector((state) => state.auth.login.currentUser);
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/oauth2callback" element={<OAuthCallback />} />
               </Routes>
             </div>
+            <ToastContainer />
       </>
     );
 }
