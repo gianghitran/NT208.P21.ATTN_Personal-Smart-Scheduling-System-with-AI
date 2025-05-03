@@ -13,6 +13,9 @@ import { addMessage } from "../../redux/chatSlide";
 import { loadOldMessagesAPI } from "../../redux/apiRequest";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
 import RecordButton from "../VoiceAsk/Record_Button";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 const Chatbox = () => {
@@ -69,7 +72,11 @@ const Chatbox = () => {
   }, [userId]);
   const addEvent = async (event) => {
     if (!event || !event.title || !event.start || !event.end) {
-      alert("Event data không hợp lệ!");
+      toast.error("Tiêu đề sự kiện rỗng!");
+      return;
+    }
+    if (new Date(event.start).getTime() >= new Date(event.end).getTime()) {
+      toast.error("Thời gian bắt đầu phải trước thời gian kết thúc!");
       return;
     }
     
@@ -78,12 +85,12 @@ const Chatbox = () => {
       await addEvents(event, access_token, axiosJWT);
       
       await renderEvents();
-      alert("Sự kiện được thêm thành công");
+      toast.success("Sự kiện được thêm thành công");
       console.log("Thêm thành công sự kiện");
       
     } catch (error) {
       console.error("Lỗi khi thêm sự kiện:", error);
-      alert("Lỗi khi thêm sự kiện!");
+      toast.error("Lỗi khi thêm sự kiện!");
     }
   };
   
@@ -602,6 +609,7 @@ const Chatbox = () => {
                       })}
                   </div>
                 )}
+                <ToastContainer position="bottom-right" autoClose={3000} />
               </div>
 );
 };
