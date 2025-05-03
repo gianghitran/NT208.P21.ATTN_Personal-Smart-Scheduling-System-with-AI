@@ -8,6 +8,7 @@ import Setting from "./Components/Setting/Setting";
 import Schedule from "./Components/Schedule/Schedule";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
+import EmailVerification from "./Components/EmailVerification/EmailVerification";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
@@ -29,6 +30,7 @@ function App() {
                     <Route path="/" element={<Home/>} />  
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} /> 
+                    <Route path="/email-verification" element={<EmailVerification/>} />
                   </>
                 )}
 

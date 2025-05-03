@@ -297,6 +297,50 @@ const Chatbox = () => {
 
     const [editableEvents, setEditableEvents] = useState({});
 
+    useEffect(() => {
+      const slicedSortedMessages = [...messages]
+        .slice(-24)
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  
+      const newEditableEvents = {};
+  
+      slicedSortedMessages.forEach((msg, index) => {
+        if (
+          msg.sender === "assistant" &&
+          typeof msg.content === "string" &&
+          checkIfJSON(msg.content)
+        ) {
+          const parsed = parseEventFromJSON(msg.content);
+          if (parsed) {
+            newEditableEvents[index] = parsed;
+          }
+        }
+      });
+  
+      const isChanged = Object.entries(newEditableEvents).some(
+        ([key, value]) =>
+          JSON.stringify(editableEvents[key]) !== JSON.stringify(value)
+      );
+  
+      if (isChanged) {
+        setEditableEvents((prev) => ({
+          ...prev,
+          ...newEditableEvents,
+        }));
+      }
+    }, [messages]);
+
+    const handleFieldChange = (field, value,index) => {
+      setEditableEvents((prev) => ({
+        ...prev,
+        [index]: {
+          ...prev[index],
+          [field]: value,
+        },
+      }));
+    };
+
+
     const parseEventFromJSON = (str) => {
       try {
         const jsonStart = str.indexOf("{");
@@ -442,15 +486,9 @@ const Chatbox = () => {
                     [index]: parsedEvent,
                   }));
                 }
-                const handleFieldChange = (field, value,index) => {
-                  setEditableEvents((prev) => ({
-                    ...prev,
-                    [index]: {
-                      ...prev[index],
-                      [field]: value,
-                    },
-                  }));
-                };
+
+                //* Đã chuyển hàm handleFieldChange thành một hàm bên ngoài *//
+
                 
                 return (
                   <div key={index} className={messageClass}>
