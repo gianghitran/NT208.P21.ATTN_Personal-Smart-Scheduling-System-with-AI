@@ -296,6 +296,9 @@ export default function MyCalendar() {
       return;
     }
 
+    // Hiện toast loading
+    const loadingId = toast.loading("Đang đồng bộ với Google Calendar...");
+
     try {
       const response = await axiosJWT.post('/api/google-calendar/sync', {}, {
         headers: {
@@ -309,8 +312,13 @@ export default function MyCalendar() {
 
       const data = response.data;
 
+      toast.dismiss(loadingId);
+
       if (response.status === 200) {
-        toast.success(`✅ ${data.message || "Đã đồng bộ Google Calendar thành công!"}`);
+        const message = Array.isArray(data.message)
+          ? data.message.filter(Boolean).join('\n')
+          : data.message || "Đã đồng bộ Google Calendar thành công!";
+        toast.success(`✅ ${message}`);
         await renderEvents();
       } else {
         if (
@@ -327,6 +335,7 @@ export default function MyCalendar() {
         }
       }
     } catch (error) {
+      toast.dismiss(loadingId);
       toast.error('❌ Lỗi khi đồng bộ Google Calendar');
     }
   };
