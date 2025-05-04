@@ -14,6 +14,7 @@ import { loadOldMessagesAPI } from "../../redux/apiRequest";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
 import RecordButton from "../VoiceAsk/Record_Button";
 import { ToastContainer, toast } from "react-toastify";
+import { customToast } from "../../utils/customToast";
 import "react-toastify/dist/ReactToastify.css";
 
 
@@ -72,11 +73,14 @@ const Chatbox = () => {
   }, [userId]);
   const addEvent = async (event) => {
     if (!event || !event.title || !event.start || !event.end) {
-      toast.error("Tiêu đề sự kiện rỗng!");
+      // toast.error("Tiêu đề sự kiện rỗng!");
+      customToast("Tiêu đề sự kiện rỗng!", "error", "bottom-right", 3000);
+
       return;
     }
     if (new Date(event.start).getTime() >= new Date(event.end).getTime()) {
-      toast.error("Thời gian bắt đầu phải trước thời gian kết thúc!");
+      // toast.error("Thời gian bắt đầu phải trước thời gian kết thúc!");
+      customToast("Thời gian bắt đầu phải trước thời gian kết thúc!", "error", "bottom-right", 3000);
       return;
     }
     
@@ -85,12 +89,14 @@ const Chatbox = () => {
       await addEvents(event, access_token, axiosJWT);
       
       await renderEvents();
-      toast.success("Sự kiện được thêm thành công");
+      // toast.success("Sự kiện được thêm thành công");
+      customToast("Sự kiện được thêm thành công", "success", "bottom-right", 3000);
       console.log("Thêm thành công sự kiện");
       
     } catch (error) {
       console.error("Lỗi khi thêm sự kiện:", error);
-      toast.error("Lỗi khi thêm sự kiện!");
+      // toast.error("Lỗi khi thêm sự kiện!");
+      customToast("Lỗi khi thêm sự kiện!", "error", "bottom-right", 3000);
     }
   };
   
@@ -609,7 +615,7 @@ const Chatbox = () => {
                       })}
                   </div>
                 )}
-                <ToastContainer position="bottom-right" autoClose={3000} />
+                {/* <ToastContainer position="bottom-right" autoClose={3000} /> */}
               </div>
 );
 };

@@ -11,6 +11,7 @@ import { loginSuccess } from "../../redux/authSlice";
 import Modal from "react-modal";
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
+import { customToast } from "../../utils/customToast";
 import 'react-toastify/dist/ReactToastify.css';
 
 const Mytask = () => {
@@ -47,7 +48,8 @@ const Mytask = () => {
     const updatedEvents = events.map(event => {
       if (event._id === eventId) {
         event.completed = !event.completed;
-        toast.success(`"${event.title}" đã được đánh dấu là ${event.completed ? 'hoàn thành' : 'chưa hoàn thành'}!`);
+        // toast.success(`"${event.title}" đã được đánh dấu là ${event.completed ? 'hoàn thành' : 'chưa hoàn thành'}!`);
+        customToast(`"${event.title}" đã được đánh dấu là ${event.completed ? 'hoàn thành' : 'chưa hoàn thành'}!`, "success", "bottom-right", 3000);
       }
       return event;
     });
@@ -62,7 +64,8 @@ const Mytask = () => {
     const updatedEvents = events.map(event => {
       if (event._id === eventId) {
         event.completed = false;
-        toast.success(`"${event.title}" đã được chuyển về danh sách cần làm!`);
+        // toast.success(`"${event.title}" đã được chuyển về danh sách cần làm!`);
+        customToast(`"${event.title}" đã được chuyển về danh sách cần làm!`, "success", "bottom-right", 3000);
       }
       return event;
     });
@@ -80,7 +83,7 @@ const Mytask = () => {
 
   return (
     <div className={mytask.app_container}>
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      {/* <ToastContainer position="bottom-right" autoClose={3000} /> */}
       <div className={mytask.notebox}>
         <span className={`${mytask.dot} ${mytask.green}`}></span> Valid
         <span className={`${mytask.dot} ${mytask.red}`}></span> Expired
