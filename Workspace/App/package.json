@@ -8,7 +8,7 @@
     "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
     "start-client": "cd client && npm start",
     "start-server": "cd server && npm start",
-    "build": "cd client && npm install && cd ../server && npm install"
+    "build": "npm install && cd client && npm install && cd ../server && npm install"
   },
   "author": "",
   "license": "ISC",

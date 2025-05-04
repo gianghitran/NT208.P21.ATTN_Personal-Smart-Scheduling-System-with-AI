@@ -15,6 +15,7 @@ import { loginSuccess } from "../../redux/authSlice";
 import Papa from "papaparse";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { customToast } from "../../utils/customToast";
 import "react-toastify/dist/ReactToastify.css";
 
 const localizer = momentLocalizer(moment);
@@ -59,9 +60,11 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      toast.success(`Sự kiện "${event.title}" đã được di chuyển!`);
+      // toast.success(`Sự kiện "${event.title}" đã được di chuyển!`);
+      customToast(`Sự kiện "${event.title}" đã được di chuyển!`, "success", "bottom-right", 3000);
     } else {
-      toast.error("Lỗi: Không thể cập nhật sự kiện!");
+      // toast.error("Lỗi: Không thể cập nhật sự kiện!");
+      customToast("Lỗi: Không thể cập nhật sự kiện!", "error", "bottom-right", 3000);
     }
   };
 
@@ -71,9 +74,11 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      toast.success(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
+      // toast.success(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
+      customToast(`Sự kiện "${event.title}" đã được thay đổi kích thước!`, "success", "bottom-right", 3000);
     } else {
-      toast.error("Lỗi: Không thể cập nhật sự kiện!");
+      // toast.error("Lỗi: Không thể cập nhật sự kiện!");
+      customToast("Lỗi: Không thể cập nhật sự kiện!", "error", "bottom-right", 3000);
     }
   };
 
@@ -102,7 +107,9 @@ export default function MyCalendar() {
 
   const addEvent = async () => {
     if (newEvent.end < newEvent.start) {
-      toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      // toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      customToast("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!", "error", "bottom-right", 3000);
+
       return;
     }
     const event = {
@@ -116,16 +123,19 @@ export default function MyCalendar() {
       await addEvents(event, access_token, axiosJWT);
       setModalIsOpen(false);
       renderEvents();
-      toast.success(`Sự kiện "${event.title}" đã được thêm thành công!`);
+      // toast.success(`Sự kiện "${event.title}" đã được thêm thành công!`);
+      customToast(`Sự kiện "${event.title}" đã được thêm thành công!`, "success", "bottom-right", 3000);
     } catch (error) {
-      toast.error("Lỗi khi thêm sự kiện!");
+      // toast.error("Lỗi khi thêm sự kiện!");
+      customToast("Lỗi khi thêm sự kiện!", "error", "bottom-right", 3000);
       setModalIsOpen(false);
     }
   };
 
   const saveEditedEvent = async () => {
     if (selectedEvent.end < selectedEvent.start) {
-      toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      // toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      customToast("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!", "error", "bottom-right", 3000);
       return;
     }
 
@@ -143,9 +153,11 @@ export default function MyCalendar() {
     const response = await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === selectedEvent.id ? { ...e, ...event } : e));
-      toast.success(`Sự kiện "${event.title}" đã được sửa thành công!`);
+      // toast.success(`Sự kiện "${event.title}" đã được sửa thành công!`);
+      customToast(`Sự kiện "${event.title}" đã được sửa thành công!`, "success", "bottom-right", 3000);
     } else {
-      toast.error("Lỗi: Không thể cập nhật sự kiện!");
+      // toast.error("Lỗi: Không thể cập nhật sự kiện!");
+      customToast("Lỗi: Không thể cập nhật sự kiện!", "error", "bottom-right", 3000);
     }
     setModalIsOpen(false);
   };
@@ -155,9 +167,11 @@ export default function MyCalendar() {
       await deleteEvents(eventId, user?.userData._id, user?.access_token, axiosJWT);
       setEvents(events.filter(event => event.id !== eventId));
       setModalIsOpen(false);
-      toast.success("🗑️ Xóa sự kiện thành công!");
+      // toast.success("🗑️ Xóa sự kiện thành công!");
+      customToast("🗑️ Xóa sự kiện thành công!", "success", "bottom-right", 3000);
     } catch (error) {
-      toast.error("Lỗi khi xóa sự kiện!");
+      // toast.error("Lỗi khi xóa sự kiện!");
+      customToast("Lỗi khi xóa sự kiện!", "error", "bottom-right", 3000);
     }
   };
 
@@ -193,7 +207,8 @@ export default function MyCalendar() {
 
     const file = e.dataTransfer.files[0];
     if (!file) {
-      toast.error("No file detected!");
+      // toast.error("No file detected!");
+      customToast("No file detected!", "error", "bottom-right", 3000);
       return;
     }
 
@@ -225,7 +240,8 @@ export default function MyCalendar() {
           }
         }
         await renderEvents();
-        toast.success("Import thành công!");
+        // toast.success("Import thành công!");
+        customToast("Import thành công!", "success", "bottom-right", 3000);
         setUploadModalIsOpen(false);
       },
     });
@@ -266,7 +282,8 @@ export default function MyCalendar() {
           }
         }
         await renderEvents();
-        toast.success("Upload thành công!");
+        // toast.success("Upload thành công!");
+        customToast("Upload thành công!", "success", "bottom-right", 3000);
       },
     });
   };
@@ -292,12 +309,14 @@ export default function MyCalendar() {
 
   const syncWithGoogleCalendar = async () => {
     if (!user?.access_token) {
-      toast.error("Bạn chưa đăng nhập hoặc token không tồn tại.");
+      // toast.error("Bạn chưa đăng nhập hoặc token không tồn tại.");
+      customToast("Bạn chưa đăng nhập hoặc token không tồn tại.", "error", "bottom-right", 3000);
       return;
     }
 
     // Hiện toast loading
-    const loadingId = toast.loading("Đang đồng bộ với Google Calendar...");
+    // const loadingId = toast.loading("Đang đồng bộ với Google Calendar...");
+    const loadingId = customToast("Đang đồng bộ với Google Calendar...", "loading", "bottom-right", 3000);
 
     try {
       const response = await axiosJWT.post('/api/google-calendar/sync', {}, {
@@ -318,7 +337,8 @@ export default function MyCalendar() {
         const message = Array.isArray(data.message)
           ? data.message.filter(Boolean).join('\n')
           : data.message || "Đã đồng bộ Google Calendar thành công!";
-        toast.success(`✅ ${message}`);
+        // toast.success(`✅ ${message}`);
+        customToast(`✅ ${message}`, "success", "bottom-right", 3000);
         await renderEvents();
       } else {
         if (
@@ -326,17 +346,20 @@ export default function MyCalendar() {
           data.message?.toLowerCase().includes("google calendar") ||
           data.message?.toLowerCase().includes("token")
         ) {
-          toast.info('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
+          // toast.info('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
+          customToast('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...', "info", "bottom-right", 3000);
           const urlRes = await axios('/api/auth/connect-google', { withCredentials: true });
           const { url } = await urlRes.data;
           window.location.href = url;
         } else {
-          toast.error(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`);
+          // toast.error(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`);
+          customToast(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`, "error", "bottom-right", 3000);
         }
       }
     } catch (error) {
       toast.dismiss(loadingId);
-      toast.error('❌ Lỗi khi đồng bộ Google Calendar');
+      // toast.error('❌ Lỗi khi đồng bộ Google Calendar');
+      customToast('❌ Lỗi khi đồng bộ Google Calendar', "error", "bottom-right", 3000);
     }
   };
 
@@ -661,7 +684,7 @@ export default function MyCalendar() {
           <button onClick={() => setUploadModalIsOpen(false)} className={styles.closeButton}>Close</button>
         </div>
       </Modal>
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      {/* <ToastContainer position="bottom-right" autoClose={3000} /> */}
     </div>
   );
 }

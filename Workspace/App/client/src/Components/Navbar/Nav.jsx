@@ -5,6 +5,7 @@ import { icons } from "../../assets/icon";
 import { logoutUser } from "../../redux/apiRequest";
 import { logoutSuccess } from "../../redux/authSlice";
 import { createAxios } from "../../utils/axiosConfig";
+import { customToast } from "../../utils/customToast";
 import threebears from "../../assets/threebears.jpg";
 const Navbar = () => {
     const menu_icon = icons["menu"];
@@ -14,7 +15,15 @@ const Navbar = () => {
     let axiosJWT = createAxios(user, dispatch, logoutSuccess);
 
     const handleLogout = () => {
-        logoutUser(dispatch, navigate);
+        const res = logoutUser(dispatch, navigate);
+        try {
+            if (res) {
+                customToast("Logout successfully!", "success", "top-right", 3000);
+            }
+        }
+        catch (error) {
+            customToast("Logout failed!", "error", "top-right", 3000);
+        }
     }
     return (  
         <>  
