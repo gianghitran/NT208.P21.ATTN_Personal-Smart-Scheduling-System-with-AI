@@ -316,7 +316,7 @@ export default function MyCalendar() {
 
     // Hiện toast loading
     // const loadingId = toast.loading("Đang đồng bộ với Google Calendar...");
-    const loadingId = customToast("Đang đồng bộ với Google Calendar...", "loading", "bottom-right", 3000);
+    const loadingId = customToast("Đang đồng bộ với Google Calendar...", "loading", "bottom-right");
 
     try {
       const response = await axiosJWT.post('/api/google-calendar/sync', {}, {

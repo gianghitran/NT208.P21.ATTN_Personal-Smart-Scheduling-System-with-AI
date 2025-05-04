@@ -1,9 +1,11 @@
 import { toast } from 'react-toastify';
 
 export const customToast = (message, type = "default", position = "top-right", duration = 3000) => {
+  const isLoading = type === "loading";
+
   const toastOptions = {
     position,
-    autoClose: duration,
+    ...(isLoading ? { autoClose: false} : { autoClose: duration }),
   };
 
   let toastId;
