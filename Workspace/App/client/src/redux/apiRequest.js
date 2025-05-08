@@ -1,43 +1,43 @@
 import { loginRequest, loginSuccess, loginFailure, registerFailure, registerRequest, registerSuccess, logoutRequest, logoutSuccess, logoutFailure } from "./authSlice";
 import axios from "axios";
-import {  addMessage,  loadMoreMessages,  setLoading, clearMessages} from "./chatSlide";
+import { addMessage, loadMoreMessages, setLoading, clearMessages } from "./chatSlide";
 import { resetApp } from "./resetAction";
 
 
 
 // Lấy lịch sử tin nhắn cũ từ DB và đẩy vào Redux
-export const loadOldMessagesAPI = async (userId,dispatch) => {
-  dispatch(setLoading(true));
-  try {
-    
-    const res = await axios.get(`/api/chatbox/history/${userId}`);
-    const messages =  Array.isArray(res.data.history) ? res.data.history : [];
+export const loadOldMessagesAPI = async (userId, dispatch) => {
+    dispatch(setLoading(true));
+    try {
 
-    if (messages.length === 0) {
-      console.log("Không có tin nhắn cũ.");
+        const res = await axios.get(`/api/chatbox/history/${userId}`);
+        const messages = Array.isArray(res.data.history) ? res.data.history : [];
+
+        if (messages.length === 0) {
+            console.log("Không có tin nhắn cũ.");
+        }
+
+        dispatch(clearMessages()); // Xóa tin nhắn cũ trong Redux trước khi thêm tin nhắn mới
+
+        const sortedMessages = messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        sortedMessages.forEach((m) =>
+            dispatch(addMessage({
+                id: Date.now() + Math.random(),
+                content: m.content,
+                sender: m.role,
+                timestamp: m.timestamp || new Date().toISOString(),
+                status: m.role === "user" ? "loading" : "sent"
+            }))
+        );
+
+        // dispatch(loadMoreMessages(sortedMessages));
+        return { success: true, sortedMessages };
+    } catch (err) {
+        console.error("❌ Lỗi khi load tin nhắn:", err);
+        return { success: false, error: err };
+    } finally {
+        dispatch(setLoading(false));
     }
-
-    dispatch(clearMessages()); // Xóa tin nhắn cũ trong Redux trước khi thêm tin nhắn mới
-
-    const sortedMessages = messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-    sortedMessages.forEach((m) =>
-      dispatch(addMessage({
-        id: Date.now() + Math.random(),
-        content: m.content,
-        sender: m.role,
-        timestamp: m.timestamp || new Date().toISOString(),
-        status:   m.role === "user" ? "loading" : "sent"
-      }))
-    );
-
-    // dispatch(loadMoreMessages(sortedMessages));
-    return { success: true, sortedMessages };
-  } catch (err) {
-    console.error("❌ Lỗi khi load tin nhắn:", err);
-    return { success: false, error: err };
-  } finally {
-    dispatch(setLoading(false));
-  }
 };
 
 export const loginUser = async (user, dispatch, navigate) => {
@@ -137,20 +137,27 @@ export const saveEvents = async (selectedEvent, _id, access_token, axiosJWT) => 
         await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {
             headers: { Authorization: `Bearer ${access_token}` }
         });
-        return { success: true }; 
+        return { success: true };
     } catch (error) {
         return { success: false };
     }
 }
 
-export const getEvents = async (userId) => {
+export const getEvents = async (userId, startDate, endDate) => {
     try {
-        const res = await axios.get(`/api/event/get?userId=${userId}`);
+        const res = await axios.get('/api/event/get', {
+            params: {
+                userId,
+                start: startDate?.toISOString(),
+                end: endDate?.toISOString()
+            }
+        });
         return res.data;
     } catch (error) {
         return [];
     }
-}
+};
+
 
 export const deleteEvents = async (_id, userId, access_token, axiosJWT) => {
     try {

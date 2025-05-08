@@ -1,11 +1,6 @@
 import Navbar from "./Components/Navbar/Nav";
 import Home from "./Components/Home/Home";
 import Chatbox from "./Components/Chatbox/Chatbox";
-import Mytask from "./Components/Mytask/Mytask";
-import Myteam from "./Components/Myteam/Myteam";
-import Myactivities from "./Components/Myactivities/Myactivities";
-import Setting from "./Components/Setting/Setting";
-import Schedule from "./Components/Schedule/Schedule";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import EmailVerification from "./Components/EmailVerification/EmailVerification";
@@ -15,44 +10,94 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import OAuthCallback from './Components/OAuthCallback/OAuthCallback';
 import { ToastContainer } from 'react-toastify';
+import { Suspense, lazy } from "react";
+
+const Schedule = lazy(() => import("./Components/Schedule/Schedule"));
+const Myactivities = lazy(() => import("./Components/Myactivities/Myactivities"));
+const Mytask = lazy(() => import("./Components/Mytask/Mytask"));
+const Myteam = lazy(() => import("./Components/Myteam/Myteam"));
+const Setting = lazy(() => import("./Components/Setting/Setting"));
 
 function App() {
-    const isLoggedIn = useSelector((state) => state.auth.login.currentUser);
+  const isLoggedIn = useSelector((state) => state.auth.login.currentUser);
 
-    return(
-      <>  
-          <div className="app-layout">
-              {/* <Navbar/> */}
-              {isLoggedIn !== null && <Navbar/>}
-              
-              <Routes>
-                {isLoggedIn === null && (
-                  <>
-                    <Route path="/" element={<Home/>} />  
-                    <Route path="/login" element={<Login/>} />
-                    <Route path="/register" element={<Register/>} /> 
-                    <Route path="/email-verification" element={<EmailVerification/>} />
-                  </>
-                )}
+  return (
+    <>
+      <div className="app-layout">
+        {/* <Navbar/> */}
+        {isLoggedIn !== null && <Navbar />}
 
-                <Route element={<ProtectedRoute/>}> 
-                    <Route path="/login" element={<Navigate to="/Schedule"/>} />
-                    <Route path="/register" element={<Navigate to="/Schedule"/>} />
-                    <Route path="/" element={<Navigate to="/Schedule"/>} />
-                    <Route path="/Schedule" element={<Schedule/>} />
-                    <Route path="/Chatbox" element={<Chatbox/>} />
-                    <Route path="/Myactivities" element={<Myactivities/>} />
-                    <Route path="/Mytask" element={<Mytask/>} />
-                    <Route path="/Myteam" element={<Myteam/>} />
-                    <Route path="/Setting" element={<Setting/>} />
-                </Route>
+        <Routes>
+          {isLoggedIn === null && (
+            <>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/email-verification" element={<EmailVerification />} />
+            </>
+          )}
 
-                <Route path="/oauth2callback" element={<OAuthCallback />} />
-              </Routes>
-            </div>
-            <ToastContainer />
-      </>
-    );
+          <Route element={<ProtectedRoute />}>
+            <Route path="/login" element={<Navigate to="/Schedule" />} />
+            <Route path="/register" element={<Navigate to="/Schedule" />} />
+            <Route path="/" element={<Navigate to="/Schedule" />} />
+            <Route
+              path="/Schedule"
+              element={
+                <Suspense fallback={<div>Loading calendar...</div>}>
+                  <Schedule />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/Chatbox"
+              element={
+                <Suspense fallback={<div>Loading Chatbox...</div>}>
+                  <Chatbox />
+                </Suspense>
+              }
+            />
+            {/* <Route path="/Chatbox" element={<Chatbox />} /> */}
+            <Route
+              path="/Myactivities"
+              element={
+                <Suspense fallback={<div>Loading activities...</div>}>
+                  <Myactivities />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/Mytask"
+              element={
+                <Suspense fallback={<div>Loading tasks...</div>}>
+                  <Mytask />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/Myteam"
+              element={
+                <Suspense fallback={<div>Loading team...</div>}>
+                  <Myteam />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/Setting"
+              element={
+                <Suspense fallback={<div>Loading settings...</div>}>
+                  <Setting />
+                </Suspense>
+              }
+            />
+          </Route>
+
+          <Route path="/oauth2callback" element={<OAuthCallback />} />
+        </Routes>
+      </div>
+      <ToastContainer />
+    </>
+  );
 }
 
 export default App

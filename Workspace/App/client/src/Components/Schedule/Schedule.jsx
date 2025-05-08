@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import moment from "moment";
@@ -36,9 +36,9 @@ export default function MyCalendar() {
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess, navigate);
 
-  const renderEvents = async () => {
-    const data = await getEvents(user?.userData._id);
-    const items = data.map(({ _id, userId, __v, start, end, ...rest }) => ({
+  const fetchEvents = async (startDate, endDate) => {
+    const data = await getEvents(user?.userData._id, startDate, endDate);
+    const items = data.map(({ _id, start, end, ...rest }) => ({
       id: _id,
       title: rest.title,
       start: moment(start).toDate(),
@@ -51,7 +51,11 @@ export default function MyCalendar() {
   };
 
   useEffect(() => {
-    renderEvents();
+    const now = moment();
+    const startOfWeek = moment(now).startOf('week').toDate();
+    const endOfWeek = moment(now).endOf('week').toDate();
+
+    fetchEvents(startOfWeek, endOfWeek);
   }, []);
 
   const onEventDrop = async ({ event, start, end }) => {
@@ -363,6 +367,13 @@ export default function MyCalendar() {
     }
   };
 
+  const handleRangeChange = useCallback((range, view) => {
+    const start = range[0];
+    const end = range[range.length - 1];
+
+    fetchEvents(start, end); // gọi API để lấy sự kiện trong khoảng này
+  }, []);
+
 
   return (
     <div className={styles.container}>
@@ -433,6 +444,7 @@ export default function MyCalendar() {
         resizable
         draggableAccessor={() => true}
         views={['month', 'week']}
+        onRangeChange={handleRangeChange}
       />
       <Modal
         isOpen={modalIsOpen}
