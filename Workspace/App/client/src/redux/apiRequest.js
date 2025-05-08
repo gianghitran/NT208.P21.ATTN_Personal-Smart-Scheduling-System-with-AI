@@ -1,4 +1,5 @@
 import { loginRequest, loginSuccess, loginFailure, registerFailure, registerRequest, registerSuccess, logoutRequest, logoutSuccess, logoutFailure } from "./authSlice";
+import { verifyEmailFailure, verifyEmailSuccess, verifyEmailRequest } from "./authSlice";
 import axios from "axios";
 import { addMessage, loadMoreMessages, setLoading, clearMessages } from "./chatSlide";
 import { resetApp } from "./resetAction";
@@ -81,11 +82,30 @@ export const registerUser = async (user, dispatch, navigate) => {
     try {
         await axios.post("/api/auth/register", user);
         dispatch(registerSuccess());
-        navigate("/login");
+        sessionStorage.setItem("pendingEmail", user.email);
+        navigate("/email-verify");
     } catch (error) {
         dispatch(registerFailure());
         if (error.response) {
             return { success: false, message: error.response.data.message || "Register failed" };
+        } else if (error.request) {
+            return { success: false, message: "Server did not respond. Please try again later." };
+        } else {
+            return { success: false, message: "An unexpected error occurred." };
+        }
+    }
+}
+
+export const verifyEmail = async (code, dispatch, navigate) => {
+    dispatch(verifyEmailRequest());
+    try {
+        const response = await axios.post("/api/auth/verify-email", { code });
+        dispatch(verifyEmailSuccess());
+        navigate("/login");
+    } catch (error) {
+        dispatch(verifyEmailFailure());
+        if (error.response) {
+            return { success: false, message: error.response.data.message || "Verification failed" };
         } else if (error.request) {
             return { success: false, message: "Server did not respond. Please try again later." };
         } else {

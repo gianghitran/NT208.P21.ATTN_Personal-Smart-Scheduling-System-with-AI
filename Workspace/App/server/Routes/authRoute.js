@@ -9,6 +9,7 @@ route.post('/login', authController.loginUser);
 route.post('/logout', authController.logoutUser);
 
 route.post('/verify-email', authController.verifyEmail);
+route.post('/resend-verify-email', authController.resendVerifyEmail);
 
 route.post('/forgot-password', authController.forgotPassword);
 route.post('/reset-password/:token', authController.resetPassword);

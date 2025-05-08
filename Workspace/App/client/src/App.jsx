@@ -4,6 +4,7 @@ import Chatbox from "./Components/Chatbox/Chatbox";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import EmailVerification from "./Components/EmailVerification/EmailVerification";
+import EmailResendVerification from "./Components/EmailVerification/EmailResendVerification";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
@@ -33,7 +34,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/email-verification" element={<EmailVerification />} />
+              <Route path="/email-verify" element={<EmailVerification />} />
+                    <Route path="/email-resend-verify" element={<EmailResendVerification/>} />
             </>
           )}
 

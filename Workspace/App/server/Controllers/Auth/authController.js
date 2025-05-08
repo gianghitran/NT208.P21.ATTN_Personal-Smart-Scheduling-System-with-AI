@@ -63,9 +63,28 @@ const authController = {
             const user = await newUser.save();
             const { password, verificationToken, verificationTokenExpires, ...userData } = user._doc;
             await sendVerificationEmail(email, verificationToken);
-            res.status(200).json(userData);
+            return res.status(200).json(userData);
         } catch (error) {
-            res.status(500).json({ message: error });
+            return res.status(500).json({ message: error });
+        }
+    },
+
+    resendVerifyEmail: async (req, res) => {
+        const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+        const { email } = req.body;
+        const user = await User.findOne({ email: email });
+        if (!user) {
+            return res.status(400).json({ message: "Email not found" });
+        }
+        
+        user.verificationToken = verificationToken;
+        user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+        try {
+            await user.save();
+            await sendVerificationEmail(email, verificationToken);
+            return res.status(200).json({ message: "Verification email sent" });
+        } catch (error) {
+            return res.status(500).json({ message: error });
         }
     },
 
