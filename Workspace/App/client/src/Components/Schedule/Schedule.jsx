@@ -36,8 +36,17 @@ export default function MyCalendar() {
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess, navigate);
 
+  const getRangeKey = (start, end) =>
+    `${start.toISOString().split("T")[0]}_${end.toISOString().split("T")[0]}`;
+
+  const loadedRangesRef = useRef(new Set());
+
   const fetchEvents = async (startDate, endDate) => {
+    const key = getRangeKey(startDate, endDate);
+    if (loadedRangesRef.current.has(key)) return;
+
     const data = await getEvents(user?.userData._id, startDate, endDate);
+
     const items = data.map(({ _id, start, end, ...rest }) => ({
       id: _id,
       title: rest.title,
@@ -47,8 +56,15 @@ export default function MyCalendar() {
       ...rest,
       resource: { description: rest.description },
     }));
-    setEvents(items);
+
+    setEvents(prev => {
+      const existingIds = new Set(prev.map(ev => ev.id));
+      const newItems = items.filter(ev => !existingIds.has(ev.id));
+      return [...prev, ...newItems];
+    });
+    loadedRangesRef.current.add(key);
   };
+
 
   useEffect(() => {
     const now = moment();
