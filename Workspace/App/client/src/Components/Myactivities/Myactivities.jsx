@@ -1,6 +1,7 @@
 import styles from "./Myactivities.module.css";
 import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { getEvents } from "../../redux/apiRequest";
 
 const CATEGORY_COLORS = {
     work: "#2196F3",
@@ -35,25 +36,23 @@ const Myactivities = () => {
 
     useEffect(() => {
         if (!user?.userData?._id) return;
-        fetch(`/api/event/get?userId=${user.userData._id}`)
-            .then(res => res.json())
+
+        getEvents(user.userData._id)
             .then(data => {
-                setEvents(
-                    data
-                        .map(ev => ({
-                            ...ev,
-                            start: new Date(ev.start),
-                            end: new Date(ev.end)
-                        }))
-                        .filter(ev => {
-                            const start = new Date(ev.start);
-                            return (
-                                start.getFullYear() === today.getFullYear() &&
-                                start.getMonth() === today.getMonth() &&
-                                start.getDate() === today.getDate()
-                            );
-                        })
-                );
+                const eventsInToday = data.filter(ev => {
+                    const start = new Date(ev.start);
+                    return (
+                        start.getFullYear() === today.getFullYear() &&
+                        start.getMonth() === today.getMonth() &&
+                        start.getDate() === today.getDate()
+                    );
+                });
+
+                setEvents(eventsInToday.map(ev => ({
+                    ...ev,
+                    start: new Date(ev.start),
+                    end: new Date(ev.end),
+                })));
             });
     }, [user, today]);
 
