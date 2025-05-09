@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { customToast } from "../../utils/customToast";
 import "react-toastify/dist/ReactToastify.css";
+import Darkmode from "../Darkmode/Darkmode";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -142,7 +143,7 @@ export default function MyCalendar() {
     try {
       await addEvents(event, access_token, axiosJWT);
       setModalIsOpen(false);
-      renderEvents();
+      fetchEvents(event.start, event.end);
       // toast.success(`Sự kiện "${event.title}" đã được thêm thành công!`);
       customToast(`Sự kiện "${event.title}" đã được thêm thành công!`, "success", "bottom-right", 3000);
     } catch (error) {
@@ -259,8 +260,8 @@ export default function MyCalendar() {
             await addEvents(event, user?.access_token, axiosJWT);
           }
         }
-        await renderEvents();
-        // toast.success("Import thành công!");
+        // Thay renderEvents() bằng fetchEvents
+        await fetchEvents(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
         customToast("Import thành công!", "success", "bottom-right", 3000);
         setUploadModalIsOpen(false);
       },
@@ -301,8 +302,8 @@ export default function MyCalendar() {
             await addEvents(event, user?.access_token, axiosJWT);
           }
         }
-        await renderEvents();
-        // toast.success("Upload thành công!");
+        // Thay renderEvents() bằng fetchEvents
+        await fetchEvents(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
         customToast("Upload thành công!", "success", "bottom-right", 3000);
       },
     });
@@ -357,9 +358,9 @@ export default function MyCalendar() {
         const message = Array.isArray(data.message)
           ? data.message.filter(Boolean).join('\n')
           : data.message || "Đã đồng bộ Google Calendar thành công!";
-        // toast.success(`✅ ${message}`);
         customToast(`✅ ${message}`, "success", "bottom-right", 3000);
-        await renderEvents();
+        // Thay renderEvents() bằng fetchEvents
+        await fetchEvents(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
       } else {
         if (
           response.status === 403 ||
@@ -393,6 +394,10 @@ export default function MyCalendar() {
 
   return (
     <div className={styles.container}>
+      {/* Nút Darkmode đặt ở góc trên bên phải */}
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+        <Darkmode />
+      </div>
       <div className={styles.add_event}>
         <button className={styles.add} onClick={() => addButton()}>+</button>
         <div className={styles.filters}>
