@@ -22,3 +22,15 @@ img {
     height: auto;
 }
 
+:root {
+    --background-color: #ffffff; /* Màu nền sáng */
+    --text-color: #000000; /* Màu chữ sáng */
+}
+[data-theme='dark'] {
+    --background-color: #23272f; /* Màu nền tối */
+    --text-color: #ffffff; /* Màu chữ tối */
+}
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}

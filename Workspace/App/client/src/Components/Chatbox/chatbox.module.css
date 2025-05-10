@@ -1,3 +1,19 @@
+:root {
+    --background-color: #ffffff; /* Màu nền sáng */
+    --background-linear: linear-gradient(135deg, #f9f9f9, #ffffff);
+    --text-dark: #000000;
+    --text-light: #ffffff;
+    --event-card-bg: #f8fafc;
+}
+[data-theme='dark'] {
+    --background-color: #23272f; /* Màu nền tối */
+    --background-linear: linear-gradient(135deg, #404349, #23272f);
+    --text-dark: #ffffff; 
+    --text-light: #000000;
+    --event-card-bg: #404349;
+}
+
+
 html, body {
   overflow: auto; /* Ngăn chặn thanh cuộn toàn trang */
   overflow-y: auto;  /* Cho phép cuộn dọc */
@@ -8,7 +24,7 @@ html, body {
 
 .container {
   padding: 10px;
-  background: #fff;
+  background: var(--background-color);
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -72,7 +88,7 @@ button {
 
 .btnSuccess {
   background: #28a745;
-  color: white;
+  color: var(--text-light);
 }
 
 .btnSuccess:hover {
@@ -81,7 +97,7 @@ button {
 
 .btnDanger {
   background: #dc3545;
-  color: white;
+  color: var(--text-light);
 }
 
 .btnDanger:hover {
@@ -90,7 +106,7 @@ button {
 
 .btnWarning {
   background: #ffcf7d;
-  color: black;
+  color: var(--text-dark);
   padding: 1px;
   position: relative;
 
@@ -126,11 +142,11 @@ button {
   margin-top: 20px;
   padding: 15px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #f9f9f9, #ffffff);
+  background: var(--background-linear);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-size: 1rem;
   line-height: 1.5;
-  color: #000000;
+  color: var(--text-dark);
   max-width: 100%;
   min-height: 50px;
   text-align: left;
@@ -172,7 +188,7 @@ button {
 /* Chatbot hiển thị từng tin nhắn */
 .chat_bubble {
   background: #f8d7da;
-  color: Black;
+  color: var(--text-dark);
   padding: 10px;
   border-radius: 10px;
   margin-bottom: 10px;
@@ -187,7 +203,7 @@ button {
 
 .event_card {
      
-  background-color: #f8fafc;
+  background-color: var(--event-card-bg);
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);

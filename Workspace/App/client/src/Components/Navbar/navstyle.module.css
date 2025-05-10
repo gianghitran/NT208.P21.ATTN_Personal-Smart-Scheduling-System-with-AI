@@ -1,3 +1,24 @@
+:root {
+    --background-nav: #ffffff; /* Màu nền sáng */
+    --background-linear: linear-gradient(135deg, #f9f9f9, #ffffff);
+    --text-dark: #000000;
+    --text-light: #ffffff;
+    --event-card-bg: #f8fafc;
+    --app-name: #551C8A;
+    --title: gray;
+    --active: #3aa5a5;
+}
+[data-theme='dark'] {
+    --background-nav: #5d5b5b; /* Màu nền tối */
+    --background-linear: linear-gradient(135deg, #404349, #23272f);
+    --text-dark: #ffffff; 
+    --text-light: #000000;
+    --event-card-bg: #404349;
+    --app-name: #ffa4fc;
+    --title: #ffbcbc;
+    --active: #caf2f2;
+}
+
 html {
     box-sizing: border-box;
     font-size: 16px;
@@ -47,7 +68,7 @@ img {
     flex-direction: column;
     padding: 2rem 2rem;
     gap: 1rem;
-    background-color: #fff;
+    background-color: var(--background-nav)!important;
     border-right: solid 2px #ddd;
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
@@ -75,7 +96,7 @@ img {
 }
 
 .appname {
-    color: #551C8A;
+    color: var(--app-name);
     font-family: "Montserrat", sans-serif;
     font-weight: bold;
 }
@@ -108,7 +129,7 @@ img {
 }
 
 .account .title {
-    color: gray;
+    color: var(--title);
     margin-top: 2rem;
     margin-bottom: -0.1rem;
 }
@@ -120,7 +141,7 @@ img {
 }
 
 .system .title {
-    color: gray;
+    color: var(--title);
     margin-top: 6rem;
     margin-bottom: -0.1rem;
 }
@@ -133,7 +154,7 @@ img {
 
 .link {
     text-decoration: none;
-    color: #000;    
+    color: var(--text-dark);    
 }
 
 .select{
@@ -164,7 +185,7 @@ img {
 
 .select.active {
     background: rgba(58, 165, 165, 0.15); 
-    color: #3aa5a5;
+    color: var(--active);
 }
 
 .menubutton {

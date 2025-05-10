@@ -394,48 +394,44 @@ export default function MyCalendar() {
 
   return (
     <div className={styles.container}>
-      {/* Nút Darkmode đặt ở góc trên bên phải */}
-      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-        <Darkmode />
-      </div>
       <div className={styles.add_event}>
         <button className={styles.add} onClick={() => addButton()}>+</button>
         <div className={styles.filters}>
-          <h3 style={{ color: "black", fontWeight: "bold" }}>Filters</h3>
+          <h3 className={styles.filtername}>Filters</h3>
           <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.length === 5} onChange={handleAllChange} />
-              <span style={{ fontWeight: "bold" }}>All</span>
+              <span className={styles.filtername}>All</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#2196F3" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("work")} onChange={() => handleCategoryChange("work")} />
-              <span style={{ fontWeight: "bold" }}>Work</span>
+              <span className={styles.filtername}>Work</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#08ccc2" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("school")} onChange={() => handleCategoryChange("school")} />
-              <span style={{ fontWeight: "bold" }}>School</span>
+              <span className={styles.filtername}>School</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#FF9800" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
-              <span style={{ fontWeight: "bold" }}>Relax</span>
+              <span className={styles.filtername}>Relax</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#4CAF50" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("todo")} onChange={() => handleCategoryChange("todo")} />
-              <span style={{ fontWeight: "bold" }}>To do</span>
+              <span className={styles.filtername}>To do</span>
             </label>
           </div>
           <div className={styles.chbox} style={{ backgroundColor: "#9E9E9E" }}>
             <label>
               <input type="checkbox" checked={selectedCategories.includes("other")} onChange={() => handleCategoryChange("other")} />
-              <span style={{ fontWeight: "bold" }}>Others</span>
+              <span className={styles.filtername}>Others</span>
             </label>
           </div>
         </div>
