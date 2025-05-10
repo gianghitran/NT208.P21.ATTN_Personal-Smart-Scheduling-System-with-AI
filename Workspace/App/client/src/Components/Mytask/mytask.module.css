@@ -1,7 +1,27 @@
+:root {
+    --background-color: #ffffff; /* Màu nền sáng */
+    --background-linear: linear-gradient(135deg, #f9f9f9, #ffffff);
+    --text-dark: #000000;
+    --text-light: #ffffff;
+    --event-card-bg: #f8fafc;
+    --header: #7a1a08;
+    --background-event-color: #white;
+}
+[data-theme='dark'] {
+    --background-color: #23272f; /* Màu nền tối */
+    --background-linear: linear-gradient(135deg, #404349, #23272f);
+    --text-dark: #ffffff; 
+    --text-light: #000000;
+    --event-card-bg: #404349;
+    --header: #ffc821;
+    --background-event-color: #404349;
+}
+
 
 .app_container {
   display: flex;
   /* width: 100%; */
+  background-color: var(--background-color);
   
   /* hỗ trợ trình duyệt di động */
   min-height: 100dvh; 
@@ -19,7 +39,7 @@
     position: absolute;
     flex-direction: column;
     flex: 1;
-    background: #f9f9f9;
+    background: var(--background-color);
     padding: 2rem;
     /* width:100%; */
     left:250px;
@@ -39,7 +59,7 @@
   .header h2 {
     font-size: 1.5 rem;
     font-weight: bold;
-    color:#7a1a08;
+    color: var(--header);
     
     font-family: "Poppins", sans-serif;
     font-optical-sizing: auto;
@@ -54,7 +74,7 @@
   
   .task {
     
-    background: #fff;
+    background: var(--background-event-color);
     padding: 10px;
     margin: 8px 0;
     display: flex;
@@ -171,7 +191,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
     border-right: solid 2px #ddd;
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
@@ -181,7 +201,7 @@
   .calendar h2{
     font-size: 1.5 rem;
     font-weight: bold;
-    color:#7a1a08;
+    color: var(--header);
     margin-top: 20px;
     font-family: "Poppins", sans-serif;
     font-optical-sizing: auto;
@@ -203,6 +223,7 @@
 
 .formGroup {
   display: flex;
+  background-color: var(--background-color);
   flex-direction: column;
   align-items: left;
   margin-bottom: 10px;
@@ -231,6 +252,7 @@
 
 .modalContent {
   background: white;
+  color: black;
   font-family: "Montserrat", sans-serif;
   padding: 40px;
   border-radius: 10px;
@@ -259,8 +281,8 @@
   text-align: center;
   bottom: 10px;
   right: 10px;
-  background-color: white;
-  color:black;
+  background-color: var(--background-color);
+  color:var(text-dark);
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;

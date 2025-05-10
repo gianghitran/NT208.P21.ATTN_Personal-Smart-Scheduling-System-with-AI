@@ -1,4 +1,29 @@
-/* Calendar.module.css */
+:root {
+  --primary-color: #ffcf7d;
+  --primary-color-hover: #e9a93c;
+  --green-color: #7dff83;
+  --gray-color: rgb(199, 199, 199);
+  --blue-color: #53a5fd;
+  --checkbox-color: #ffcf7d;
+  --modal-bg-color: rgba(0, 0, 0, 0.5);
+  --modal-content-bg-color: white;
+  --dropzone-bg-color: #f9f9f9;
+  --border-color: #ccc;
+  --toolbar-text-color: #7b5410;
+  --description-bg-color: white;
+  --background-color: #ffffff;
+  --text-dark: #000000;
+  --text-light: #ffffff;
+  --header: #7a1a08;
+}
+[data-theme='dark'] {
+  --background-color: #23272f; 
+  --text-dark: #ffffff; 
+  --text-light: #000000;
+  --toolbar-text-color: #ffc821;
+}
+
+
 .container {
   width: 80%;
   height: 95dvh;
@@ -10,8 +35,8 @@
 }
 
 :global(.rbc-toolbar button) {
-  background-color: #ffcf7d !important;
-  color: white !important;
+  background-color: var(--primary-color) !important;
+  color: var(--text-light) !important;
   border: none !important;
   padding: 8px 12px !important;
   border-radius: 8px !important;
@@ -20,21 +45,23 @@
 }
 
 :global(.rbc-toolbar button:hover) {
-  background-color: #ffcf7d !important; 
+  background-color: var(--primary-color) !important;
+  color: var(--text-dark) !important;
 }
 
 :global(.rbc-toolbar button.rbc-active) {
-  background-color: #e9a93c !important;
+  background-color: var(--primary-color-hover) !important;
 }
 
 :global(.rbc-toolbar) {
   font-size: 25px;
   font-weight: bold;
-  color:#7b5410;
+  color: var(--toolbar-text-color);
 }
 
 :global(.rbc-toolbar-label) {
   font-weight: bold;
+  color: var(--text-dark) !important;
 }
 
 :global(.rbc-event) {
@@ -67,17 +94,17 @@
   width: 100% !important;
 }
 
-.add_event{
+.add_event {
   display: flex;
   flex-direction: column;
-  color: white !important;
+  color: var(--text-light) !important;
   border: none !important;
   border-radius: 8px !important;
   margin-right: 10px;
 }
 
 .add {
-  background-color: #7dff83 !important;
+  background-color: var(--green-color) !important;
   border-radius: 8px !important;
   cursor: pointer !important;
   margin-top: 60px !important;
@@ -92,7 +119,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Làm mờ nền */
+  background: var(--modal-bg-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,11 +127,12 @@
 }
 
 .modalContent {
-  background: white;
+  background: var(--modal-content-bg-color);
+  color: black;
   font-family: "Montserrat", sans-serif;
   padding: 40px;
   border-radius: 10px;
-  width: 400px; /* Hoặc chỉnh kích thước theo ý bạn */
+  width: 400px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   z-index: 1001;
   max-width: 95vw;
@@ -136,7 +164,7 @@
 .formGroup select {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   max-width: 100%;
   box-sizing: border-box;
@@ -144,7 +172,7 @@
   overflow-wrap: break-word;
 }
 
-.formGroup p, 
+.formGroup p,
 .formGroup label {
   max-width: 100%;
   word-break: break-word;
@@ -170,25 +198,25 @@
 }
 
 .closeButton {
-  background-color: rgb(199, 199, 199);
+  background-color: var(--gray-color);
   cursor: pointer;
 }
 
 .filters {
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  gap: 10px; 
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   margin-top: 15px;
-  width: 78px; 
-  border-top: 1px solid #ccc;
+  width: 78px;
+  border-top: 1px solid var(--border-color);
   font-size: 16px;
 }
 
 .chbox {
-  color: white;
+  color: var(--text-light);
   margin-bottom: 10px;
-  accent-color: #ffcf7d;
+  accent-color: var(--checkbox-color);
   border-radius: 12px;
   font-weight: bold !important;
   width: 100%;
@@ -205,22 +233,29 @@
   font-weight: bold;
 }
 
+.filtername
+{
+  color: white;
+  font-weight: bold;
+}
+
 .csv {
   background-color: none !important;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   margin-top: 10px !important;
   margin-left: -10px;
   font-size: 16px;
   font-weight: bold;
-  width: 78px; 
+  width: 78px;
 }
 
 .uploadButton {
-  color: black;
+  color: var(--text-dark);
+  background-color: var(--gray-color); 
   margin-bottom: 10px;
-  accent-color: #ffcf7d;
+  accent-color: var(--checkbox-color);
   border-radius: 12px;
   font-weight: bold !important;
   width: 100%;
@@ -235,12 +270,12 @@
 }
 
 .dropZone {
-  border: 2px dashed #ccc;
+  border: 2px dashed var(--border-color);
   border-radius: 8px;
   padding: 20px;
   text-align: center;
   margin: 20px 0;
-  background-color: #f9f9f9;
+  background-color: var(--dropzone-bg-color);
 }
 
 .description {
@@ -248,33 +283,33 @@
   max-width: 500px;
   height: 80px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   font-size: 16px;
   font-family: 'Montserrat', sans-serif;
-  resize: none; 
-  background-color: white;
+  resize: none;
+  background-color: var(--description-bg-color);
 }
 
 .templateButton {
   display: inline-block;
-  background-color: #53a5fd;
-  color: white;
+  background-color: var(--blue-color);
+  color: var(--text-light);
   font-weight: bold;
   padding: 10px 20px;
   border-radius: 8px;
   margin: 0;
-  text-decoration: none;     
+  text-decoration: none;
   font-size: 16px;
   border: none;
   cursor: pointer;
 }
 
 :global(.Toastify__toast) {
-  min-width: 300px;  
+  min-width: 300px;
   max-width: 500px;
-  font-size: 1rem;  
-  padding: 16px 20px; 
+  font-size: 1rem;
+  padding: 16px 20px;
 }
 
 @media (max-width: 768px) {
@@ -296,14 +331,16 @@
     padding: 8px 20px 23px 10px;
   }
 
-  .chbox{
+  .chbox {
     transform: scale(0.7);
     width: 50px;
     height: 40px;
     font-size: 12px;
     margin: 0.5px;
     text-align: center;
+    accent-color: var(--checkbox-color);
   }
+
   .modalContent {
     width: 90%;
   }
@@ -319,13 +356,13 @@
     font-size: 10px;
     border-top: none;
   }
-  
+
   .modalContent {
     width: 90%;
     height: auto;
     padding: 10px;
   }
-  
+
   :global(.rbc-toolbar button) {
     font-size: 14px !important;
     padding: 6px 10px !important;
@@ -334,17 +371,17 @@
   :global(.rbc-toolbar) {
     font-size: 15px;
     font-weight: bold;
-    color:#7b5410;
+    color: var(--toolbar-text-color);
   }
 
   :global(.rbc-header span) {
     font-size: 9.5px !important;
-  }  
+  }
 
   :global(.rbc-allday-cell) {
     height: 15px !important;
   }
-  
+
   :global(.rbc-event) {
     font-size: 8px !important;
   }
@@ -355,14 +392,14 @@
     margin-right: 8px !important;
   }
 
-  :global(.rbc-time-column){
+  :global(.rbc-time-column) {
     font-size: 8px !important;
   }
-  
+
   :global(.rbc-event-content) {
     font-size: 7px;
   }
-  
+
   :global(.rbc-event-label) {
     display: none;
   }
@@ -371,6 +408,7 @@
     font-size: 10px;
     width: 50px;
     margin-left: 18px;
+    accent-color: var(--checkbox-color);
   }
 
   .templateButton {

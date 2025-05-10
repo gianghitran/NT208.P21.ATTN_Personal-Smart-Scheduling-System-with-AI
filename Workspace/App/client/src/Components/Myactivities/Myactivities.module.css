@@ -1,3 +1,21 @@
+:root {
+    --background-color: #ffffff; /* Màu nền sáng */
+    --background-linear: linear-gradient(135deg, #f9f9f9, #ffffff);
+    --text-dark: #000000;
+    --text-light: #ffffff;
+    --event-card-bg: #f8fafc;
+    --header: #7a1a08;
+}
+[data-theme='dark'] {
+    --background-color: #23272f; /* Màu nền tối */
+    --background-linear: linear-gradient(135deg, #404349, #23272f);
+    --text-dark: #ffffff; 
+    --text-light: #000000;
+    --event-card-bg: #404349;
+    --header: #ffc821;
+}
+
+
 .container {
     width: 80%;
     height: 95dvh;
@@ -15,19 +33,19 @@
     padding: 1rem 1rem 1rem 0;
     position: sticky;
     top: 0;
-    background: #fff;
+    background: var(--background-color);
     z-index: 10;
 }
 
 .header {
     font-size: 2rem;
     font-weight: 800;
-    color: #7a1a08;
+    color: var(--header);
 }
 
 .date {
     font-size: 1rem;
-    color: #333;
+    color: var(--text-dark);
     font-weight: 500;
 }
 
@@ -53,7 +71,7 @@
 .verticalLine {
     width: 2px;
     height: 40px;
-    background: #fff;
+    background: var(--background-color);
     margin: 0 1rem;
     border-radius: 2px;
     opacity: 0.5;
@@ -82,7 +100,7 @@
 
 .eventCategory {
     font-size: 0.95rem;
-    color: #fffde7;
+    color: var(--background-color);
     font-style: italic;
     margin-bottom: 0;
     word-break: break-word;
@@ -105,7 +123,7 @@
 .groupTitle {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #444;
+    color: var(--text-dark);
     margin: 1rem 0 0.5rem;
     border-bottom: 1px solid #ccc;
     padding-bottom: 0.2rem;
