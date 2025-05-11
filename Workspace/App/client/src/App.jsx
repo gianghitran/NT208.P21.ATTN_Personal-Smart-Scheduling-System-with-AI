@@ -22,6 +22,11 @@ const Setting = lazy(() => import("./Components/Setting/Setting"));
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.login.currentUser);
 
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    document.body.setAttribute("data-theme", theme === "dark" ? "dark" : "light");
+  }, []);
+
   return (
     <>
       <div className="app-layout">
