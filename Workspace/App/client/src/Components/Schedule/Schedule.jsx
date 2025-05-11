@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { customToast } from "../../utils/customToast";
 import "react-toastify/dist/ReactToastify.css";
-import Darkmode from "../Darkmode/Darkmode";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
