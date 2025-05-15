@@ -102,13 +102,13 @@ strong {
 
 .notificationItem:last-child {
   border-bottom: none;
-  flex: 1; /* 👈 Cho phép chiếm phần còn lại của dropdown nếu có */
+  flex: 1; 
 }
 
 .unread {
-  background-color: #eef6ff; /* màu nền nhẹ cho chưa đọc */
-  font-weight: bold;         /* chữ đậm hơn */
-  border-left: 4px solid #2a72d4; /* viền màu nổi bật */
+  background-color: #eef6ff; 
+  font-weight: bold;         
+  border-left: 4px solid #2a72d4; 
 }
 
 .message {
@@ -120,7 +120,7 @@ strong {
   font-size: 12px;
   font-style: italic;
   color: #888;
-  margin-top: auto; /* 👈 Đẩy xuống đáy nếu có thể */
+  margin-top: auto; 
   align-self: flex-end;
 }
 
