@@ -3,6 +3,7 @@ import { verifyEmailFailure, verifyEmailSuccess, verifyEmailRequest } from "./au
 import axios from "axios";
 import { addMessage, loadMoreMessages, setLoading, clearMessages } from "./chatSlide";
 import { resetApp } from "./resetAction";
+import { customToast } from "../utils/customToast";
 
 
 
@@ -142,16 +143,16 @@ export const addEvents = async (newEvent, access_token, axiosJWT) => {
         return;
     } catch (error) {
         if (!newEvent.title.trim()) {
-            alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
+            customToast("Lỗi: Vui lòng nhập tiêu đề sự kiện!", "error", "bottom-right");
         }
-        return;
+        return { success: false };
     }
 }
 
 export const saveEvents = async (selectedEvent, _id, access_token, axiosJWT) => {
     try {
         if (!selectedEvent.title.trim()) {
-            alert("⛔ Lỗi: Vui lòng nhập tiêu đề sự kiện!");
+            customToast("Lỗi: Vui lòng nhập tiêu đề sự kiện!", "error", "bottom-right");
             return { success: false };
         }
         await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {
@@ -193,3 +194,4 @@ export const deleteEvents = async (_id, userId, access_token, axiosJWT) => {
         return;
     }
 };
+

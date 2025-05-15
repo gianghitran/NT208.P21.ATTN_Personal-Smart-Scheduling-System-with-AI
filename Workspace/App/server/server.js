@@ -6,16 +6,16 @@ const dotenv = require("dotenv");
 const port = 4000; // Port that server will be run on
 
 const authRoute = require("./Routes/authRoute");
-const cookieParser = require("cookie-parser");
-
+const syncRoute = require('./Routes/syncRoute');
 const eventRoute = require("./Routes/eventRoute");
 const chatboxRoute = require("./Routes/chatboxRoute");
 const SpeechtoTextRoute = require("./Routes/SpeechtoTextRoute");
+const eventSharingRoute = require("./Routes/eventSharingRoute");
 
+const cookieParser = require("cookie-parser");
 
 const os = require("os");
 
-const syncRoute = require('./Routes/syncRoute');
 
 dotenv.config();
 
@@ -64,10 +64,11 @@ app.use("/api/auth", authRoute);
 app.use("/api/event", eventRoute);
 app.use("/api/chatbox", chatboxRoute);
 app.use("/api/speech", SpeechtoTextRoute);
+app.use("/api/google-calendar", syncRoute);
+app.use("/api/collab", eventSharingRoute);
 
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-app.use('/api/google-calendar', syncRoute);

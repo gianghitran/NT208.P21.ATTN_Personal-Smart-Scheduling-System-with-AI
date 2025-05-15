@@ -204,8 +204,8 @@ img {
         display: flex;
     }
 
-    .site-title {
-        margin-top: 0.8rem;
+    .sitetitle {
+        margin-top: 1rem;
     }
 
     .appname {

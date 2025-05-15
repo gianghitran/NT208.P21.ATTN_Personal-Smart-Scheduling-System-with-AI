@@ -1,0 +1,174 @@
+:root {
+  --notification-bg: #FAD07E;
+  --notification-color: white;
+  --notificationtext-color: #333;
+  --bell-icon-color: #333;
+  --dropdown-bg: white;
+  --active-color: #333;
+  --badge-bg: red;
+  --badge-color: white;
+}
+
+[data-theme="dark"] {
+  --notification-bg: #333;
+  --notification-color: #FAD07E;
+  --notificationtext-color: white;
+  --bell-icon-color: #FAD07E;
+  --dropdown-bg: #333;
+  --active-color: white;
+  --badge-bg: #FF5E5E;
+  --badge-color: black;
+}
+
+strong {
+  font-weight: bold !important;
+}
+
+.active {
+  transform: scale(0.95);
+  color: var(--active-color); 
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+.notificationWrapper {
+  position: relative;
+}
+
+.notification {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 899;
+    right: 13.4%;
+    top: 0.3rem;
+    padding: 4.5px 6px;
+    border-radius: 6px;
+    background-color: var(--notification-bg);
+    color: var(--notification-color);
+    cursor: pointer;
+}
+
+.bellIcon {
+    font-size: 25px;
+    align-items: center;
+}
+
+.bellIcon:hover {
+    color: var(--active-color);
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: var(--badge-bg);
+    color: var(--badge-color);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.dropdown {
+  position: absolute;
+  top: 35px;
+  right: 13rem;
+  width: min(350px, 60%);
+  height: 150px;
+  max-height: 150px;
+  background-color: var(--dropdown-bg);
+  color: var(--notificationtext-color);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 900;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.notificationItem {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-bottom: 1px solid black;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.notificationItem:last-child {
+  border-bottom: none;
+  flex: 1; /* 👈 Cho phép chiếm phần còn lại của dropdown nếu có */
+}
+
+.unread {
+  background-color: #eef6ff; /* màu nền nhẹ cho chưa đọc */
+  font-weight: bold;         /* chữ đậm hơn */
+  border-left: 4px solid #2a72d4; /* viền màu nổi bật */
+}
+
+.message {
+  font-size: 14px;
+  color: #333;
+}
+
+.timestamp {
+  font-size: 12px;
+  font-style: italic;
+  color: #888;
+  margin-top: auto; /* 👈 Đẩy xuống đáy nếu có thể */
+  align-self: flex-end;
+}
+
+.noNotifications {
+  padding: 10px;
+  text-align: center;
+  font-style: italic;
+}
+
+
+@media screen and (max-width: 767px) {
+  .notificationWrapper {
+    top: 3.7rem;
+    left: 2rem;
+  }
+
+  .bellIcon {
+    font-size: 19px;
+  }
+
+  .dropdown {
+    top: 5.5rem;
+    right: 1.5rem;
+    overflow: auto;
+   
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .notificationWrapper {
+    top: 0.2rem;
+    left: 1rem;
+  }
+
+  .dropdown {
+    top: 5.5rem;
+    right: 1.5rem;
+    overflow: auto;
+   
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .notification {
+    right: 11%;
+  }
+
+  .dropdown {
+    right: 12%;
+  }
+}
