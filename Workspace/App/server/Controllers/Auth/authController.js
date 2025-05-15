@@ -143,7 +143,8 @@ const authController = {
                     full_name: name,
                     email: email,
                     oauth_provider: "google",
-                    oauth_id: sub
+                    oauth_id: sub,
+                    isVerified: true,
                 });
                 account = await newUser.save();
             }
@@ -151,6 +152,8 @@ const authController = {
             const access_token = authController.generateAccessToken(account);
             const refresh_token = authController.generateRefreshToken(account);
             RefreshToken.create({ userId: account._id, refreshToken: refresh_token });
+            account.lastAccess = Date.now();
+            await account.save();
 
             res.cookie("refresh_token", refresh_token, {
                 httpOnly: true,
@@ -188,6 +191,8 @@ const authController = {
                 const access_token = authController.generateAccessToken(validUser);
                 const refresh_token = authController.generateRefreshToken(validUser);
                 RefreshToken.create({ userId: validUser._id, refreshToken: refresh_token });
+                validUser.lastAccess = Date.now();
+                await validUser.save();
 
                 res.cookie("refresh_token", refresh_token, {
                     httpOnly: true,

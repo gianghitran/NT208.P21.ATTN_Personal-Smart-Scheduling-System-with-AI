@@ -60,6 +60,11 @@ const User = new mongoose.Schema(
     resetPasswordExpires: Date,
     verificationToken: String,
     verificationTokenExpires: Date,
+
+    lastAccess: {
+        type: Date,
+        default: Date.now
+    },
 },
 
 {

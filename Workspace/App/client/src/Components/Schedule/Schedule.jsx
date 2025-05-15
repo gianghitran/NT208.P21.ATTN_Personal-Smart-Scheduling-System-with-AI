@@ -7,16 +7,18 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import styles from "./Schedule.module.css";
 import Modal from "react-modal";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
+import { getInviteEvents } from "../../services/sharedEventService";
 import { useSelector } from "react-redux";
 import { createAxios } from "../../utils/axiosConfig";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice";
 import Papa from "papaparse";
-import { useNavigate } from "react-router-dom";
+import { IDLE_FETCHER, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { customToast } from "../../utils/customToast";
 import "react-toastify/dist/ReactToastify.css";
+import NotificationBell from "./NotificationBell";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -144,6 +146,9 @@ export default function MyCalendar() {
       setModalIsOpen(false);
       fetchEvents(event.start, event.end);
       // toast.success(`Sự kiện "${event.title}" đã được thêm thành công!`);
+      if (!event.title.trim()) {
+        return;
+      }
       customToast(`Sự kiện "${event.title}" đã được thêm thành công!`, "success", "bottom-right", 3000);
     } catch (error) {
       // toast.error("Lỗi khi thêm sự kiện!");
@@ -389,105 +394,248 @@ export default function MyCalendar() {
 
     fetchEvents(start, end); // gọi API để lấy sự kiện trong khoảng này
   }, []);
+  
+  // Phần xử lý thông báo và xử lý với sự kiện được chia sẻ
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+  
+  const getInvites = async (access_token, axiosJWT) => {
+    const response = await getInviteEvents(access_token, axiosJWT);
+    const inviteEvents = response.invites || [];
+    if (inviteEvents.length > 0) {
+      setNotifications(inviteEvents);
+      setUnreadCount(inviteEvents.filter(event => event.isRead === false).length);
+    }
+  }
+
+  useEffect(() => {
+    getInvites(user?.access_token, axiosJWT);
+  }, []);
+
+  const handleBellClick = () => {
+      setUnreadCount(0);
+  };
 
 
   return (
-    <div className={styles.container}>
-      <div className={styles.add_event}>
-        <button className={styles.add} onClick={() => addButton()}>+</button>
-        <div className={styles.filters}>
-          <h3 className={styles.filtername}>Filters</h3>
-          <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
-            <label>
-              <input type="checkbox" checked={selectedCategories.length === 5} onChange={handleAllChange} />
-              <span className={styles.filtername}>All</span>
-            </label>
-          </div>
-          <div className={styles.chbox} style={{ backgroundColor: "#2196F3" }}>
-            <label>
-              <input type="checkbox" checked={selectedCategories.includes("work")} onChange={() => handleCategoryChange("work")} />
-              <span className={styles.filtername}>Work</span>
-            </label>
-          </div>
-          <div className={styles.chbox} style={{ backgroundColor: "#08ccc2" }}>
-            <label>
-              <input type="checkbox" checked={selectedCategories.includes("school")} onChange={() => handleCategoryChange("school")} />
-              <span className={styles.filtername}>School</span>
-            </label>
-          </div>
-          <div className={styles.chbox} style={{ backgroundColor: "#FF9800" }}>
-            <label>
-              <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
-              <span className={styles.filtername}>Relax</span>
-            </label>
-          </div>
-          <div className={styles.chbox} style={{ backgroundColor: "#4CAF50" }}>
-            <label>
-              <input type="checkbox" checked={selectedCategories.includes("todo")} onChange={() => handleCategoryChange("todo")} />
-              <span className={styles.filtername}>To do</span>
-            </label>
-          </div>
-          <div className={styles.chbox} style={{ backgroundColor: "#9E9E9E" }}>
-            <label>
-              <input type="checkbox" checked={selectedCategories.includes("other")} onChange={() => handleCategoryChange("other")} />
-              <span className={styles.filtername}>Others</span>
-            </label>
-          </div>
-        </div>
-
-        <div className={styles.csv}>
-          <button onClick={handleUploadClick} className={styles.uploadButton}>Upload</button>
-          <button onClick={handleSaveClick} className={styles.uploadButton}>Save</button>
-          <button onClick={syncWithGoogleCalendar} className={styles.uploadButton}>Sync</button>
-        </div>
-      </div>
-
-      <DnDCalendar
-        localizer={localizer}
-        events={filteredEvents}
-        startAccessor="start"
-        endAccessor="end"
-        date={date}
-        selectable
-        onSelectSlot={handleSelectSlot}
-        onSelectEvent={onSelectEvent}
-        onNavigate={(newDate) => setDate(newDate)}
-        view={view}
-        onView={(newView) => setView(newView)}
-        eventPropGetter={getEventStyle}
-        onEventDrop={onEventDrop}
-        onEventResize={onEventResize}
-        resizable
-        draggableAccessor={() => true}
-        views={['month', 'week']}
-        onRangeChange={handleRangeChange}
+    <div>
+      <NotificationBell 
+        unreadCount={unreadCount} 
+        notifications={notifications} 
+        setNotifications={setNotifications}
+        axiosJWT={axiosJWT} 
+        onClick={handleBellClick} 
       />
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        ariaHideApp={false}
-        className={styles.modalContent}
-        overlayClassName={styles.modalOverlay}
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-      >
-        {modalType === "add" && (
-          <div>
-            <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Add Event</h2>
-            <div className={styles.field}>
+      <div className={styles.container}>
+        <div className={styles.add_event}>
+          <button className={styles.add} onClick={() => addButton()}>+</button>
+
+          <div className={styles.filters}>
+            <h3 className={styles.filtername}>Filters</h3>
+            <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
+              <label>
+                <input type="checkbox" checked={selectedCategories.length === 5} onChange={handleAllChange} />
+                <span className={styles.filtername}>All</span>
+              </label>
+            </div>
+            <div className={styles.chbox} style={{ backgroundColor: "#2196F3" }}>
+              <label>
+                <input type="checkbox" checked={selectedCategories.includes("work")} onChange={() => handleCategoryChange("work")} />
+                <span className={styles.filtername}>Work</span>
+              </label>
+            </div>
+            <div className={styles.chbox} style={{ backgroundColor: "#08ccc2" }}>
+              <label>
+                <input type="checkbox" checked={selectedCategories.includes("school")} onChange={() => handleCategoryChange("school")} />
+                <span className={styles.filtername}>School</span>
+              </label>
+            </div>
+            <div className={styles.chbox} style={{ backgroundColor: "#FF9800" }}>
+              <label>
+                <input type="checkbox" checked={selectedCategories.includes("relax")} onChange={() => handleCategoryChange("relax")} />
+                <span className={styles.filtername}>Relax</span>
+              </label>
+            </div>
+            <div className={styles.chbox} style={{ backgroundColor: "#4CAF50" }}>
+              <label>
+                <input type="checkbox" checked={selectedCategories.includes("todo")} onChange={() => handleCategoryChange("todo")} />
+                <span className={styles.filtername}>To do</span>
+              </label>
+            </div>
+            <div className={styles.chbox} style={{ backgroundColor: "#9E9E9E" }}>
+              <label>
+                <input type="checkbox" checked={selectedCategories.includes("other")} onChange={() => handleCategoryChange("other")} />
+                <span className={styles.filtername}>Others</span>
+              </label>
+            </div>
+          </div>
+
+          <div className={styles.csv}>
+            <button onClick={handleUploadClick} className={styles.uploadButton}>Upload</button>
+            <button onClick={handleSaveClick} className={styles.uploadButton}>Save</button>
+            <button onClick={syncWithGoogleCalendar} className={styles.uploadButton}>Sync</button>
+          </div>
+        </div>
+
+        <DnDCalendar
+          localizer={localizer}
+          events={filteredEvents}
+          startAccessor="start"
+          endAccessor="end"
+          date={date}
+          selectable
+          onSelectSlot={handleSelectSlot}
+          onSelectEvent={onSelectEvent}
+          onNavigate={(newDate) => setDate(newDate)}
+          view={view}
+          onView={(newView) => setView(newView)}
+          eventPropGetter={getEventStyle}
+          onEventDrop={onEventDrop}
+          onEventResize={onEventResize}
+          resizable
+          draggableAccessor={() => true}
+          views={['month', 'week']}
+          onRangeChange={handleRangeChange}
+        />
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={() => setModalIsOpen(false)}
+          ariaHideApp={false}
+          className={styles.modalContent}
+          overlayClassName={styles.modalOverlay}
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+          {modalType === "add" && (
+            <div>
+              <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Add Event</h2>
+              <div className={styles.field}>
+                <div className={styles.formGroup}>
+                  <label>Title:</label>
+                  <input
+                    type="text"
+                    value={newEvent.title}
+                    onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Description:</label>
+                  <textarea
+                    value={newEvent.description}
+                    onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                    className={styles.description}
+                    placeholder="Enter event description"
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Start Date:</label>
+                  <input
+                    type="date"
+                    value={moment(newEvent.start).format("YYYY-MM-DD")}
+                    onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Start Time:</label>
+                  <input
+                    type="time"
+                    value={moment(newEvent.start).format("HH:mm")}
+                    onChange={(e) => setNewEvent({
+                      ...newEvent,
+                      start: new Date(moment(newEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
+                    })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>End Date:</label>
+                  <input
+                    type="date"
+                    value={moment(newEvent.end).format("YYYY-MM-DD")}
+                    onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>End Time:</label>
+                  <input
+                    type="time"
+                    value={moment(newEvent.end).format("HH:mm")}
+                    onChange={(e) => setNewEvent({
+                      ...newEvent,
+                      end: new Date(moment(newEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
+                    })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Type:</label>
+                  <select
+                    value={newEvent.category}
+                    onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
+                  >
+                    <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
+                    <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
+                    <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
+                    <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
+                    <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className={styles.modalFooter}>
+                <button onClick={addEvent} className={styles.addButton}>Add</button>
+                <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
+              </div>
+            </div>
+          )}
+
+          {modalType === "details" && selectedEvent && (
+            <div>
+              <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Event Details</h2>
+              <div className={styles.formGroup}>
+                <p><label>Title:</label> {selectedEvent.title}</p>
+              </div>
+              <div className={styles.formGroup}>
+                <p><label>Description:</label> {selectedEvent.resource?.description || "No description provided"}</p>
+              </div>
+              <div className={styles.formGroup}>
+                <p><label>Start:</label> {moment(selectedEvent.start).format("YYYY-MM-DD HH:mm A")}</p>
+              </div>
+              <div className={styles.formGroup}>
+                <p><label>End:</label> {moment(selectedEvent.end).format("YYYY-MM-DD HH:mm A")}</p>
+              </div>
+              <div className={styles.formGroup}>
+                <p><label>Type:</label> {selectedEvent.category.replace(/\b\w/g, char => char.toUpperCase())}</p>
+              </div>
+              <button onClick={() => {
+                setNewEvent(selectedEvent);
+                setModalType("edit");
+              }} className={styles.closeButton} style={{ backgroundColor: "#FFFF66" }}>Edit</button>
+              <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
+              <button onClick={() => deleteEvent(selectedEvent.id)} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
+            </div>
+          )}
+
+          {modalType === "edit" && (
+            <div>
+              <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Edit Event</h2>
               <div className={styles.formGroup}>
                 <label>Title:</label>
                 <input
                   type="text"
-                  value={newEvent.title}
-                  onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                  value={selectedEvent.title}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label>Description:</label>
                 <textarea
-                  value={newEvent.description}
-                  onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                  value={selectedEvent.description}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
                   className={styles.description}
                   placeholder="Enter event description"
                 />
@@ -497,8 +645,8 @@ export default function MyCalendar() {
                 <label>Start Date:</label>
                 <input
                   type="date"
-                  value={moment(newEvent.start).format("YYYY-MM-DD")}
-                  onChange={(e) => setNewEvent({ ...newEvent, start: new Date(e.target.value) })}
+                  value={moment(selectedEvent.start).format("YYYY-MM-DD")}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, start: new Date(e.target.value) })}
                 />
               </div>
 
@@ -506,10 +654,10 @@ export default function MyCalendar() {
                 <label>Start Time:</label>
                 <input
                   type="time"
-                  value={moment(newEvent.start).format("HH:mm")}
-                  onChange={(e) => setNewEvent({
-                    ...newEvent,
-                    start: new Date(moment(newEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
+                  value={moment(selectedEvent.start).format("HH:mm")}
+                  onChange={(e) => setSelectedEvent({
+                    ...selectedEvent,
+                    start: new Date(moment(selectedEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
                   })}
                 />
               </div>
@@ -518,8 +666,8 @@ export default function MyCalendar() {
                 <label>End Date:</label>
                 <input
                   type="date"
-                  value={moment(newEvent.end).format("YYYY-MM-DD")}
-                  onChange={(e) => setNewEvent({ ...newEvent, end: new Date(e.target.value) })}
+                  value={moment(selectedEvent.end).format("YYYY-MM-DD")}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, end: new Date(e.target.value) })}
                 />
               </div>
 
@@ -527,10 +675,10 @@ export default function MyCalendar() {
                 <label>End Time:</label>
                 <input
                   type="time"
-                  value={moment(newEvent.end).format("HH:mm")}
-                  onChange={(e) => setNewEvent({
-                    ...newEvent,
-                    end: new Date(moment(newEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
+                  value={moment(selectedEvent.end).format("HH:mm")}
+                  onChange={(e) => setSelectedEvent({
+                    ...selectedEvent,
+                    end: new Date(moment(selectedEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
                   })}
                 />
               </div>
@@ -538,8 +686,8 @@ export default function MyCalendar() {
               <div className={styles.formGroup}>
                 <label>Type:</label>
                 <select
-                  value={newEvent.category}
-                  onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
+                  value={selectedEvent.category}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
                 >
                   <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
                   <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
@@ -548,171 +696,59 @@ export default function MyCalendar() {
                   <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
                 </select>
               </div>
-            </div>
-
-            <div className={styles.modalFooter}>
-              <button onClick={addEvent} className={styles.addButton}>Add</button>
+              <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
               <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
             </div>
-          </div>
-        )}
+          )}
+        </Modal>
 
-        {modalType === "details" && selectedEvent && (
+        <Modal
+          isOpen={uploadModalIsOpen}
+          onRequestClose={() => setUploadModalIsOpen(false)}
+          ariaHideApp={false}
+          className={styles.modalContent}
+          overlayClassName={styles.modalOverlay}
+          style={{
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            content: {
+              width: '450px',
+              maxWidth: '90vw',
+              margin: 'auto',
+            }
+          }}
+        >
           <div>
-            <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Event Details</h2>
-            <div className={styles.formGroup}>
-              <p><label>Title:</label> {selectedEvent.title}</p>
+            <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Upload File</h2>
+            <div
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current.click()}
+              className={styles.dropZone}
+            >
+              <p>Drag and drop your csv file or click Upload button to upload</p>
             </div>
-            <div className={styles.formGroup}>
-              <p><label>Description:</label> {selectedEvent.resource?.description || "No description provided"}</p>
-            </div>
-            <div className={styles.formGroup}>
-              <p><label>Start:</label> {moment(selectedEvent.start).format("YYYY-MM-DD HH:mm A")}</p>
-            </div>
-            <div className={styles.formGroup}>
-              <p><label>End:</label> {moment(selectedEvent.end).format("YYYY-MM-DD HH:mm A")}</p>
-            </div>
-            <div className={styles.formGroup}>
-              <p><label>Type:</label> {selectedEvent.category.replace(/\b\w/g, char => char.toUpperCase())}</p>
-            </div>
-            <button onClick={() => {
-              setNewEvent(selectedEvent);
-              setModalType("edit");
-            }} className={styles.closeButton} style={{ backgroundColor: "#FFFF66" }}>Edit</button>
-            <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
-            <button onClick={() => deleteEvent(selectedEvent.id)} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
+            <p style={{ fontSize: "12px", color: "red", fontStyle: "italic" }}>Notes: Do not edit csv with excel!</p>
+            <button onClick={() => fileInputRef.current.click()} className={styles.addButton}>Upload</button>
+            <input
+              type="file"
+              accept=".csv"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              style={{ display: "none" }}
+            />
+            <a
+              href="/assets/template.csv"
+              download="template.csv"
+              className={styles.templateButton}
+            >
+              Template
+            </a>
+
+            <button onClick={() => setUploadModalIsOpen(false)} className={styles.closeButton}>Close</button>
           </div>
-        )}
-
-        {modalType === "edit" && (
-          <div>
-            <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Edit Event</h2>
-            <div className={styles.formGroup}>
-              <label>Title:</label>
-              <input
-                type="text"
-                value={selectedEvent.title}
-                onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Description:</label>
-              <textarea
-                value={selectedEvent.description}
-                onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
-                className={styles.description}
-                placeholder="Enter event description"
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Start Date:</label>
-              <input
-                type="date"
-                value={moment(selectedEvent.start).format("YYYY-MM-DD")}
-                onChange={(e) => setSelectedEvent({ ...selectedEvent, start: new Date(e.target.value) })}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Start Time:</label>
-              <input
-                type="time"
-                value={moment(selectedEvent.start).format("HH:mm")}
-                onChange={(e) => setSelectedEvent({
-                  ...selectedEvent,
-                  start: new Date(moment(selectedEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
-                })}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>End Date:</label>
-              <input
-                type="date"
-                value={moment(selectedEvent.end).format("YYYY-MM-DD")}
-                onChange={(e) => setSelectedEvent({ ...selectedEvent, end: new Date(e.target.value) })}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>End Time:</label>
-              <input
-                type="time"
-                value={moment(selectedEvent.end).format("HH:mm")}
-                onChange={(e) => setSelectedEvent({
-                  ...selectedEvent,
-                  end: new Date(moment(selectedEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
-                })}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Type:</label>
-              <select
-                value={selectedEvent.category}
-                onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
-              >
-                <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
-                <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
-                <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
-                <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
-                <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
-              </select>
-            </div>
-            <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
-            <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
-          </div>
-        )}
-      </Modal>
-
-      <Modal
-        isOpen={uploadModalIsOpen}
-        onRequestClose={() => setUploadModalIsOpen(false)}
-        ariaHideApp={false}
-        className={styles.modalContent}
-        overlayClassName={styles.modalOverlay}
-        style={{
-          display: 'flex', justifyContent: 'center', alignItems: 'center',
-          content: {
-            width: '450px',
-            maxWidth: '90vw',
-            margin: 'auto',
-          }
-        }}
-      >
-        <div>
-          <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Upload File</h2>
-          <div
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current.click()}
-            className={styles.dropZone}
-          >
-            <p>Drag and drop your csv file or click Upload button to upload</p>
-          </div>
-          <p style={{ fontSize: "12px", color: "red", fontStyle: "italic" }}>Notes: Do not edit csv with excel!</p>
-          <button onClick={() => fileInputRef.current.click()} className={styles.addButton}>Upload</button>
-          <input
-            type="file"
-            accept=".csv"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            style={{ display: "none" }}
-          />
-          <a
-            href="/assets/template.csv"
-            download="template.csv"
-            className={styles.templateButton}
-          >
-            Template
-          </a>
-
-          <button onClick={() => setUploadModalIsOpen(false)} className={styles.closeButton}>Close</button>
-        </div>
-      </Modal>
-      {/* <ToastContainer position="bottom-right" autoClose={3000} /> */}
+        </Modal>
+        {/* <ToastContainer position="bottom-right" autoClose={3000} /> */}
+      </div>
     </div>
   );
 }
