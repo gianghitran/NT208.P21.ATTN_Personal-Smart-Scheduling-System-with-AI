@@ -30,6 +30,15 @@ strong {
   transition: transform 0.1s ease, background-color 0.1s ease;
 }
 
+.notificationWrapper, .notification, .bellIcon {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+
 .notificationWrapper {
   position: relative;
 }
@@ -46,12 +55,14 @@ strong {
     border-radius: 6px;
     background-color: var(--notification-bg);
     color: var(--notification-color);
+    user-select: none;
     cursor: pointer;
 }
 
 .bellIcon {
     font-size: 25px;
     align-items: center;
+    user-select: none;
 }
 
 .bellIcon:hover {
@@ -71,6 +82,8 @@ strong {
 
 .dropdown {
   position: absolute;
+  pointer-events: auto;
+  user-select: none;
   top: 35px;
   right: 13rem;
   width: min(350px, 60%);
@@ -80,7 +93,7 @@ strong {
   color: var(--notificationtext-color);
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  z-index: 900;
+  z-index: 1000;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
