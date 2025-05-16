@@ -423,6 +423,7 @@ export default function MyCalendar() {
         unreadCount={unreadCount} 
         notifications={notifications} 
         setNotifications={setNotifications}
+        setUnreadCount={setUnreadCount}
         axiosJWT={axiosJWT} 
         onClick={handleBellClick} 
       />

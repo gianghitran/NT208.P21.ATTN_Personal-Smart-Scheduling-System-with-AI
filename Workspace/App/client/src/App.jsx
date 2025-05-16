@@ -12,12 +12,15 @@ import { useEffect } from "react";
 import OAuthCallback from './Components/OAuthCallback/OAuthCallback';
 import { ToastContainer } from 'react-toastify';
 import { Suspense, lazy } from "react";
+import Modal from "react-modal";
 
 const Schedule = lazy(() => import("./Components/Schedule/Schedule"));
 const Myactivities = lazy(() => import("./Components/Myactivities/Myactivities"));
 const Mytask = lazy(() => import("./Components/Mytask/Mytask"));
 const Myteam = lazy(() => import("./Components/Myteam/Myteam"));
 const Setting = lazy(() => import("./Components/Setting/Setting"));
+
+Modal.setAppElement("#root");
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.login.currentUser);

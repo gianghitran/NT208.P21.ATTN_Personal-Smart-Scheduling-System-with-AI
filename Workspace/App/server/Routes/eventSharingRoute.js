@@ -3,10 +3,10 @@ const middlewareController = require('../Controllers/Auth/middlewareController')
 const route = require('express').Router();
 
 route.get('/invites', middlewareController.verifyToken, eventSharingController.getEventInvites);
-route.get('/shared-events/:id', eventSharingController.getSharedEvents);
+// route.get('/shared-events', eventSharingController.getSharedEvents);
 route.post('/share', eventSharingController.shareEvents);
-route.put('/accept-invite/:id', eventSharingController.acceptInvite);
-route.put('/decline-invite/:id', eventSharingController.declineInvite);
-route.put('/read/:eventId', middlewareController.verifyToken, eventSharingController.setRead);
+route.put('/accept-invite/:inviteId', middlewareController.verifyToken, eventSharingController.acceptInvite);
+route.put('/decline-invite/:inviteId', middlewareController.verifyToken, eventSharingController.declineInvite);
+route.put('/read/:inviteId', middlewareController.verifyToken, eventSharingController.setRead);
 
 module.exports = route;

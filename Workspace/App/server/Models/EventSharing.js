@@ -61,5 +61,5 @@ const EventSharingSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-EventSharingSchema.index({ eventId: 1, userId: 1 }, { unique: true });
+EventSharingSchema.index({ eventId: 1, inviteeId: 1 }, { unique: true });
 module.exports = mongoose.model("EventSharing", EventSharingSchema);

@@ -1,41 +1,98 @@
 import { useState } from 'react';
 import { FaBell } from 'react-icons/fa';
 import dayjs from 'dayjs';
-import { readNotification } from '../../services/sharedEventService';
+import { readNotification, acceptInvite, declineInvite } from '../../services/sharedEventService';
 import { useSelector } from 'react-redux';
 import { customToast } from '../../utils/customToast';
 import styles from './NotificationBell.module.css';
+import Modal from "react-modal";
 
-const NotificationBell = ({ unreadCount, notifications, setNotifications, axiosJWT }) => {
+const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnreadCount, axiosJWT }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentInviteId, setCurrentInviteId] = useState(null);
   const user = useSelector((state) => state.auth.login?.currentUser);
 
+  const currentNotification = notifications.find(n => n._id === currentInviteId);
+
+  // Hàm dùng để mở/đóng dropdown
   const handleToggle = () => {
     setShowDropdown((prev) => !prev);
   };
 
-  const handleRead = async ( eventId ) => {
+  // Hàm dùng để đọc notification và cập nhật trạng thái isRead
+  const handleRead = async ( inviteId, isRead ) => {
     setNotifications((prev) =>
       prev.map((n) =>
-        n.eventId === eventId ? { ...n, isRead: true } : n
+        n._id === inviteId ? { ...n, isRead: true } : n
       )
     );
+    
+    setUnreadCount((prev) => prev - 1);
+
     try {
-      await readNotification(user?.access_token, eventId, axiosJWT);
+      if (!isRead)
+        await readNotification(user?.access_token, inviteId, axiosJWT);
     } 
     catch (error) {
       customToast("Error when reading notification", "error", "bottom-right");
       setNotifications((prev) =>
         prev.map((n) =>
-          n.eventId === eventId ? { ...n, isRead: false } : n
+          n._id === inviteId ? { ...n, isRead: false } : n
         )
       );
     }
   };
 
+  // Hàm dùng để accept invite từ owner
+  const handleAccept = async (inviteId) => {
+    try {
+      const response = await acceptInvite(user?.access_token, inviteId, axiosJWT);
+      if (response.status === 200) {
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n._id === inviteId ? { ...n, status: "accepted" } : n
+          )
+        );
+        customToast("Invite accepted", "success", "bottom-right");
+      }
+    }
+    catch (error) {
+      customToast("Error when accepting invite", "error", "bottom-right");
+    }
+    setModalIsOpen(false);
+  }
+
+  // Hàm dùng để decline invite từ owner
+  const handleDecline = async (inviteId) => {
+    try {
+      const response = await declineInvite(user?.access_token, inviteId, axiosJWT);
+      if (response.status === 200) {
+        setNotifications((prev) =>
+          prev.map((n) => 
+            n._id === inviteId ? { ...n, status: "declined" } : n
+          )
+        );
+        customToast("Invite declined", "success", "bottom-right");
+      }
+    }
+    catch (error) {
+      customToast("Error when declining invite", "error", "bottom-right");
+    }
+    setModalIsOpen(false);
+  }
+
+  // Hàm dùng để mở modal khi click vào một notification
+  const handleNotificationClick = async (notification) => {
+    setCurrentInviteId(notification._id);
+    setModalIsOpen(true);
+    await handleRead(notification._id, notification.isRead);
+  };
+
+  // Hàm dùng để render một notification item
   const renderNotificationItem = (notification) => (
     <div key={notification._id} className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ""}`} 
-      onClick={() => handleRead(notification.eventId)}>
+      onClick={() => handleNotificationClick(notification)}>
       <div className={styles.message}>
         <strong>{notification.ownerName}</strong> invited you to the event{" "}
         <strong>{notification.eventName}</strong> as
@@ -47,26 +104,64 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, axiosJ
     </div>
   );
 
-  return (
-    <div className={styles.notificationWrapper}>
-      <div className={`${styles.notification} ${showDropdown ? styles.active : ""}`} onClick={handleToggle}>
-        <FaBell className={`${styles.bellIcon} ${showDropdown ? styles.active : ""}`} />
-        {unreadCount > 0 && (
-          <span className={styles.badge}>{unreadCount}</span>
-        )}
+  // Hàm dùng để render modal khi click vào một notification gồm accept/decline button
+  const confirmInviteModal = () => { 
+    if (!currentNotification) return null;
+    return(
+      <div>
+        <h2>Notification Details</h2>
+        <p><strong>From:</strong> {currentNotification.ownerName}</p>
+        <p><strong>Event:</strong> {currentNotification.eventName}</p>
+        <p><strong>Role:</strong> {currentNotification.role}</p>
+        <p><strong>Invited At:</strong> {dayjs(currentNotification.invitedAt).format("DD/MM/YYYY HH:mm")}</p>
+        {currentNotification.status === "pending" ? 
+          (
+            <>
+            <button onClick={() => handleAccept(currentNotification._id)} className={styles.acceptBtn}>Accept</button>
+            <button onClick={() => handleDecline(currentNotification._id)} className={styles.declineBtn}>Decline</button>
+            <button onClick={() => setModalIsOpen(false)} className={styles.closeBtn}>Close</button>
+            </>
+          ) : 
+          (
+            <p><strong>Status:</strong> {currentNotification.status}</p>
+          )
+        }
       </div>
+    );
+  };
 
-      {showDropdown && (
-        <div className={styles.dropdown}>
-          {notifications.length > 0 ? (
-            [...notifications]
-            .sort((a, b) => new Date(b.invitedAt) - new Date(a.invitedAt))
-            .map(renderNotificationItem)
-          ) : (
-            <div className={styles.noNotifications}>No notifications</div>
+  return (
+    <div>
+      <div className={styles.notificationWrapper}>
+        <div className={`${styles.notification} ${showDropdown ? styles.active : ""}`} onClick={handleToggle}>
+          <FaBell className={`${styles.bellIcon} ${showDropdown ? styles.active : ""}`} />
+          {unreadCount > 0 && (
+            <span className={styles.badge}>{unreadCount}</span>
           )}
         </div>
-      )}
+
+        {showDropdown && (
+          <div className={styles.dropdown}>
+            {notifications.length > 0 ? (
+              [...notifications]
+              .sort((a, b) => new Date(b.invitedAt) - new Date(a.invitedAt))
+              .map(renderNotificationItem)
+            ) : (
+              <div className={styles.noNotifications}>No notifications</div>
+            )}
+          </div>
+        )}
+      </div>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Notification Modal"
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
+        {currentNotification && confirmInviteModal()}
+      </Modal>
     </div>
   );
 };
