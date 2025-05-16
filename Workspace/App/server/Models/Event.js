@@ -38,7 +38,7 @@ const Event = new mongoose.Schema(
         description: {
             type: String,
             default: ""
-        }
+        },
     }
 );
 

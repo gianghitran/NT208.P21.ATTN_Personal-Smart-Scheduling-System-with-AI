@@ -3,7 +3,12 @@
   --notification-color: white;
   --notificationtext-color: #333;
   --bell-icon-color: #333;
+  --gray-color: rgb(199, 199, 199);
+  --green-color: #7dff83;
+  --red-color: #dc3545;  
   --dropdown-bg: white;
+  --modal-bg-color: rgba(0, 0, 0, 0.5);
+  --modal-content-bg-color: white;
   --active-color: #333;
   --badge-bg: red;
   --badge-color: white;
@@ -14,6 +19,9 @@
   --notification-color: #FAD07E;
   --notificationtext-color: white;
   --bell-icon-color: #FAD07E;
+  --gray-color: #c1c0ba;
+  --green-color: #00ad09;
+  --red-color: #ff6b6b;
   --dropdown-bg: #333;
   --active-color: white;
   --badge-bg: #FF5E5E;
@@ -101,6 +109,89 @@ strong {
   -ms-overflow-style: none;
 }
 
+.containerModal {
+  position: fixed;
+  height: 95dvh;
+  margin: 5px 0 0 17rem;
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 1;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  width: 83%;
+  right: 0;
+  height: 100%;
+  background: var(--modal-bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  color: #333;
+  font-family: "Montserrat", sans-serif;
+  padding: 30px 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 430px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.modalContent h2 {
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #7b5410;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.modalContent p {
+  font-size: 16px;
+  margin: 12px 0;
+  line-height: 1.5;
+}
+
+.modalContent button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: black;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.acceptBtn {
+  background-color: var(--green-color) !important;
+}
+
+.declineBtn {
+  background-color: lightcoral !important;
+}
+
+.closeBtn {
+  background-color: var(--gray-color) !important;
+}
+
+/* .modalContent button:hover {
+  background-color: #0056b3 !important;
+} */
+
 .notificationItem {
   display: flex;
   flex-direction: column;
@@ -126,7 +217,7 @@ strong {
 
 .message {
   font-size: 14px;
-  color: #333;
+  color: var(--notificationtext-color);
 }
 
 .timestamp {

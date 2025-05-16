@@ -1,4 +1,5 @@
 const Event = require("../../Models/Event");
+const EventSharing = require("../../Models/EventSharing");
 
 const eventController = {
     createEvent: async (req, res) => {
@@ -23,8 +24,41 @@ const eventController = {
         try {
             const { userId } = req.query;
             if (!userId) return res.status(400).json({ message: "Missing userId" });
-            const events = await Event.find({ userId });
-            res.status(200).json(events);
+            const start = new Date(req.query.start);
+            const end = new Date(req.query.end);
+            if (start > end) {
+                return res.status(400).json({ message: "startTime must be before endTime" });
+            }
+
+            const events = await Event.find({
+                userId,
+                start: { $gte: start, $lte: end },
+                end: { $gte: start, $lte: end }
+            });
+
+            const sharedEventRef = await EventSharing.find({ inviteeId: userId }).populate("eventId");
+            const sharedEventIds = sharedEventRef.map(event => event.eventId);
+            const sharedEvents = await Event.find({
+                _id: { $in: sharedEventIds },
+                start: { $gte: start, $lte: end },
+                end: { $gte: start, $lte: end }
+            })
+
+            const taggedEvents = events.map(event => ({
+                ...event._doc,
+                isShared: false
+            }));
+
+            const sharedTaggedEvents = sharedEvents.map(event => ({
+                ...event._doc,
+                isShared: true
+            }));
+
+            const allEvents = [...taggedEvents, ...sharedTaggedEvents];
+
+
+            // const events = await Event.find({ userId });
+            res.status(200).json(allEvents);
         } catch (error) {
             res.status(500).json({ message: error });
         }

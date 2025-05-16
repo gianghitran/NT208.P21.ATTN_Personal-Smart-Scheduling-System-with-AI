@@ -16,20 +16,40 @@ const eventSharingController = {
         }
     },
 
-    getSharedEvents: async (req, res) => {
-        const userId = req.params.id;
-        if (!userId) return res.status(400).json({ message: "Missing userId" });
+    // getSharedEvents: async (req, res) => {
+    //     const { userId, startTime, endTime } = req.body;
+    //     if (!startTime || !endTime) return res.status(400).json({ message: "Missing startTime or endTime" });
+    //     if (new Date(startTime) > new Date(endTime)) {
+    //         return res.status(400).json({ message: "startTime must be before endTime" });
+    //     }
+        
+    //     if (!userId) return res.status(400).json({ message: "Missing userId" });
 
-        try {
-            const sharedEventIds = await EventSharing.find({ inviteeId: userId }).populate("eventId");
-            const sharedEvents = await Event.find({ _id: { $in: sharedEventIds.map(event => event.eventId) } });
+    //     try {
+    //         const sharedEventRef = await EventSharing.find({ inviteeId: userId }).populate("eventId");
+    //         const sharedEventIds = sharedEventRef.map(event => event.eventId);
+    //         const sharedEvents = await Event.find({
+    //             _id: { $in: sharedEventIds },
+    //             $or: [
+    //             {
+    //                 startTime: { $gte: new Date(startTime), $lte: new Date(endTime) }
+    //             },
+    //             {
+    //                 endTime: { $gte: new Date(startTime), $lte: new Date(endTime) }
+    //             },
+    //             {
+    //                 startTime: { $lte: new Date(startTime) },
+    //                 endTime: { $gte: new Date(endTime) }
+    //             }
+    //         ]
+    //         });
 
-            return res.status(200).json(sharedEvents);
-        }
-        catch (error) {
-            return res.status(500).json({ message: error.message });
-        }
-    },
+    //         return res.status(200).json(sharedEvents);
+    //     }
+    //     catch (error) {
+    //         return res.status(500).json({ message: error.message });
+    //     }
+    // },
 
     shareEvents: async (req, res) => {
         // const ownerId = req.ownerId;
@@ -66,7 +86,7 @@ const eventSharingController = {
 
         try {
             const invite = await EventSharing.findByIdAndUpdate(inviteId, { status: "accepted", respondedAt: Date.now() }, { new: true });
-            return res.status(200).json({ message: "Invite accepted", invite });
+            return res.status(200).json({ message: "Invite accepted" });
         }
         catch (error) {
             return res.status(500).json({ message: error.message });
@@ -79,7 +99,7 @@ const eventSharingController = {
 
         try {
             const invite = await EventSharing.findByIdAndUpdate(inviteId, { status: "declined", respondedAt: Date.now() }, { new: true });
-            res.status(200).json({ message: "Invite declined", invite });
+            res.status(200).json({ message: "Invite declined" });
         }
         catch (error) {
             return res.status(500).json({ message: error.message });
@@ -87,13 +107,9 @@ const eventSharingController = {
     },
 
     setRead: async (req, res) => {
-        const inviteeId = req.user.id;
-        const eventId = req.params.eventId;
+        const { inviteId } = req.params;
         try{
-            const result = await EventSharing.findOneAndUpdate(
-                {inviteeId, eventId},
-                {isRead: true},
-            );
+            const result = await EventSharing.findByIdAndUpdate(inviteId, { isRead: true }, { new: true });
             if (!result) return res.status(404).json({ message: "Notification not found" });
             return res.status(204);
         }
