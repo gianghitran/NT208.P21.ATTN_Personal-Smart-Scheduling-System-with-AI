@@ -32,16 +32,16 @@ const eventController = {
 
             const events = await Event.find({
                 userId,
-                start: { $gte: start, $lte: end },
-                end: { $gte: start, $lte: end }
+                start: { $lt: end },
+                end: { $gt: start }
             });
 
-            const sharedEventRef = await EventSharing.find({ inviteeId: userId }).populate("eventId");
+            const sharedEventRef = await EventSharing.find({ inviteeId: userId, status: "accepted" }).populate("eventId");
             const sharedEventIds = sharedEventRef.map(event => event.eventId);
             const sharedEvents = await Event.find({
                 _id: { $in: sharedEventIds },
-                start: { $gte: start, $lte: end },
-                end: { $gte: start, $lte: end }
+                start: { $lt: end },
+                end: { $gt: start }
             })
 
             const taggedEvents = events.map(event => ({
@@ -71,28 +71,58 @@ const eventController = {
                 return res.status(404).json({ message: "Event not found" });
             }
 
-            if (event.userId.toString() === req.body.userId.toString()) {
+            // Check if user is the owner of the event
+            if (event.userId.toString() === req.user._id.toString()) {
                 await event.updateOne({ $set: req.body });
-                res.status(200).json({ message: "Event updated" });
-            } else {
-                res.status(403).json({ message: "You can only update your own events" });
+                return res.status(200).json({ message: "Event updated" });
+            }
+
+            // Check if user is an editor of the event
+            const eventSharing = await EventSharing.findOne({ eventId: req.params.id, inviteeId: req.user._id });
+            if (!eventSharing) {
+                return res.status(403).json({ message: "You don't have permission to update this event" });
+            }
+
+            if (eventSharing.role !== "editor") {
+                return res.status(403).json({ message: "You don't have permission to update this event" });
+            }
+            else {
+                const { title, start, end, description } = req.body;
+                await event.updateOne({
+                    $set: { title, start, end, description }
+                });
+                // Invitee can update event
+                return res.status(200).json({ message: "Shared event updated" });
             }
         } catch (error) {
-            res.status(500).json({ message: "Internal server error" });
+            return res.status(500).json({ message: "Internal server error" });
         }
     },
 
     deleteEvent: async (req, res) => {
         try {
-            const event = await Event.findOneAndDelete({
-                _id: req.params.id,
-                userId: req.user._id,
-            });
+            const event = await Event.findById(req.params.id);
+
             if (!event) {
-                return res.status(404).json({ message: "Event not found or not authorized" });
+                return res.status(404).json({ message: "Event not found" });
             }
-            res.status(200).json({ message: "Event deleted" });
+
+            if (event.userId.toString() === req.user._id.toString()) {
+                await Event.deleteOne({ _id: event._id });
+                await EventSharing.deleteMany({ eventId: event._id });
+                return res.status(200).json({ message: "Event deleted successfully!" });
+            }
+
+            const sharing = await EventSharing.findOne({ eventId: req.params.id, inviteeId: req.user._id });
+
+            if (sharing) {
+                await EventSharing.deleteOne({ _id: sharing._id });
+                return res.status(200).json({ message: "Shared event removed from your calendar." });
+            }
+
+            return res.status(403).json({ message: "You don't have permission to delete this event" });
         } catch (error) {
+            console.error("Error deleting event:", error);
             res.status(500).json({ message: "Server error" });
         }
     }

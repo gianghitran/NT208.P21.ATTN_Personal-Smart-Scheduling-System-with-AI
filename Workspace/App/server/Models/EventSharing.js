@@ -29,6 +29,16 @@ const EventSharingSchema = new mongoose.Schema({
         required: true
     },
 
+    start: {
+        type: Date,
+        required: true
+    },
+
+    end: {
+        type: Date,
+        required: true
+    },
+
     role: {
         type: String,
         enum: ["viewer", "editor"],

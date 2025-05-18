@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaBell } from 'react-icons/fa';
 import dayjs from 'dayjs';
 import { readNotification, acceptInvite, declineInvite } from '../../services/sharedEventService';
 import { useSelector } from 'react-redux';
 import { customToast } from '../../utils/customToast';
+import moment from 'moment';
 import styles from './NotificationBell.module.css';
 import Modal from "react-modal";
 
-const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnreadCount, axiosJWT }) => {
+const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnreadCount, axiosJWT, onAccept }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentInviteId, setCurrentInviteId] = useState(null);
@@ -48,17 +49,27 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
   const handleAccept = async (inviteId) => {
     try {
       const response = await acceptInvite(user?.access_token, inviteId, axiosJWT);
+      let acceptedNotification = null;
       if (response.status === 200) {
         setNotifications((prev) =>
-          prev.map((n) =>
-            n._id === inviteId ? { ...n, status: "accepted" } : n
-          )
-        );
+          prev.map((n) => {
+            if (n._id === inviteId) {
+              acceptedNotification = { ...n, status: "accepted" };
+              return acceptedNotification;
+            }
+            return n;
+          }
+        ));
+        console.log("Accepted notification: ", acceptedNotification);
+        const startOfWeek = moment(acceptedNotification.start).startOf('isoWeek').toDate();
+        const endOfWeek = moment(acceptedNotification.end).endOf('isoWeek').toDate();
+        await onAccept?.(startOfWeek, endOfWeek, true);
         customToast("Invite accepted", "success", "bottom-right");
       }
     }
     catch (error) {
       customToast("Error when accepting invite", "error", "bottom-right");
+      console.error("Error when accepting invite: ", error);
     }
     setModalIsOpen(false);
   }
@@ -114,6 +125,8 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
         <p><strong>Event:</strong> {currentNotification.eventName}</p>
         <p><strong>Role:</strong> {currentNotification.role}</p>
         <p><strong>Invited At:</strong> {dayjs(currentNotification.invitedAt).format("DD/MM/YYYY HH:mm")}</p>
+        <p><strong>Start:</strong> {moment(currentNotification.start).format("DD/MM/YYYY HH:mm")}</p>
+        <p><strong>End:</strong> {moment(currentNotification.end).format("DD/MM/YYYY HH:mm")}</p>
         {currentNotification.status === "pending" ? 
           (
             <>
