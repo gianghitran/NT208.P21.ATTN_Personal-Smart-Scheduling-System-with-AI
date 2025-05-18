@@ -155,12 +155,13 @@ export const saveEvents = async (selectedEvent, _id, access_token, axiosJWT) => 
             customToast("Lỗi: Vui lòng nhập tiêu đề sự kiện!", "error", "bottom-right");
             return { success: false };
         }
-        await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {
+        const response = await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {
             headers: { Authorization: `Bearer ${access_token}` }
         });
-        return { success: true };
+        return { success: true, message: response.data.message };
     } catch (error) {
-        return { success: false };
+        const message = error.response?.data?.message || error.message || "Unknown error";
+        return { success: false, message: message };
     }
 }
 
@@ -185,13 +186,15 @@ export const deleteEvents = async (_id, userId, access_token, axiosJWT) => {
         if (!access_token) {
             throw new Error("Access token is missing");
         }
-        await axiosJWT.delete(`/api/event/delete/${_id}`, {
+        const response = await axiosJWT.delete(`/api/event/delete/${_id}`, {
             headers: { Authorization: `Bearer ${access_token}` },
             data: { userId },
         });
-        return;
+        console.log("Delete event response:", response);
+        return { success: true, message: response.data.message };
     } catch (error) {
-        return;
+        const message = error.response?.data?.message || error.message || "Unknown error";
+        return { success: false, message: message };
     }
 };
 

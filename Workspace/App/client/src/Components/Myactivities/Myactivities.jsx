@@ -36,8 +36,11 @@ const Myactivities = () => {
 
     useEffect(() => {
         if (!user?.userData?._id) return;
-
-        getEvents(user.userData._id)
+        const startOfToday = new Date(today);
+        const endOfToday = new Date(today);
+        endOfToday.setHours(23, 59, 59, 999);
+        startOfToday.setHours(0, 0, 0, 0);
+        getEvents(user.userData._id, startOfToday, endOfToday)
             .then(data => {
                 const eventsInToday = data.filter(ev => {
                     const start = new Date(ev.start);

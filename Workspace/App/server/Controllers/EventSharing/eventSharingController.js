@@ -16,44 +16,9 @@ const eventSharingController = {
         }
     },
 
-    // getSharedEvents: async (req, res) => {
-    //     const { userId, startTime, endTime } = req.body;
-    //     if (!startTime || !endTime) return res.status(400).json({ message: "Missing startTime or endTime" });
-    //     if (new Date(startTime) > new Date(endTime)) {
-    //         return res.status(400).json({ message: "startTime must be before endTime" });
-    //     }
-        
-    //     if (!userId) return res.status(400).json({ message: "Missing userId" });
-
-    //     try {
-    //         const sharedEventRef = await EventSharing.find({ inviteeId: userId }).populate("eventId");
-    //         const sharedEventIds = sharedEventRef.map(event => event.eventId);
-    //         const sharedEvents = await Event.find({
-    //             _id: { $in: sharedEventIds },
-    //             $or: [
-    //             {
-    //                 startTime: { $gte: new Date(startTime), $lte: new Date(endTime) }
-    //             },
-    //             {
-    //                 endTime: { $gte: new Date(startTime), $lte: new Date(endTime) }
-    //             },
-    //             {
-    //                 startTime: { $lte: new Date(startTime) },
-    //                 endTime: { $gte: new Date(endTime) }
-    //             }
-    //         ]
-    //         });
-
-    //         return res.status(200).json(sharedEvents);
-    //     }
-    //     catch (error) {
-    //         return res.status(500).json({ message: error.message });
-    //     }
-    // },
-
     shareEvents: async (req, res) => {
         // const ownerId = req.ownerId;
-        const { eventId, inviteeId, ownerId, ownerName, eventName, role} = req.body;
+        const { eventId, inviteeId, ownerId, ownerName, eventName, start, end, role} = req.body;
 
         if (ownerId === inviteeId) {
             return res.status(400).json({ message: "You cannot share an event with yourself" });
@@ -67,6 +32,8 @@ const eventSharingController = {
                 ownerId,
                 ownerName,
                 eventName,
+                start,
+                end,
                 role
             });
             await eventSharing.save();

@@ -43,9 +43,10 @@ export default function MyCalendar() {
 
   const loadedRangesRef = useRef(new Set());
 
-  const fetchEvents = async (startDate, endDate) => {
+  const fetchEvents = async (startDate, endDate, force=false) => {
     const key = getRangeKey(startDate, endDate);
-    if (loadedRangesRef.current.has(key)) return;
+    console.log("Fetching events for range:", key);
+    if (!force && loadedRangesRef.current.has(key)) return;
 
     const data = await getEvents(user?.userData._id, startDate, endDate);
 
@@ -58,6 +59,8 @@ export default function MyCalendar() {
       ...rest,
       resource: { description: rest.description },
     }));
+
+    console.log("Fetched events:", items);
 
     setEvents(prev => {
       const existingIds = new Set(prev.map(ev => ev.id));
@@ -86,7 +89,7 @@ export default function MyCalendar() {
       customToast(`Sự kiện "${event.title}" đã được di chuyển!`, "success", "bottom-right", 3000);
     } else {
       // toast.error("Lỗi: Không thể cập nhật sự kiện!");
-      customToast("Lỗi: Không thể cập nhật sự kiện!", "error", "bottom-right", 3000);
+      customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
     }
   };
 
@@ -100,7 +103,7 @@ export default function MyCalendar() {
       customToast(`Sự kiện "${event.title}" đã được thay đổi kích thước!`, "success", "bottom-right", 3000);
     } else {
       // toast.error("Lỗi: Không thể cập nhật sự kiện!");
-      customToast("Lỗi: Không thể cập nhật sự kiện!", "error", "bottom-right", 3000);
+      customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
     }
   };
 
@@ -178,26 +181,23 @@ export default function MyCalendar() {
     const response = await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === selectedEvent.id ? { ...e, ...event } : e));
-      // toast.success(`Sự kiện "${event.title}" đã được sửa thành công!`);
       customToast(`Sự kiện "${event.title}" đã được sửa thành công!`, "success", "bottom-right", 3000);
     } else {
-      // toast.error("Lỗi: Không thể cập nhật sự kiện!");
-      customToast("Lỗi: Không thể cập nhật sự kiện!", "error", "bottom-right", 3000);
+      customToast(`Lỗi: ${response.message} `, "error", "bottom-right", 3000);
     }
     setModalIsOpen(false);
   };
 
   const deleteEvent = async (eventId) => {
-    try {
-      await deleteEvents(eventId, user?.userData._id, user?.access_token, axiosJWT);
-      setEvents(events.filter(event => event.id !== eventId));
-      setModalIsOpen(false);
-      // toast.success("🗑️ Xóa sự kiện thành công!");
-      customToast("🗑️ Xóa sự kiện thành công!", "success", "bottom-right", 3000);
-    } catch (error) {
-      // toast.error("Lỗi khi xóa sự kiện!");
-      customToast("Lỗi khi xóa sự kiện!", "error", "bottom-right", 3000);
-    }
+      const response = await deleteEvents(eventId, user?.userData._id, user?.access_token, axiosJWT);
+      if (response.success) {
+        setEvents(events.filter(event => event.id !== eventId));
+        setModalIsOpen(false);
+        customToast(`🗑️ ${response.message}`, "success", "bottom-right", 3000);
+      }
+      else {
+        customToast(response.message, "error", "bottom-right", 3000);
+      }
   };
 
 
@@ -409,8 +409,15 @@ export default function MyCalendar() {
   }
 
   useEffect(() => {
-    getInvites(user?.access_token, axiosJWT);
-  }, []);
+    if (!user?.access_token) return;
+
+    const interval = setInterval(() => {
+      getInvites(user.access_token, axiosJWT);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [user?.access_token, axiosJWT]);
+
 
   const handleBellClick = () => {
       setUnreadCount(0);
@@ -426,6 +433,7 @@ export default function MyCalendar() {
         setUnreadCount={setUnreadCount}
         axiosJWT={axiosJWT} 
         onClick={handleBellClick} 
+        onAccept={fetchEvents}
       />
       <div className={styles.container}>
         <div className={styles.add_event}>

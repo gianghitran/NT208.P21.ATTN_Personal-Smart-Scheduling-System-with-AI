@@ -109,7 +109,7 @@ const authController = {
                 admin: user.admin
             },
             process.env.ACCESS_KEY,
-            { expiresIn: "30s" }
+            { expiresIn: "1h" }
         );
         return token;
     },
