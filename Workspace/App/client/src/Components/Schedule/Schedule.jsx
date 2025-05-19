@@ -624,7 +624,7 @@ export default function MyCalendar() {
                 <div className={styles.formGroup}>
                   <p><label>Created By:</label> {selectedEvent.ownerName}</p>
                 </div>)
-    }
+              }
               <button onClick={() => {
                 setNewEvent(selectedEvent);
                 setModalType("edit");

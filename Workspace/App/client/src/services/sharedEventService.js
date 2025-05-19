@@ -56,7 +56,7 @@ export const updateRole = async (access_token, updatedUser, eventId, axiosJWT) =
         {
             headers: { Authorization: `Bearer ${access_token}` },
         });
-        return res.data;
+        return res;
     } catch (error) {
         return error;
     }

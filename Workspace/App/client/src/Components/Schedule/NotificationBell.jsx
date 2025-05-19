@@ -60,7 +60,6 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
             return n;
           }
         ));
-        console.log("Accepted notification: ", acceptedNotification);
         const startOfWeek = moment(acceptedNotification.start).startOf('isoWeek').toDate();
         const endOfWeek = moment(acceptedNotification.end).endOf('isoWeek').toDate();
         await onAccept?.(startOfWeek, endOfWeek, true);
@@ -69,7 +68,6 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
     }
     catch (error) {
       customToast("Error when accepting invite", "error", "bottom-right");
-      console.error("Error when accepting invite: ", error);
     }
     setModalIsOpen(false);
   }
@@ -105,7 +103,7 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
     <div key={notification._id} className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ""}`} 
       onClick={() => handleNotificationClick(notification)}>
       <div className={styles.message}>
-        <strong>{notification.ownerName}</strong> invited you to the event{" "}
+        <strong>{notification.invitorName}</strong> invited you to the event{" "}
         <strong>{notification.eventName}</strong> as
         {notification.role === "editor" ? " an" : " a"} {notification.role}.
       </div>
@@ -121,7 +119,7 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
     return(
       <div>
         <h2>Notification Details</h2>
-        <p><strong>From:</strong> {currentNotification.ownerName}</p>
+        <p><strong>From:</strong> {currentNotification.invitorName}</p>
         <p><strong>Event:</strong> {currentNotification.eventName}</p>
         <p><strong>Role:</strong> {currentNotification.role}</p>
         <p><strong>Invited At:</strong> {dayjs(currentNotification.invitedAt).format("DD/MM/YYYY HH:mm")}</p>
