@@ -1,5 +1,6 @@
 const Event = require("../../Models/Event");
 const EventSharing = require("../../Models/EventSharing");
+const User = require("../../Models/User");
 
 const eventController = {
     createEvent: async (req, res) => {
@@ -36,6 +37,14 @@ const eventController = {
                 end: { $gt: start }
             });
 
+            const sharedRefs = await EventSharing.find({}).select("eventId").lean();
+
+            const sharedEventIdsByOwner = new Set(
+                sharedRefs
+                    .filter(ref => ref.eventId)
+                    .map(ref => ref.eventId.toString())
+            );
+
             const sharedEventRef = await EventSharing.find({ inviteeId: userId, status: "accepted" }).populate("eventId");
             const sharedEventIds = sharedEventRef.map(event => event.eventId);
             const sharedEvents = await Event.find({
@@ -44,14 +53,23 @@ const eventController = {
                 end: { $gt: start }
             })
 
+            const ownerIds = [...new Set(sharedEvents.map(e => e.userId.toString()))];
+
+            const owners = await User.find({ _id: { $in: ownerIds } }).select("full_name");
+            const ownerMap = owners.reduce((acc, user) => {
+                acc[user._id.toString()] = user.full_name;
+                return acc;
+            }, {});
+            
             const taggedEvents = events.map(event => ({
                 ...event._doc,
-                isShared: false
+                isShared: sharedEventIdsByOwner.has(event._id.toString()),
             }));
 
             const sharedTaggedEvents = sharedEvents.map(event => ({
                 ...event._doc,
-                isShared: true
+                isShared: true,
+                ownerName: ownerMap[event.userId.toString()] || "Unknown",
             }));
 
             const allEvents = [...taggedEvents, ...sharedTaggedEvents];

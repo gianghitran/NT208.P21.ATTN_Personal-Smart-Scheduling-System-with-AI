@@ -1,5 +1,6 @@
 const EventSharing = require("../../Models/EventSharing");
 const Event = require("../../Models/Event");
+const User = require("../../Models/User");
 
 const eventSharingController = {
     getEventInvites: async (req, res) => {
@@ -16,28 +17,94 @@ const eventSharingController = {
         }
     },
 
+    getInvitedUsersByEvent: async (req, res) => {
+        const eventId = req.params.eventId;
+        const currentUserId = req.user.id;
+
+        try {
+            if (!eventId) return res.status(400).json({ message: "Missing eventId" });
+
+            const event = await Event.findById(eventId).select("userId");
+
+            if (!event) return res.status(404).json({ message: "Event not found" });
+
+            const owner = await User.findById(event.userId);
+            if (!owner) return res.status(404).json({ message: "Owner not found" });
+
+            const ownerEmail = owner.email;
+            
+            if (currentUserId === event.userId.toString()) {
+                const invitedUsers = await EventSharing.find({ eventId }).populate("inviteeId", "email");
+                const formatedInvitedUsers = invitedUsers.map(user => ({
+                    inviteeId: user.inviteeId._id,
+                    email: user.inviteeId.email,
+                    role: user.role,
+                    status: user.status,
+                    start: user.start,
+                    end: user.end,
+                }));
+                return res.status(200).json({ ownerEmail, invitedUsers: formatedInvitedUsers, isOwner: true });
+            }
+            
+            const currentUser = await EventSharing.findOne({ eventId, inviteeId: currentUserId }).populate("inviteeId", "email");
+            if (!currentUser) return res.status(403).json({ message: "You are not invited to this event" });
+            
+            return res.status(200).json({ 
+                ownerEmail,
+                invitedUsers: [{
+                    inviteeId: currentUser.inviteeId._id,
+                    email: currentUser.inviteeId.email,
+                    role: currentUser.role,
+                    status: currentUser.status,
+                    start: currentUser.start,
+                    end: currentUser.end,
+                }],
+                isOwner: false, 
+            });
+        }
+        catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    },
+
+
     shareEvents: async (req, res) => {
-        // const ownerId = req.ownerId;
-        const { eventId, inviteeId, ownerId, ownerName, eventName, start, end, role} = req.body;
+        const ownerId = req.user.id;
+        const { email, eventId } = req.body;
+
+        const user = await User.findOne({ email });
+        const owner = await User.findById(ownerId);
+        const event = await Event.findById(eventId);
+
+        if (!owner) return res.status(404).json({ message: "Owner not found" });
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const inviteeId = user._id;
 
         if (ownerId === inviteeId) {
             return res.status(400).json({ message: "You cannot share an event with yourself" });
         }
-
-        if (!eventId || !inviteeId || !role) return res.status(400).json({ message: "Missing eventId, userId or role" });
+        
         try {
-            const eventSharing = new EventSharing({
+            const eventSharing = await EventSharing.findOne({ eventId, inviteeId });    
+
+            if (eventSharing) {
+                return res.status(409).json({ message: "Event already shared with this user" });
+            }
+
+            const newEventSharing = new EventSharing({
                 eventId,
                 inviteeId,
                 ownerId,
-                ownerName,
-                eventName,
-                start,
-                end,
-                role
+                ownerName: owner.full_name,
+                eventName: event.title,
+                start: event.start,
+                end: event.end
             });
-            await eventSharing.save();
-            return res.status(201).json({ message: "Event shared successfully", eventSharing });
+
+            await newEventSharing.save();
+            return res.status(201).json({ message: "Event shared successfully", newEventSharing });
         }
         catch (error) {
             if (error.code === 11000) {
@@ -82,6 +149,25 @@ const eventSharingController = {
         }
         catch (error) {
             return res.status(500).json({message: error.message});
+        }
+    },
+
+    updateRole: async (req, res) => {
+        const { updatedUser, eventId } = req.body;
+        const ownerId = req.user.id;
+
+        try {
+            const eventSharing = await EventSharing.findOne({ inviteeId: updatedUser.inviteeId, eventId: eventId });
+            if (ownerId.toString() !== eventSharing.ownerId.toString()) {
+                return res.status(403).json({ message: "You are not authorized to update this user" });
+            }
+
+            eventSharing.role = updatedUser.role;
+            await eventSharing.save();
+            return res.status(200).json({ message: "User role updated successfully" });
+        }
+        catch (error) {
+            return res.status(500).json({ message: error.message });
         }
     }
 };

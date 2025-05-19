@@ -19,6 +19,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { customToast } from "../../utils/customToast";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationBell from "./NotificationBell";
+import UserSharing from "./UserSharing";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -35,6 +36,7 @@ export default function MyCalendar() {
   const [selectedCategories, setSelectedCategories] = useState(["work", "school", "relax", "todo", "other"]);
   const fileInputRef = useRef(null);
   const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess, navigate);
 
@@ -45,7 +47,6 @@ export default function MyCalendar() {
 
   const fetchEvents = async (startDate, endDate, force=false) => {
     const key = getRangeKey(startDate, endDate);
-    console.log("Fetching events for range:", key);
     if (!force && loadedRangesRef.current.has(key)) return;
 
     const data = await getEvents(user?.userData._id, startDate, endDate);
@@ -59,8 +60,6 @@ export default function MyCalendar() {
       ...rest,
       resource: { description: rest.description },
     }));
-
-    console.log("Fetched events:", items);
 
     setEvents(prev => {
       const existingIds = new Set(prev.map(ev => ev.id));
@@ -593,6 +592,8 @@ export default function MyCalendar() {
                   </select>
                 </div>
               </div>
+              
+
 
               <div className={styles.modalFooter}>
                 <button onClick={addEvent} className={styles.addButton}>Add</button>
@@ -619,97 +620,124 @@ export default function MyCalendar() {
               <div className={styles.formGroup}>
                 <p><label>Type:</label> {selectedEvent.category.replace(/\b\w/g, char => char.toUpperCase())}</p>
               </div>
+              {selectedEvent.ownerName && (
+                <div className={styles.formGroup}>
+                  <p><label>Created By:</label> {selectedEvent.ownerName}</p>
+                </div>)
+    }
               <button onClick={() => {
                 setNewEvent(selectedEvent);
                 setModalType("edit");
+                setModalIsOpen(false);
+                setEditModalIsOpen(true);
               }} className={styles.closeButton} style={{ backgroundColor: "#FFFF66" }}>Edit</button>
               <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
-              <button onClick={() => deleteEvent(selectedEvent.id)} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
+              <button onClick={() => deleteEvent(selectedEvent)} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
             </div>
           )}
+          </Modal>
 
-          {modalType === "edit" && (
-            <div>
-              <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Edit Event</h2>
-              <div className={styles.formGroup}>
-                <label>Title:</label>
-                <input
-                  type="text"
-                  value={selectedEvent.title}
-                  onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
-                />
-              </div>
+          <Modal
+            isOpen={editModalIsOpen}
+            onRequestClose={() => setEditModalIsOpen(false)}
+            ariaHideApp={false}
+            className={styles.modalContentEdit}
+            overlayClassName={styles.modalOverlay}
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          >
+            {modalType === "edit" && (
+              <div className={styles.editAndShareArea}>
+                <div>
+                  <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Edit Event</h2>
+                  <div className={styles.formGroup}>
+                    <label>Title:</label>
+                    <input
+                      type="text"
+                      value={selectedEvent.title}
+                      onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
+                    />
+                  </div>
 
-              <div className={styles.formGroup}>
-                <label>Description:</label>
-                <textarea
-                  value={selectedEvent.description}
-                  onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
-                  className={styles.description}
-                  placeholder="Enter event description"
-                />
-              </div>
+                  <div className={styles.formGroup}>
+                    <label>Description:</label>
+                    <textarea
+                      value={selectedEvent.description}
+                      onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
+                      className={styles.description}
+                      placeholder="Enter event description"
+                    />
+                  </div>
 
-              <div className={styles.formGroup}>
-                <label>Start Date:</label>
-                <input
-                  type="date"
-                  value={moment(selectedEvent.start).format("YYYY-MM-DD")}
-                  onChange={(e) => setSelectedEvent({ ...selectedEvent, start: new Date(e.target.value) })}
-                />
-              </div>
+                  <div className={styles.formGroup}>
+                    <label>Start Date:</label>
+                    <input
+                      type="date"
+                      value={moment(selectedEvent.start).format("YYYY-MM-DD")}
+                      onChange={(e) => setSelectedEvent({ ...selectedEvent, start: new Date(e.target.value) })}
+                    />
+                  </div>
 
-              <div className={styles.formGroup}>
-                <label>Start Time:</label>
-                <input
-                  type="time"
-                  value={moment(selectedEvent.start).format("HH:mm")}
-                  onChange={(e) => setSelectedEvent({
-                    ...selectedEvent,
-                    start: new Date(moment(selectedEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
-                  })}
-                />
-              </div>
+                  <div className={styles.formGroup}>
+                    <label>Start Time:</label>
+                    <input
+                      type="time"
+                      value={moment(selectedEvent.start).format("HH:mm")}
+                      onChange={(e) => setSelectedEvent({
+                        ...selectedEvent,
+                        start: new Date(moment(selectedEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
+                      })}
+                    />
+                  </div>
 
-              <div className={styles.formGroup}>
-                <label>End Date:</label>
-                <input
-                  type="date"
-                  value={moment(selectedEvent.end).format("YYYY-MM-DD")}
-                  onChange={(e) => setSelectedEvent({ ...selectedEvent, end: new Date(e.target.value) })}
-                />
-              </div>
+                  <div className={styles.formGroup}>
+                    <label>End Date:</label>
+                    <input
+                      type="date"
+                      value={moment(selectedEvent.end).format("YYYY-MM-DD")}
+                      onChange={(e) => setSelectedEvent({ ...selectedEvent, end: new Date(e.target.value) })}
+                    />
+                  </div>
 
-              <div className={styles.formGroup}>
-                <label>End Time:</label>
-                <input
-                  type="time"
-                  value={moment(selectedEvent.end).format("HH:mm")}
-                  onChange={(e) => setSelectedEvent({
-                    ...selectedEvent,
-                    end: new Date(moment(selectedEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
-                  })}
-                />
-              </div>
+                  <div className={styles.formGroup}>
+                    <label>End Time:</label>
+                    <input
+                      type="time"
+                      value={moment(selectedEvent.end).format("HH:mm")}
+                      onChange={(e) => setSelectedEvent({
+                        ...selectedEvent,
+                        end: new Date(moment(selectedEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
+                      })}
+                    />
+                  </div>
 
-              <div className={styles.formGroup}>
-                <label>Type:</label>
-                <select
-                  value={selectedEvent.category}
-                  onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
-                >
-                  <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
-                  <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
-                  <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
-                  <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
-                  <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
-                </select>
+                  <div className={styles.formGroup}>
+                    <label>Type:</label>
+                    <select
+                      value={selectedEvent.category}
+                      onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
+                    >
+                      <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
+                      <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
+                      <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
+                      <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
+                      <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
+                    </select>
+                  </div>
+                  <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
+                  <button onClick={() => setEditModalIsOpen(false)} className={styles.closeButton}>Close</button>
+                </div>
+
+                <div className={styles.sharingField}>
+                    <UserSharing 
+                      selectedEvent={selectedEvent} 
+                      setEvents={setEvents}
+                      access_token={user?.access_token}
+                      axiosJWT={axiosJWT}  
+                    />
+                </div>
               </div>
-              <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
-              <button onClick={() => setModalIsOpen(false)} className={styles.closeButton}>Close</button>
-            </div>
-          )}
-        </Modal>
+            )}
+          </Modal>
 
         <Modal
           isOpen={uploadModalIsOpen}
