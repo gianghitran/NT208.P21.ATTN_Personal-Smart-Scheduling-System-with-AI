@@ -184,7 +184,7 @@ export default function MyCalendar() {
     } else {
       customToast(`Lỗi: ${response.message} `, "error", "bottom-right", 3000);
     }
-    setModalIsOpen(false);
+    setEditModalIsOpen(false);
   };
 
   const deleteEvent = async (eventId) => {
