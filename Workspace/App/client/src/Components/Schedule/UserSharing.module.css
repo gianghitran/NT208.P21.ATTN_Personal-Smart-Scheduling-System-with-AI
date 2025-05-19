@@ -1,0 +1,131 @@
+:root {
+  --primary-color: #ffcf7d;
+  --primary-color-hover: #e9a93c;
+  --green-color: #7dff83;
+  --gray-color: rgb(199, 199, 199);
+  --blue-color: #53a5fd;
+  --checkbox-color: #ffcf7d;
+  --modal-bg-color: rgba(0, 0, 0, 0.5);
+  --modal-content-bg-color: white;
+  --dropzone-bg-color: #f9f9f9;
+  --border-color: #ccc;
+  --toolbar-text-color: #7b5410;
+  --description-bg-color: white;
+  --background-color: #ffffff;
+  --text-dark: #000000;
+  --text-light: #ffffff;
+  --header: #7a1a08;
+  --bg-today: rgba(141, 237, 254, 0.2);
+  --toolbar-color: #ffcf7d;
+}
+[data-theme='dark'] {
+  --background-color: #23272f; 
+  --text-dark: #ffffff; 
+  --text-light: #000000;
+  --toolbar-text-color: #ffc821;
+  --bg-today: rgba(233, 252, 255, 0.4);
+  --toolbar-color: #c1c0ba;
+  --header: #ffc821;
+  --green-color: #00ad09;
+  --gray-color: #c1c0ba;
+  --primary-color-hover: #848383;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  width: 105px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.formGroup input,
+.formGroup select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  max-width: 100%;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.userList {
+    max-height: 200px; /* hoặc 300px tùy theo bạn muốn */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.5rem;
+    background-color: #fdfdfd;
+}
+
+.userList ul {
+    list-style: none;
+    padding: 0;
+}
+
+.userItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.userItem span{
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.userItem .email {
+    width: 75%;
+}
+.userItem select {
+    margin-left: 1rem;
+    flex-shrink: 0;
+}
+
+.roleTag {
+    font-style: italic;
+    color: var(--gray-color);
+    margin-left: 0.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    border-top: 3px solid var(--gray-color);
+
+  }
+
+  .formGroup {
+    width: 250px; 
+  }
+  
+  .userItem span{
+    font-size: 13px; 
+  }
+
+  .userItem select {
+    width: 5em;
+    font-size: 13px;
+  }
+
+  .userItem option {
+    font-size: 11px;
+  }
+}
