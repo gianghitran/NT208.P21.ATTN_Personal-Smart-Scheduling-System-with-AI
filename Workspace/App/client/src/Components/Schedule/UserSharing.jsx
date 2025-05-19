@@ -27,14 +27,14 @@ const UserSharing = ( { selectedEvent, setEvents, access_token, axiosJWT } ) => 
         }
     }, [access_token, selectedEvent, axiosJWT]);
 
-    const handleRoleChange = (email, newRole) => {
+    const handleRoleChange = async (email, newRole) => {
         const updatedUsers = invitedUsers.map(user =>
             user.email === email ? { ...user, role: newRole } : user
         );
 
         try {
             const updatedUser = updatedUsers.find(user => user.email === email);
-            const response = updateRole(access_token, updatedUser, eventId, axiosJWT);
+            const response = await updateRole(access_token, updatedUser, eventId, axiosJWT);
             if (response.status === 200) {
                 setInvitedUsers(updatedUsers);
                 customToast("Role updated successfully", "success", "bottom-right");

@@ -8,7 +8,18 @@ const eventSharingController = {
         if (!userId) return res.status(400).json({ message: "Missing userId" });
 
         try {
-            const invites = await EventSharing.find({ inviteeId: userId, hidden: false});
+            const invitesRaw = await EventSharing.find({ inviteeId: userId, hidden: false })
+                .populate({ path: 'invitorId', select: 'full_name' })
+                .populate({ path: 'eventId', select: 'title' })
+                .populate({ path: 'ownerId', select: 'full_name' });
+
+            // Map lại để thêm 2 trường mới
+            const invites = invitesRaw.map(invite => ({
+                ...invite.toObject(),
+                invitorName: invite.invitorId?.full_name || null,
+                eventName: invite.eventId?.title || null,
+                ownerName: invite.ownerId?.full_name || null,
+            }));
 
             return res.status(200).json( { invites } );
         }
@@ -69,12 +80,12 @@ const eventSharingController = {
 
 
     shareEvents: async (req, res) => {
-        const ownerId = req.user.id;
+        const invitorId = req.user.id;
         const { email, eventId } = req.body;
 
         const user = await User.findOne({ email });
-        const owner = await User.findById(ownerId);
         const event = await Event.findById(eventId);
+        const owner = await User.findById(event.userId);
 
         if (!owner) return res.status(404).json({ message: "Owner not found" });
 
@@ -82,23 +93,23 @@ const eventSharingController = {
 
         const inviteeId = user._id;
 
-        if (ownerId === inviteeId) {
+        if (invitorId.toString() === inviteeId.toString() || inviteeId.toString() === owner._id.toString()) {
             return res.status(400).json({ message: "You cannot share an event with yourself" });
         }
+
+        if (!event) return res.status(404).json({ message: "Event not found" });
         
         try {
-            const eventSharing = await EventSharing.findOne({ eventId, inviteeId });    
-
-            if (eventSharing) {
+            const eventSharing = await EventSharing.findOne({ eventId, inviteeId: inviteeId });    
+            if (eventSharing !== null) {    
                 return res.status(409).json({ message: "Event already shared with this user" });
             }
 
             const newEventSharing = new EventSharing({
                 eventId,
                 inviteeId,
-                ownerId,
-                ownerName: owner.full_name,
-                eventName: event.title,
+                invitorId,
+                ownerId: owner._id,
                 start: event.start,
                 end: event.end
             });
@@ -107,9 +118,6 @@ const eventSharingController = {
             return res.status(201).json({ message: "Event shared successfully", newEventSharing });
         }
         catch (error) {
-            if (error.code === 11000) {
-                return res.status(409).json({ message: "Event already shared with this user" });
-            }
             return res.status(500).json({ message: error.message });
         }
     },
@@ -120,6 +128,7 @@ const eventSharingController = {
 
         try {
             const invite = await EventSharing.findByIdAndUpdate(inviteId, { status: "accepted", respondedAt: Date.now() }, { new: true });
+            if (!invite) return res.status(404).json({ message: "Invite not found" });
             return res.status(200).json({ message: "Invite accepted" });
         }
         catch (error) {
@@ -133,6 +142,7 @@ const eventSharingController = {
 
         try {
             const invite = await EventSharing.findByIdAndUpdate(inviteId, { status: "declined", respondedAt: Date.now() }, { new: true });
+            if (!invite) return res.status(404).json({ message: "Invite not found" });
             res.status(200).json({ message: "Invite declined" });
         }
         catch (error) {

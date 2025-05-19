@@ -13,19 +13,15 @@ const EventSharingSchema = new mongoose.Schema({
         required: true
     },
 
-    ownerId: {
+    invitorId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
 
-    ownerName: {
-        type: String,
-        required: true
-    },
-
-    eventName: {
-        type: String,
+    ownerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     },
 
