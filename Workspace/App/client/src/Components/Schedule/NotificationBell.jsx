@@ -144,14 +144,13 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
   return (
     <div>
       <div className={styles.notificationWrapper}>
-        <div className={`${styles.notification} ${showDropdown ? styles.active : ""}`} onClick={handleToggle}>
-          <FaBell className={`${styles.bellIcon} ${showDropdown ? styles.active : ""}`} />
+        <div className={`${showDropdown} ? ${styles.notification.active}: ${styles.notification}`} onClick={handleToggle}>
+          <FaBell className={`${showDropdown} ? ${styles.bellIcon.active} : ${styles.bellIcon}`} />
           {unreadCount > 0 && (
             <span className={styles.badge}>{unreadCount}</span>
           )}
-        </div>
 
-        {showDropdown && (
+          {showDropdown && (
           <div className={styles.dropdown}>
             {notifications.length > 0 ? (
               [...notifications]
@@ -160,8 +159,8 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
             ) : (
               <div className={styles.noNotifications}>No notifications</div>
             )}
-          </div>
-        )}
+          </div>)}
+        </div>
       </div>
       <Modal
         isOpen={modalIsOpen}
