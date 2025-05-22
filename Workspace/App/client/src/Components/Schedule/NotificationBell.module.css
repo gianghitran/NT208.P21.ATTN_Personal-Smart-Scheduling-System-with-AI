@@ -242,7 +242,11 @@ strong {
 
 @media screen and (max-width: 1024px) {
   .notification {
-    right: 11%;
+    right: 16%;
+  }
+
+  .bellIcon {
+    font-size: 19px;
   }
 
   .dropdown {
@@ -250,14 +254,29 @@ strong {
   }
 }
 
-@media screen and (max-width: 853px) {
+@media screen and (max-width: 912px) {
   .notification {
-    right: 9%;
-    top: 0.5rem;
+    right: 18%;
   }
 
   .bellIcon {
-    font-size: 22px;
+    font-size: 20px;
+  }
+
+  .dropdown {
+    right: 10%;
+    width: 350px;
+  }
+  
+}
+
+@media screen and (max-width: 853px) {
+  .notification {
+    right: 19%;
+  }
+
+  .bellIcon {
+    font-size: 20px;
   }
 
   .dropdown {
@@ -268,8 +287,7 @@ strong {
 
 @media screen and (max-width: 820px) {
   .notification {
-    right: 4rem;
-    top: 0.5rem;
+    right: 20%;
   }
 
   .bellIcon {
@@ -326,6 +344,8 @@ strong {
 
   .dropdown {
     width: 200px;
+    right:0;
+    left: 50%;
   }
 }
 

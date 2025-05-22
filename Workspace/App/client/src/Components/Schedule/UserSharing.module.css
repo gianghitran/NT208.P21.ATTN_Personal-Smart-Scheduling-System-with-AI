@@ -109,7 +109,8 @@ button {
 @media screen and (max-width: 768px) {
   .container {
     border-top: 3px solid var(--gray-color);
-
+    overflow-y: auto;
+    max-height: calc(100vh - 20px); /* Giới hạn chiều cao */
   }
 
   .formGroup {
