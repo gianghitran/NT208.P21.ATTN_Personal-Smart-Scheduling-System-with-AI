@@ -32,7 +32,7 @@ strong {
   font-weight: bold !important;
 }
 
-.active {
+.notification.active {
   transform: scale(0.95);
   color: var(--active-color); 
   transition: transform 0.1s ease, background-color 0.1s ease;
@@ -73,6 +73,12 @@ strong {
     user-select: none;
 }
 
+.bellIcon.active {
+    transform: scale(0.95);
+    color: var(--active-color); 
+    transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
 .bellIcon:hover {
     color: var(--active-color);
 }
@@ -92,9 +98,9 @@ strong {
   position: absolute;
   pointer-events: auto;
   user-select: none;
-  top: 35px;
-  right: 13rem;
-  width: min(350px, 60%);
+  top: 100%;
+  right: 50%;
+  width: 350px;
   height: 150px;
   max-height: 150px;
   background-color: var(--dropdown-bg);
@@ -234,39 +240,6 @@ strong {
   font-style: italic;
 }
 
-
-@media screen and (max-width: 767px) {
-  .notificationWrapper {
-    top: 3.7rem;
-    left: 2rem;
-  }
-
-  .bellIcon {
-    font-size: 19px;
-  }
-
-  .dropdown {
-    top: 5.5rem;
-    right: 1.5rem;
-    overflow: auto;
-   
-  }
-}
-
-@media screen and (max-width: 1023px) {
-  .notificationWrapper {
-    top: 0.2rem;
-    left: 1rem;
-  }
-
-  .dropdown {
-    top: 5.5rem;
-    right: 1.5rem;
-    overflow: auto;
-   
-  }
-}
-
 @media screen and (max-width: 1024px) {
   .notification {
     right: 11%;
@@ -276,3 +249,84 @@ strong {
     right: 12%;
   }
 }
+
+@media screen and (max-width: 853px) {
+  .notification {
+    right: 9%;
+    top: 0.5rem;
+  }
+
+  .bellIcon {
+    font-size: 22px;
+  }
+
+  .dropdown {
+    right: 50%; 
+    width: 320px;
+  }
+}
+
+@media screen and (max-width: 820px) {
+  .notification {
+    right: 4rem;
+    top: 0.5rem;
+  }
+
+  .bellIcon {
+    font-size: 18px;
+  }
+
+  .dropdown {
+    width: 300px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .notification {
+    top: 0.3rem;
+    right: 10.3rem;
+  }
+
+  .bellIcon {
+    font-size: 19px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .notification {
+    right: 6rem;
+    top: 4rem;
+  }
+
+  .bellIcon {
+    font-size: 20px;
+  }
+
+  .dropdown {
+    width: 250px;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .notification {
+    right: 0.5rem ;
+    top: 4rem;
+  }
+
+  .dropdown {
+    width: 230px;
+  }
+}
+
+@media screen and (max-width: 344px) {
+  .notification {
+    right: 12rem ;
+    top: 4rem;
+  }
+
+  .dropdown {
+    width: 200px;
+  }
+}
+
+
