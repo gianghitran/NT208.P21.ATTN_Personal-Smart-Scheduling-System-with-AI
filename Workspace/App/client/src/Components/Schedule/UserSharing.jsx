@@ -1,5 +1,5 @@
 import styles from "./UserSharing.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getInvitedUsersByEvent, updateRole, shareEvents } from "../../services/sharedEventService";
 import { customToast } from "../../utils/customToast";
 
@@ -7,6 +7,7 @@ const UserSharing = ( { selectedEvent, setEvents, access_token, axiosJWT } ) => 
     const [invitedUsers, setInvitedUsers] = useState([]);
     const [newEmail, setNewEmail] = useState("");
     const [isOwner, setIsOwner] = useState(false);
+    const lastFetchedId = useRef(null);
     const eventId = selectedEvent.id;
 
     const fetchInvitedUsers = async () => {
@@ -22,10 +23,12 @@ const UserSharing = ( { selectedEvent, setEvents, access_token, axiosJWT } ) => 
     };
 
     useEffect(() => {
-        if (selectedEvent.isShared) {
+        if (selectedEvent?.isShared && selectedEvent?.id && selectedEvent.id !== lastFetchedId.current) 
+        {
             fetchInvitedUsers();
+            lastFetchedId.current = selectedEvent.id;
         }
-    }, [access_token, selectedEvent, axiosJWT]);
+    }, [access_token, selectedEvent?.id, axiosJWT]);
 
     const handleRoleChange = async (email, newRole) => {
         const updatedUsers = invitedUsers.map(user =>
