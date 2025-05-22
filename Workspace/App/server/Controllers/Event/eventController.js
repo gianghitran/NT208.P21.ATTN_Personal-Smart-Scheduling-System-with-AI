@@ -1,6 +1,7 @@
 const Event = require("../../Models/Event");
 const EventSharing = require("../../Models/EventSharing");
 const User = require("../../Models/User");
+const { sendEvent } = require("../../sse/sseService");
 
 const eventController = {
     createEvent: async (req, res) => {
@@ -85,6 +86,7 @@ const eventController = {
     updateEvent: async (req, res) => {
         try {
             const event = await Event.findById(req.params.id);
+            const excludeClientId = req.headers['x-client-id'];
             if (!event) {
                 return res.status(404).json({ message: "Event not found" });
             }
@@ -92,6 +94,20 @@ const eventController = {
             // Check if user is the owner of the event
             if (event.userId.toString() === req.user._id.toString()) {
                 await event.updateOne({ $set: req.body });
+                
+                // Lấy danh sách người được chia sẻ sự kiện
+                const sharings = await EventSharing.find({ eventId: event._id });
+                const inviteeIds = sharings.map(s => s.inviteeId.toString());
+
+                // Gửi SSE cho chủ event và các invitee
+                [event.userId.toString(), ...inviteeIds].forEach(userId => {
+                    sendEvent(
+                        { type: "EVENT_UPDATED", start: event.start, end: event.end, data: req.body },
+                        userId,
+                        userId === req.user._id.toString() ? excludeClientId : null
+                    );
+                });
+
                 return res.status(200).json({ message: "Event updated" });
             }
 
@@ -109,10 +125,26 @@ const eventController = {
                 await event.updateOne({
                     $set: { title, start, end, description }
                 });
+
+                // Lấy danh sách người được chia sẻ sự kiện
+                const sharings = await EventSharing.find({ eventId: event._id });
+                const inviteeIds = sharings.map(s => s.inviteeId.toString());
+
+                // Gửi SSE cho chủ event và các invitee
+                [event.userId.toString(), ...inviteeIds].forEach(userId => {
+                    sendEvent(
+                        { type: "EVENT_UPDATED", start: event.start, end: event.end, data: req.body },
+                        userId,
+                        userId === req.user._id.toString() ? excludeClientId : null
+                    );
+                });
+
+
                 // Invitee can update event
                 return res.status(200).json({ message: "Shared event updated" });
             }
         } catch (error) {
+            console.error("Error updating event:", error);
             return res.status(500).json({ message: "Internal server error" });
         }
     },

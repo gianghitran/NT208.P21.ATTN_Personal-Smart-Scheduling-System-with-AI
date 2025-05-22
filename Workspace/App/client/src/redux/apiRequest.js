@@ -156,7 +156,10 @@ export const saveEvents = async (selectedEvent, _id, access_token, axiosJWT) => 
             return { success: false };
         }
         const response = await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {
-            headers: { Authorization: `Bearer ${access_token}` }
+            headers: { 
+                Authorization: `Bearer ${access_token}`,
+                'x-client-id': localStorage.getItem('sseClientId')
+            }
         });
         return { success: true, message: response.data.message };
     } catch (error) {

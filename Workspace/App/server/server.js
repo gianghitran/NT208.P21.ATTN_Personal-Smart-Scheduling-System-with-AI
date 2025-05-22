@@ -11,6 +11,7 @@ const eventRoute = require("./Routes/eventRoute");
 const chatboxRoute = require("./Routes/chatboxRoute");
 const SpeechtoTextRoute = require("./Routes/SpeechtoTextRoute");
 const eventSharingRoute = require("./Routes/eventSharingRoute");
+const sseRoute = require("./Routes/sseRoute");
 
 const cookieParser = require("cookie-parser");
 
@@ -66,6 +67,7 @@ app.use("/api/chatbox", chatboxRoute);
 app.use("/api/speech", SpeechtoTextRoute);
 app.use("/api/google-calendar", syncRoute);
 app.use("/api/collab", eventSharingRoute);
+app.use("/api/sse", sseRoute); 
 
 
 app.listen(port, () => {
