@@ -7,8 +7,6 @@ const listeners = {};
 
 const handleEventUpdate = (data) => {
     const startOfWeek = moment(data.start).startOf('isoWeek').toDate();
-      console.log("startOfWeek", startOfWeek);
-
     const endOfWeek = moment(data.end).endOf('isoWeek').toDate();
     listeners.EVENT_UPDATED?.(startOfWeek, endOfWeek, true, false, "week");
 }
@@ -20,8 +18,7 @@ const handleEventDelete = (data) => {
 };
 
 const handleNotification = (data) => {
-    const { inviteId, isRead } = data;
-    listeners.NOTIFICATION?.(inviteId, isRead);
+    listeners.NOTIFICATION();
 }
 
 const handlers = {
@@ -34,7 +31,7 @@ const handlers = {
   },
   NOTIFICATION: (data) => {
     handleNotification(data);
-  }
+  },
 };
 
 export const addSSEListener = (type, callback) => {
@@ -56,7 +53,6 @@ export const initSSE = (userId) => {
     try {
       const data = JSON.parse(event.data);
       const type = data?.type;
-      console.log("SSE event received:", type, data);
       if (type && handlers[type]) {
         handlers[type](data);
       }

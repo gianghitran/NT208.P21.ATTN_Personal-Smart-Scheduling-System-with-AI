@@ -1,6 +1,7 @@
 const EventSharing = require("../../Models/EventSharing");
 const Event = require("../../Models/Event");
 const User = require("../../Models/User");
+const { sendEvent } = require("../../sse/sseService");
 
 const eventSharingController = {
     getEventInvites: async (req, res) => {
@@ -22,6 +23,29 @@ const eventSharingController = {
             }));
 
             return res.status(200).json( { invites } );
+        }
+        catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    },
+
+    getEventResponses: async (req, res) => {
+        const userId = req.user.id;
+        if (!userId) return res.status(400).json({ message: "Missing userId" });
+        try {
+            const responses = await EventSharing.find({ invitorId: userId, respondedAt: {$exists: true}, hidden: false })
+                .populate({ path: 'inviteeId', select: 'full_name email' })
+                .populate({ path: 'eventId', select: 'title' });
+
+            // Map lại để thêm 2 trường mới
+            const formattedResponses = responses.map(response => ({
+                ...response.toObject(),
+                inviteeName: response.inviteeId?.full_name || null,
+                inviteeEmail: response.inviteeId?.email || null,
+                eventName: response.eventId?.title || null,
+            }));
+
+            return res.status(200).json( { responses: formattedResponses } );
         }
         catch (error) {
             return res.status(500).json({ message: error.message });
@@ -115,6 +139,11 @@ const eventSharingController = {
             });
 
             await newEventSharing.save();
+            sendEvent(
+                { type: "NOTIFICATION", data: {mode: "invite"} },
+                inviteeId.toString(),
+                null, 
+            )
             return res.status(201).json({ message: "Event shared successfully", newEventSharing });
         }
         catch (error) {
@@ -129,6 +158,11 @@ const eventSharingController = {
         try {
             const invite = await EventSharing.findByIdAndUpdate(inviteId, { status: "accepted", respondedAt: Date.now() }, { new: true });
             if (!invite) return res.status(404).json({ message: "Invite not found" });
+            sendEvent(
+                { type: "NOTIFICATION" },
+                invite.invitorId.toString(),
+                null, 
+            )
             return res.status(200).json({ message: "Invite accepted" });
         }
         catch (error) {
@@ -143,6 +177,11 @@ const eventSharingController = {
         try {
             const invite = await EventSharing.findByIdAndUpdate(inviteId, { status: "declined", respondedAt: Date.now() }, { new: true });
             if (!invite) return res.status(404).json({ message: "Invite not found" });
+            sendEvent(
+                { type: "NOTIFICATION" },
+                invite.invitorId.toString(),
+                null, 
+            )
             res.status(200).json({ message: "Invite declined" });
         }
         catch (error) {
@@ -152,13 +191,27 @@ const eventSharingController = {
 
     setRead: async (req, res) => {
         const { inviteId } = req.params;
-        try{
-            const result = await EventSharing.findByIdAndUpdate(inviteId, { isRead: true }, { new: true });
-            if (!result) return res.status(404).json({ message: "Notification not found" });
-            return res.status(204);
+        const { readType } = req.query; // hoặc req.body nếu bạn muốn gửi bằng POST
+
+        if (!inviteId) return res.status(400).json({ message: "Missing inviteId" });
+
+        // Xác thực trường hợp hợp lệ
+        if (!["isRead", "isReadInvitor"].includes(readType)) {
+            return res.status(400).json({ message: "Invalid read type" });
         }
-        catch (error) {
-            return res.status(500).json({message: error.message});
+
+
+        try {
+            const update = { [readType]: true };
+            const result = await EventSharing.findByIdAndUpdate(inviteId, update, { new: true });
+
+            if (!result) {
+            return res.status(404).json({ message: "Notification not found" });
+            }
+
+            return res.status(200).json({ message: "Marked as read", result });
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
         }
     },
 

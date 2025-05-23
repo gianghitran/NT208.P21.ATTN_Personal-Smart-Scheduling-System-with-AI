@@ -3,6 +3,7 @@ const middlewareController = require('../Controllers/Auth/middlewareController')
 const route = require('express').Router();
 
 route.get('/invites', middlewareController.verifyToken, eventSharingController.getEventInvites);
+route.get('/responses', middlewareController.verifyToken, eventSharingController.getEventResponses);
 route.get('/invites/:eventId', middlewareController.verifyToken, eventSharingController.getInvitedUsersByEvent);
 route.post('/share', middlewareController.verifyToken, eventSharingController.shareEvents);
 route.put('/accept-invite/:inviteId', middlewareController.verifyToken, eventSharingController.acceptInvite);

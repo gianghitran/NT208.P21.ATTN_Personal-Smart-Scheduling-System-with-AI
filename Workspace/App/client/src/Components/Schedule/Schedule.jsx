@@ -7,7 +7,7 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import styles from "./Schedule.module.css";
 import Modal from "react-modal";
 import { addEvents, saveEvents, getEvents, deleteEvents } from "../../redux/apiRequest";
-import { getInviteEvents } from "../../services/sharedEventService";
+import { getInviteEvents, getEventResponses } from "../../services/sharedEventService";
 import { useSelector } from "react-redux";
 import { createAxios } from "../../utils/axiosConfig";
 import axios from "axios";
@@ -123,6 +123,7 @@ export default function MyCalendar() {
     const endOfWeek = moment(now).endOf('week').toDate();
 
     fetchEvents(startOfWeek, endOfWeek);
+    getInvitesAndResponses(user?.access_token, axiosJWT);
   }, []);
 
 
@@ -148,9 +149,13 @@ export default function MyCalendar() {
   // UseEffect để lắng nghe sự kiện từ SSE và BroadcastChannel
   useEffect(() => {
     const init = async () => {
-      await initSSE(user?.userData?._id);
-      await addSSEListener("EVENT_UPDATED", fetchEvents);
-      await addSSEListener("EVENT_DELETED", fetchEvents);
+      initSSE(user?.userData?._id);
+      addSSEListener("EVENT_UPDATED", fetchEvents);
+      addSSEListener("EVENT_DELETED", fetchEvents);
+      addSSEListener("NOTIFICATION", async () => {
+        const access_token = user?.access_token;
+        getInvitesAndResponses(access_token, axiosJWT);
+      });
     }
 
     init();
@@ -542,31 +547,39 @@ export default function MyCalendar() {
       start = new Date();
       end = new Date();
     }
-    fetchEvents(start, end, false, false, view);
+    fetchEvents(start, end, false, false, "week");
   }, []);
 
   // Phần xử lý thông báo và xử lý với sự kiện được chia sẻ
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
 
-  const getInvites = async (access_token, axiosJWT) => {
-    const response = await getInviteEvents(access_token, axiosJWT);
-    const inviteEvents = response.invites || [];
-    if (inviteEvents.length > 0) {
-      setNotifications(inviteEvents);
-      setUnreadCount(inviteEvents.filter(event => event.isRead === false).length);
+  const getInvitesAndResponses = async (access_token, axiosJWT) => {
+    const invitesData = await getInviteEvents(access_token, axiosJWT);
+    const invites = Array.isArray(invitesData.invites) ? invitesData.invites : [];
+
+    const responsesData = await getEventResponses(access_token, axiosJWT);
+    const responses = Array.isArray(responsesData.responses) ? responsesData.responses : [];
+    
+    const allEvents = [...invites, ...responses] || [];
+    if (allEvents.length > 0) {
+      setNotifications(allEvents);
+      setUnreadCount(
+        invites.filter(event => event.isRead === false).length +
+        responses.filter(event => event.isReadInvitor === false).length
+      );
     }
   }
 
-  useEffect(() => {
-    if (!user?.access_token) return;
+  // useEffect(() => {
+  //   if (!user?.access_token) return;
 
-    const interval = setInterval(() => {
-      getInvites(user.access_token, axiosJWT);
-    }, 10000);
+  //   const interval = setInterval(() => {
+  //     getInvites(user.access_token, axiosJWT);
+  //   }, 10000);
 
-    return () => clearInterval(interval);
-  }, [user?.access_token, axiosJWT]);
+  //   return () => clearInterval(interval);
+  // }, [user?.access_token, axiosJWT]);
 
 
   const handleBellClick = () => {
