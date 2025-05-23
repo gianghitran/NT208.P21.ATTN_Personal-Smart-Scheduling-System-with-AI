@@ -93,6 +93,9 @@ const eventController = {
 
             // Check if user is the owner of the event
             if (event.userId.toString() === req.user._id.toString()) {
+                const newStart = new Date(req.body.start);
+                const newEnd = new Date(req.body.end);
+
                 await event.updateOne({ $set: req.body });
                 
                 // Lấy danh sách người được chia sẻ sự kiện
@@ -102,7 +105,7 @@ const eventController = {
                 // Gửi SSE cho chủ event và các invitee
                 [event.userId.toString(), ...inviteeIds].forEach(userId => {
                     sendEvent(
-                        { type: "EVENT_UPDATED", start: event.start, end: event.end, data: req.body },
+                        { type: "EVENT_UPDATED", start: newStart, end: newEnd, data: req.body },
                         userId,
                         userId === req.user._id.toString() ? excludeClientId : null
                     );
@@ -121,9 +124,13 @@ const eventController = {
                 return res.status(403).json({ message: "You don't have permission to update this event" });
             }
             else {
-                const { title, start, end, description } = req.body;
+                const newTitle = req.body.title;
+                const newStart = new Date(req.body.start);
+                const newEnd = new Date(req.body.end);
+                const newDescription = req.body.description;
+
                 await event.updateOne({
-                    $set: { title, start, end, description }
+                    $set: { title: newTitle, start: newStart, end: newEnd, description: newDescription }
                 });
 
                 // Lấy danh sách người được chia sẻ sự kiện
@@ -133,7 +140,7 @@ const eventController = {
                 // Gửi SSE cho chủ event và các invitee
                 [event.userId.toString(), ...inviteeIds].forEach(userId => {
                     sendEvent(
-                        { type: "EVENT_UPDATED", start: event.start, end: event.end, data: req.body },
+                        { type: "EVENT_UPDATED", start: newStart, end: newEnd, data: req.body },
                         userId,
                         userId === req.user._id.toString() ? excludeClientId : null
                     );
@@ -152,14 +159,23 @@ const eventController = {
     deleteEvent: async (req, res) => {
         try {
             const event = await Event.findById(req.params.id);
-
+            const excludeClientId = req.headers['x-client-id'];
             if (!event) {
                 return res.status(404).json({ message: "Event not found" });
             }
 
+
             if (event.userId.toString() === req.user._id.toString()) {
-                await Event.deleteOne({ _id: event._id });
+                const inviteeIds = (await EventSharing.find({ eventId: event._id }).distinct("inviteeId")).map(id => id.toString());
+                const hehe = await Event.deleteOne({ _id: event._id });
                 await EventSharing.deleteMany({ eventId: event._id });
+                inviteeIds.forEach(userId => {
+                    sendEvent(
+                        { type: "EVENT_DELETED", start: event.start, end: event.end, data: {} },
+                        userId,
+                        userId === req.user._id.toString() ? excludeClientId : null
+                    );
+                });
                 return res.status(200).json({ message: "Event deleted successfully!" });
             }
 

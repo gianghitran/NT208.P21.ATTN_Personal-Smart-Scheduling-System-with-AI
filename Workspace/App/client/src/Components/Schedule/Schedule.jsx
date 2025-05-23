@@ -49,7 +49,7 @@ export default function MyCalendar() {
 
   const loadedRangesRef = useRef(new Set());
 
-  const fetchEvents = async (startDate, endDate, force=false) => {
+  const fetchEvents = async (startDate, endDate, force=false, del=false) => {
     const key = getRangeKey(startDate, endDate);
     if (!force && loadedRangesRef.current.has(key)) return;
 
@@ -80,20 +80,32 @@ export default function MyCalendar() {
           // Event cũ, cập nhật nếu có sự khác biệt
           if (
             oldEv.title !== newEv.title ||
-            oldEv.start.getTime() !== newEv.start.getTime() ||
-            oldEv.end.getTime() !== newEv.end.getTime() ||
+            !moment(oldEv.start).isSame(newEv.start) ||
+            !moment(oldEv.end).isSame(newEv.end) ||
             oldEv.category !== newEv.category ||
             oldEv.resource.description !== newEv.resource.description
           ) {
             eventsMap.set(newEv.id, newEv);
+            console.log(!moment(oldEv.start).isSame(newEv.start), !moment(oldEv.end).isSame(newEv.end));
           }
         }
+
     });
 
-  // Trả về mảng event mới
-  return Array.from(eventsMap.values());
+
+    if (del) {
+      const currentIds = new Set(items.map(ev => ev.id));
+      for (const id of eventsMap.keys()) {
+        if (!currentIds.has(id)) {
+          eventsMap.delete(id);
+        }
+      }
+    }
+
+      // Trả về mảng event mới
+      return Array.from(eventsMap.values());
     });
-    loadedRangesRef.current.add(key);
+      loadedRangesRef.current.add(key);
   };
 
 
@@ -106,7 +118,7 @@ export default function MyCalendar() {
   }, []);
 
 
-  const BroadCastEvent = async (start, end, type) => {
+  const BroadCastEvent = async (start, end, type, force) => {
     if (otherTabsPresent) {
       broadcast.postMessage({
         type: "BC_EVENT",
@@ -114,6 +126,7 @@ export default function MyCalendar() {
           type: type,
           start: start,
           end: end,
+          force: force,
           userId: user?.userData?._id,
         },
       }) 
@@ -143,7 +156,12 @@ export default function MyCalendar() {
         if (data?.type === "EVENT_UPDATED" || data?.type === "EVENT_DELETED") {
           const startOfWeek = moment(data?.start).startOf("isoWeek").toDate();
           const endOfWeek = moment(data?.end).endOf("isoWeek").toDate();
-          fetchEvents(startOfWeek, endOfWeek, true);
+          if (data?.type === "EVENT_DELETED"){
+            fetchEvents(startOfWeek, endOfWeek, true, true);
+          }
+          else {
+            fetchEvents(startOfWeek, endOfWeek, true, false);
+          }
         }
       } catch (err) {
         console.error("Lỗi khi xử lý SSE:", err);
@@ -193,7 +211,7 @@ export default function MyCalendar() {
         ) {
           const startOfWeek = moment(data?.start).startOf("isoWeek").toDate();
           const endOfWeek = moment(data?.end).endOf("isoWeek").toDate();
-          fetchEvents(startOfWeek, endOfWeek, true);
+          fetchEvents(startOfWeek, endOfWeek, true, data?.force);
         }
       }
     });
@@ -214,7 +232,7 @@ export default function MyCalendar() {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
       // toast.success(`Sự kiện "${event.title}" đã được di chuyển!`);
       customToast(`Sự kiện "${event.title}" đã được di chuyển!`, "success", "bottom-right", 3000);
-      await BroadCastEvent(start, end, "EVENT_UPDATED");
+      await BroadCastEvent(start, end, "EVENT_UPDATED", false);
     } else {
       // toast.error("Lỗi: Không thể cập nhật sự kiện!");
       customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
@@ -229,7 +247,7 @@ export default function MyCalendar() {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
       // toast.success(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
       customToast(`Sự kiện "${event.title}" đã được thay đổi kích thước!`, "success", "bottom-right", 3000);
-      await BroadCastEvent(start, end, "EVENT_UPDATED");
+      await BroadCastEvent(start, end, "EVENT_UPDATED", false);
     } else {
       // toast.error("Lỗi: Không thể cập nhật sự kiện!");
       customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
@@ -282,7 +300,7 @@ export default function MyCalendar() {
         return;
       }
       customToast(`Sự kiện "${event.title}" đã được thêm thành công!`, "success", "bottom-right", 3000);
-      await BroadCastEvent(event.start, event.end, "EVENT_ADDED");
+      await BroadCastEvent(event.start, event.end, "EVENT_ADDED", false);
     } catch (error) {
       // toast.error("Lỗi khi thêm sự kiện!");
       customToast("Lỗi khi thêm sự kiện!", "error", "bottom-right", 3000);
@@ -312,19 +330,20 @@ export default function MyCalendar() {
     if (response.success) {
       setEvents(events.map(e => e.id === selectedEvent.id ? { ...e, ...event } : e));
       customToast(`Sự kiện "${event.title}" đã được sửa thành công!`, "success", "bottom-right", 3000);
-      await BroadCastEvent(selectedEvent.start, selectedEvent.end, "EVENT_UPDATED");
+      await BroadCastEvent(selectedEvent.start, selectedEvent.end, "EVENT_UPDATED", false);
     } else {
       customToast(`Lỗi: ${response.message} `, "error", "bottom-right", 3000);
     }
     setEditModalIsOpen(false);
   };
 
-  const deleteEvent = async (eventId) => {
-      const response = await deleteEvents(eventId, user?.userData._id, user?.access_token, axiosJWT);
+  const deleteEvent = async (selectedEvent) => {
+      const response = await deleteEvents(selectedEvent.id, user?.access_token, axiosJWT);
       if (response.success) {
-        setEvents(events.filter(event => event.id !== eventId));
+        setEvents(events.filter(event => event.id !== selectedEvent.id));
         setModalIsOpen(false);
         customToast(`🗑️ ${response.message}`, "success", "bottom-right", 3000);
+        await BroadCastEvent(selectedEvent.start, selectedEvent.end, "EVENT_DELETED", true);
       }
       else {
         customToast(response.message, "error", "bottom-right", 3000);
@@ -398,7 +417,7 @@ export default function MyCalendar() {
         // Thay renderEvents() bằng fetchEvents
         await fetchEvents(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
         customToast("Import thành công!", "success", "bottom-right", 3000);
-        await BroadCastEvent(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "EVENT_ADDED");
+        await BroadCastEvent(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "EVENT_ADDED", false);
         setUploadModalIsOpen(false);
       },
     });
