@@ -165,6 +165,7 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
+        ariaHideApp={false}
         contentLabel="Notification Modal"
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
