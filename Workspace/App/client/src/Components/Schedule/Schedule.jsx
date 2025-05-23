@@ -20,12 +20,32 @@ import { customToast } from "../../utils/customToast";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationBell from "./NotificationBell";
 import UserSharing from "./UserSharing";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
-const broadcast = new BroadcastChannel("sync-tab");
-const tabId = crypto.randomUUID();
+
+// Kiểm tra hỗ trợ BroadcastChannel và randomUUID
+let broadcast = null;
+try {
+  if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+    broadcast = new window.BroadcastChannel("sync-tab");
+  }
+} catch (e) {
+  broadcast = null;
+}
+
+let tabId = "";
+try {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    tabId = crypto.randomUUID();
+  } else {
+    tabId = Math.random().toString(36).substring(2, 15);
+  }
+} catch (e) {
+  tabId = Math.random().toString(36).substring(2, 15);
+}
+
 let otherTabsPresent = false;
 
 export default function MyCalendar() {
@@ -49,9 +69,11 @@ export default function MyCalendar() {
 
   const loadedRangesRef = useRef(new Set());
 
-  const fetchEvents = async (startDate, endDate, force=false, del=false) => {
+  const fetchEvents = async (startDate, endDate, force = false, del = false, view) => {
     const key = getRangeKey(startDate, endDate);
-    if (!force && loadedRangesRef.current.has(key)) return;
+    // Nếu là view month thì luôn fetch, bỏ qua loadedRangesRef
+    // Nếu là view week thì chỉ fetch nếu chưa từng fetch range này hoặc force = true
+    if (view === "week" && !force && loadedRangesRef.current.has(key)) return;
 
     const data = await getEvents(user?.userData._id, startDate, endDate);
 
@@ -67,17 +89,12 @@ export default function MyCalendar() {
 
     setEvents(prev => {
       const eventsMap = new Map();
-      // Thêm tất cả event hiện tại vào map theo id
       prev.forEach(ev => eventsMap.set(ev.id, ev));
-
-      // Duyệt các event mới
       items.forEach(newEv => {
         const oldEv = eventsMap.get(newEv.id);
         if (!oldEv) {
-          // Event mới, thêm vào map
           eventsMap.set(newEv.id, newEv);
         } else {
-          // Event cũ, cập nhật nếu có sự khác biệt
           if (
             oldEv.title !== newEv.title ||
             !moment(oldEv.start).isSame(newEv.start) ||
@@ -86,26 +103,21 @@ export default function MyCalendar() {
             oldEv.resource.description !== newEv.resource.description
           ) {
             eventsMap.set(newEv.id, newEv);
-            console.log(!moment(oldEv.start).isSame(newEv.start), !moment(oldEv.end).isSame(newEv.end));
           }
         }
-
-    });
-
-
-    if (del) {
-      const currentIds = new Set(items.map(ev => ev.id));
-      for (const id of eventsMap.keys()) {
-        if (!currentIds.has(id)) {
-          eventsMap.delete(id);
+      });
+      if (del) {
+        const currentIds = new Set(items.map(ev => ev.id));
+        for (const id of eventsMap.keys()) {
+          if (!currentIds.has(id)) {
+            eventsMap.delete(id);
+          }
         }
       }
-    }
-
-      // Trả về mảng event mới
       return Array.from(eventsMap.values());
     });
-      loadedRangesRef.current.add(key);
+    // Chỉ lưu loadedRanges khi là view week
+    if (view === "week") loadedRangesRef.current.add(key);
   };
 
 
@@ -119,17 +131,21 @@ export default function MyCalendar() {
 
 
   const BroadCastEvent = async (start, end, type, force) => {
-    if (otherTabsPresent) {
-      broadcast.postMessage({
-        type: "BC_EVENT",
-        payload: {
-          type: type,
-          start: start,
-          end: end,
-          force: force,
-          userId: user?.userData?._id,
-        },
-      }) 
+    if (otherTabsPresent && broadcast && broadcast.readyState !== "closed") {
+      try {
+        broadcast.postMessage({
+          type: "BC_EVENT",
+          payload: {
+            type: type,
+            start: start,
+            end: end,
+            force: force,
+            userId: user?.userData?._id,
+          },
+        });
+      } catch (e) {
+        // Có thể log hoặc bỏ qua
+      }
     }
   }
 
@@ -156,7 +172,7 @@ export default function MyCalendar() {
         if (data?.type === "EVENT_UPDATED" || data?.type === "EVENT_DELETED") {
           const startOfWeek = moment(data?.start).startOf("isoWeek").toDate();
           const endOfWeek = moment(data?.end).endOf("isoWeek").toDate();
-          if (data?.type === "EVENT_DELETED"){
+          if (data?.type === "EVENT_DELETED") {
             fetchEvents(startOfWeek, endOfWeek, true, true);
           }
           else {
@@ -173,56 +189,67 @@ export default function MyCalendar() {
       eventSource.close();
     };
 
-    setInterval(() => {
-      otherTabsPresent = false; // reset trước mỗi lần ping
-      broadcast.postMessage({ type: "PING", from: tabId });
-
+    const intervalId = setInterval(() => {
+      otherTabsPresent = false;
+      if (broadcast && broadcast.readyState !== "closed") {
+        try {
+          broadcast.postMessage({ type: "PING", from: tabId });
+        } catch (e) {
+          // Có thể log hoặc bỏ qua
+        }
+      }
       // Đợi 500ms để nhận PONG từ các tab khác
-      setTimeout(() => {
-      }, 500);
+      setTimeout(() => { }, 500);
     }, 5000);
 
 
     // Nghe toàn bộ message
-    broadcast.addEventListener("message", (event) => {
-      const { type, from, payload } = event.data;
+    if (broadcast) {
+      broadcast.addEventListener("message", (event) => {
+        const { type, from, payload } = event.data;
 
-      // Nhận PONG từ các tab khác
-      if (type === "PONG" && from !== tabId) {
-        otherTabsPresent = true;
-        return;
-      }
-
-      // Nhận PING từ tab khác → phản hồi lại PONG
-      if (type === "PING" && from !== tabId) {
-        broadcast.postMessage({ type: "PONG", from: tabId });
-        return;
-      }
-
-      // Nhận sự kiện cập nhật từ tab khác
-      if (type === "BC_EVENT") {
-        const data = payload;
-        if (data?.userId !== user?.userData?._id) return;
-
-        if (
-          data?.type === "EVENT_ADDED" ||
-          data?.type === "EVENT_UPDATED" ||
-          data?.type === "EVENT_DELETED"
-        ) {
-          const startOfWeek = moment(data?.start).startOf("isoWeek").toDate();
-          const endOfWeek = moment(data?.end).endOf("isoWeek").toDate();
-          fetchEvents(startOfWeek, endOfWeek, true, data?.force);
+        // Nhận PONG từ các tab khác
+        if (type === "PONG" && from !== tabId) {
+          otherTabsPresent = true;
+          return;
         }
-      }
-    });
+
+        // Nhận PING từ tab khác → phản hồi lại PONG
+        if (type === "PING" && from !== tabId) {
+          broadcast.postMessage({ type: "PONG", from: tabId });
+          return;
+        }
+
+        // Nhận sự kiện cập nhật từ tab khác
+        if (type === "BC_EVENT") {
+          const data = payload;
+          if (data?.userId !== user?.userData?._id) return;
+
+          if (
+            data?.type === "EVENT_ADDED" ||
+            data?.type === "EVENT_UPDATED" ||
+            data?.type === "EVENT_DELETED"
+          ) {
+            const startOfWeek = moment(data?.start).startOf("isoWeek").toDate();
+            const endOfWeek = moment(data?.end).endOf("isoWeek").toDate();
+            fetchEvents(startOfWeek, endOfWeek, true, data?.force);
+          }
+        }
+      });
+    }
 
 
     return () => {
       eventSource.close();
-      broadcast.close();
+      if (broadcast) {
+        try {
+          broadcast.close();
+        } catch (e) { }
+      }
+      clearInterval(intervalId);
     };
   }, [user?.userData._id]);
-  
+
 
   const onEventDrop = async ({ event, start, end }) => {
     const updatedEvent = { ...event, start, end, userId: user.userData._id };
@@ -230,11 +257,9 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      // toast.success(`Sự kiện "${event.title}" đã được di chuyển!`);
       customToast(`Sự kiện "${event.title}" đã được di chuyển!`, "success", "bottom-right", 3000);
       await BroadCastEvent(start, end, "EVENT_UPDATED", false);
     } else {
-      // toast.error("Lỗi: Không thể cập nhật sự kiện!");
       customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
     }
   };
@@ -245,11 +270,9 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      // toast.success(`Sự kiện "${event.title}" đã được thay đổi kích thước!`);
       customToast(`Sự kiện "${event.title}" đã được thay đổi kích thước!`, "success", "bottom-right", 3000);
       await BroadCastEvent(start, end, "EVENT_UPDATED", false);
     } else {
-      // toast.error("Lỗi: Không thể cập nhật sự kiện!");
       customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
     }
   };
@@ -310,7 +333,6 @@ export default function MyCalendar() {
 
   const saveEditedEvent = async () => {
     if (selectedEvent.end < selectedEvent.start) {
-      // toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
       customToast("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!", "error", "bottom-right", 3000);
       return;
     }
@@ -338,16 +360,16 @@ export default function MyCalendar() {
   };
 
   const deleteEvent = async (selectedEvent) => {
-      const response = await deleteEvents(selectedEvent.id, user?.access_token, axiosJWT);
-      if (response.success) {
-        setEvents(events.filter(event => event.id !== selectedEvent.id));
-        setModalIsOpen(false);
-        customToast(`🗑️ ${response.message}`, "success", "bottom-right", 3000);
-        await BroadCastEvent(selectedEvent.start, selectedEvent.end, "EVENT_DELETED", true);
-      }
-      else {
-        customToast(response.message, "error", "bottom-right", 3000);
-      }
+    const response = await deleteEvents(selectedEvent.id, user?.access_token, axiosJWT);
+    if (response.success) {
+      setEvents(events.filter(event => event.id !== selectedEvent.id));
+      setModalIsOpen(false);
+      customToast(`🗑️ ${response.message}`, "success", "bottom-right", 3000);
+      await BroadCastEvent(selectedEvent.start, selectedEvent.end, "EVENT_DELETED", true);
+    }
+    else {
+      customToast(response.message, "error", "bottom-right", 3000);
+    }
   };
 
 
@@ -540,16 +562,26 @@ export default function MyCalendar() {
   };
 
   const handleRangeChange = useCallback((range, view) => {
-    const start = range[0];
-    const end = range[range.length - 1];
-
-    fetchEvents(start, end); // gọi API để lấy sự kiện trong khoảng này
+    let start, end;
+    if (Array.isArray(range)) {
+      // Week view: range là mảng các ngày trong tuần
+      start = range[0];
+      end = range[range.length - 1];
+    } else if (range.start && range.end) {
+      // Month view: range là object {start, end}
+      start = range.start;
+      end = range.end;
+    } else {
+      start = new Date();
+      end = new Date();
+    }
+    fetchEvents(start, end, false, false, view);
   }, []);
-  
+
   // Phần xử lý thông báo và xử lý với sự kiện được chia sẻ
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
-  
+
   const getInvites = async (access_token, axiosJWT) => {
     const response = await getInviteEvents(access_token, axiosJWT);
     const inviteEvents = response.invites || [];
@@ -571,19 +603,19 @@ export default function MyCalendar() {
 
 
   const handleBellClick = () => {
-      setUnreadCount(0);
+    setUnreadCount(0);
   };
 
 
   return (
     <div>
-      <NotificationBell 
-        unreadCount={unreadCount} 
-        notifications={notifications} 
+      <NotificationBell
+        unreadCount={unreadCount}
+        notifications={notifications}
         setNotifications={setNotifications}
         setUnreadCount={setUnreadCount}
-        axiosJWT={axiosJWT} 
-        onClick={handleBellClick} 
+        axiosJWT={axiosJWT}
+        onClick={handleBellClick}
         onAccept={fetchEvents}
       />
       <div className={styles.container}>
@@ -744,7 +776,7 @@ export default function MyCalendar() {
                   </select>
                 </div>
               </div>
-              
+
 
 
               <div className={styles.modalFooter}>
@@ -787,109 +819,109 @@ export default function MyCalendar() {
               <button onClick={() => deleteEvent(selectedEvent)} className={styles.closeButton} style={{ backgroundColor: "lightcoral" }}>Delete</button>
             </div>
           )}
-          </Modal>
+        </Modal>
 
-          <Modal
-            isOpen={editModalIsOpen}
-            onRequestClose={() => setEditModalIsOpen(false)}
-            ariaHideApp={false}
-            className={styles.modalContentEdit}
-            overlayClassName={styles.modalOverlay}
-            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          >
-            {modalType === "edit" && (
-              <div className={styles.editAndShareArea}>
-                <div>
-                  <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Edit Event</h2>
-                  <div className={styles.formGroup}>
-                    <label>Title:</label>
-                    <input
-                      type="text"
-                      value={selectedEvent.title}
-                      onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>Description:</label>
-                    <textarea
-                      value={selectedEvent.description}
-                      onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
-                      className={styles.description}
-                      placeholder="Enter event description"
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>Start Date:</label>
-                    <input
-                      type="date"
-                      value={moment(selectedEvent.start).format("YYYY-MM-DD")}
-                      onChange={(e) => setSelectedEvent({ ...selectedEvent, start: new Date(e.target.value) })}
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>Start Time:</label>
-                    <input
-                      type="time"
-                      value={moment(selectedEvent.start).format("HH:mm")}
-                      onChange={(e) => setSelectedEvent({
-                        ...selectedEvent,
-                        start: new Date(moment(selectedEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
-                      })}
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>End Date:</label>
-                    <input
-                      type="date"
-                      value={moment(selectedEvent.end).format("YYYY-MM-DD")}
-                      onChange={(e) => setSelectedEvent({ ...selectedEvent, end: new Date(e.target.value) })}
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>End Time:</label>
-                    <input
-                      type="time"
-                      value={moment(selectedEvent.end).format("HH:mm")}
-                      onChange={(e) => setSelectedEvent({
-                        ...selectedEvent,
-                        end: new Date(moment(selectedEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
-                      })}
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>Type:</label>
-                    <select
-                      value={selectedEvent.category}
-                      onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
-                    >
-                      <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
-                      <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
-                      <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
-                      <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
-                      <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
-                    </select>
-                  </div>
-                  <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
-                  <button onClick={() => setEditModalIsOpen(false)} className={styles.closeButton}>Close</button>
+        <Modal
+          isOpen={editModalIsOpen}
+          onRequestClose={() => setEditModalIsOpen(false)}
+          ariaHideApp={false}
+          className={styles.modalContentEdit}
+          overlayClassName={styles.modalOverlay}
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+          {modalType === "edit" && (
+            <div className={styles.editAndShareArea}>
+              <div>
+                <h2 style={{ fontWeight: "bold", color: "#7b5410" }}>Edit Event</h2>
+                <div className={styles.formGroup}>
+                  <label>Title:</label>
+                  <input
+                    type="text"
+                    value={selectedEvent.title}
+                    onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
+                  />
                 </div>
 
-                <div className={styles.sharingField}>
-                    <UserSharing 
-                      selectedEvent={selectedEvent} 
-                      setEvents={setEvents}
-                      access_token={user?.access_token}
-                      axiosJWT={axiosJWT}  
-                    />
+                <div className={styles.formGroup}>
+                  <label>Description:</label>
+                  <textarea
+                    value={selectedEvent.description}
+                    onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
+                    className={styles.description}
+                    placeholder="Enter event description"
+                  />
                 </div>
+
+                <div className={styles.formGroup}>
+                  <label>Start Date:</label>
+                  <input
+                    type="date"
+                    value={moment(selectedEvent.start).format("YYYY-MM-DD")}
+                    onChange={(e) => setSelectedEvent({ ...selectedEvent, start: new Date(e.target.value) })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Start Time:</label>
+                  <input
+                    type="time"
+                    value={moment(selectedEvent.start).format("HH:mm")}
+                    onChange={(e) => setSelectedEvent({
+                      ...selectedEvent,
+                      start: new Date(moment(selectedEvent.start).format("YYYY-MM-DD") + "T" + e.target.value)
+                    })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>End Date:</label>
+                  <input
+                    type="date"
+                    value={moment(selectedEvent.end).format("YYYY-MM-DD")}
+                    onChange={(e) => setSelectedEvent({ ...selectedEvent, end: new Date(e.target.value) })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>End Time:</label>
+                  <input
+                    type="time"
+                    value={moment(selectedEvent.end).format("HH:mm")}
+                    onChange={(e) => setSelectedEvent({
+                      ...selectedEvent,
+                      end: new Date(moment(selectedEvent.end).format("YYYY-MM-DD") + "T" + e.target.value)
+                    })}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Type:</label>
+                  <select
+                    value={selectedEvent.category}
+                    onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
+                  >
+                    <option value="work" style={{ background: "#2196F3", color: "white" }}>Work</option>
+                    <option value="school" style={{ background: "#08ccc2", color: "white" }}>School</option>
+                    <option value="relax" style={{ background: "#FF9800", color: "white" }}>Relax</option>
+                    <option value="todo" style={{ background: "#4CAF50", color: "white" }}>To do</option>
+                    <option value="other" style={{ background: "#9E9E9E", color: "white" }}>Others</option>
+                  </select>
+                </div>
+                <button onClick={saveEditedEvent} className={styles.closeButton} style={{ backgroundColor: "lightblue" }}>Save</button>
+                <button onClick={() => setEditModalIsOpen(false)} className={styles.closeButton}>Close</button>
               </div>
-            )}
-          </Modal>
+
+              <div className={styles.sharingField}>
+                <UserSharing
+                  selectedEvent={selectedEvent}
+                  setEvents={setEvents}
+                  access_token={user?.access_token}
+                  axiosJWT={axiosJWT}
+                />
+              </div>
+            </div>
+          )}
+        </Modal>
 
         <Modal
           isOpen={uploadModalIsOpen}
