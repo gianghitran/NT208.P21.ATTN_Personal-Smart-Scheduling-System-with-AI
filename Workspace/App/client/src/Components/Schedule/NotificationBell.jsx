@@ -22,10 +22,10 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
   };
 
   // Hàm dùng để đọc notification và cập nhật trạng thái isRead
-  const handleRead = async ( inviteId, isRead ) => {
+  const handleRead = async ( inviteId, readType, isRead ) => {
     setNotifications((prev) =>
       prev.map((n) =>
-        n._id === inviteId ? { ...n, isRead: true } : n
+        n._id === inviteId ? { ...n, [readType]: true } : n
       )
     );
     
@@ -33,7 +33,7 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
 
     try {
       if (!isRead)
-        await readNotification(user?.access_token, inviteId, axiosJWT);
+        await readNotification(user?.access_token, inviteId, readType, axiosJWT);
     } 
     catch (error) {
       customToast("Error when reading notification", "error", "bottom-right");
@@ -92,26 +92,54 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
   }
 
   // Hàm dùng để mở modal khi click vào một notification
-  const handleNotificationClick = async (notification) => {
+  const handleNotificationClick = async (notification, role) => {
     setCurrentInviteId(notification._id);
     setModalIsOpen(true);
-    await handleRead(notification._id, notification.isRead);
+    if (role === "invitee") {
+      await handleRead(notification._id, "isRead", notification.isRead);
+    }
+    else {
+      await handleRead(notification._id, "isReadInvitor", notification.isReadInvitor);
+    }
   };
 
   // Hàm dùng để render một notification item
   const renderNotificationItem = (notification) => (
     <div key={notification._id} className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ""}`} 
-      onClick={() => handleNotificationClick(notification)}>
+      onClick={() => handleNotificationClick(notification, "invitee")}>
       <div className={styles.message}>
         <strong>{notification.invitorName}</strong> invited you to the event{" "}
         <strong>{notification.eventName}</strong> as
         {notification.role === "editor" ? " an" : " a"} {notification.role}.
       </div>
       <div className={styles.timestamp}>
-        {dayjs(notification.invitedAt).format("DD/MM/YYYY HH:mm")}
+        {dayjs(notification.invitedAt).format("DD/MM/YYYY HH:mm")} —{" "}
+        {notification.status === "pending" ? "Haven't responded yet" : "Have responded"}
       </div>
     </div>
   );
+
+  // Hàm dùng để render hiển thị response từ user được mời vào notification
+  const renderResponseItem = (notification) => (
+    <div
+      key={notification._id}
+      className={`${styles.notificationItem} ${!notification.isReadInvitor ? styles.unread : ""}`}
+      onClick={() => handleNotificationClick(notification, "invitor")}
+    >
+      <div className={styles.message}>
+        <strong>{notification.inviteeId.full_name}</strong>
+        <span>{` (${notification.inviteeId.email})`}</span>{" "}
+        has <strong>{notification.status}</strong> the invitation to join the event{" "}
+        <strong>{notification.eventName}</strong> as
+        {notification.role === "editor" ? " an" : " a"} {notification.role}.
+      </div>
+      <div className={styles.timestamp}>
+        Responded at {dayjs(notification.respondedAt).format("DD/MM/YYYY HH:mm")}
+      </div>
+    </div>
+  );
+
+
 
   // Hàm dùng để render modal khi click vào một notification gồm accept/decline button
   const confirmInviteModal = () => { 
@@ -119,7 +147,7 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
     return(
       <div>
         <h2>Notification Details</h2>
-        <p><strong>From:</strong> {currentNotification.invitorName}</p>
+        <p><strong>From:</strong> {currentNotification.invitorName || currentNotification.inviteeName}</p>
         <p><strong>Event:</strong> {currentNotification.eventName}</p>
         <p><strong>Role:</strong> {currentNotification.role}</p>
         <p><strong>Invited At:</strong> {dayjs(currentNotification.invitedAt).format("DD/MM/YYYY HH:mm")}</p>
@@ -154,8 +182,16 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
           <div className={styles.dropdown}>
             {notifications.length > 0 ? (
               [...notifications]
-              .sort((a, b) => new Date(b.invitedAt) - new Date(a.invitedAt))
-              .map(renderNotificationItem)
+              .sort((a, b) => {
+                const timeA = a?.respondedAt && a.invitorId._id === user._id ? new Date(a.respondedAt) : new Date(a.invitedAt);
+                const timeB = b?.respondedAt && b.invitorId._id === user._id ? new Date(b.respondedAt) : new Date(b.invitedAt);
+                return timeB - timeA;
+              })
+              .map(notification => 
+                (notification?.respondedAt && notification.invitorId._id === user._id)
+                  ? renderResponseItem(notification)
+                  : renderNotificationItem(notification)
+              )
             ) : (
               <div className={styles.noNotifications}>No notifications</div>
             )}

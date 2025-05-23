@@ -193,7 +193,6 @@ export const deleteEvents = async (eventId, access_token, axiosJWT) => {
             headers: { Authorization: `Bearer ${access_token}` },
             'x-client-id': localStorage.getItem('sseClientId')
         });
-        console.log("Delete event response:", response);
         return { success: true, message: response.data.message };
     } catch (error) {
         const message = error.response?.data?.message || error.message || "Unknown error";

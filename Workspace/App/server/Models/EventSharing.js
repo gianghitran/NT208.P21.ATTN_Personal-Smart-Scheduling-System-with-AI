@@ -52,6 +52,11 @@ const EventSharingSchema = new mongoose.Schema({
         default: false
     },
 
+    isReadInvitor: {
+        type: Boolean,
+        default: false
+    },
+
     hidden: {
         type: Boolean,
         default: false

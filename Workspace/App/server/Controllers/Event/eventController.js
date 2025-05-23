@@ -146,7 +146,6 @@ const eventController = {
                     );
                 });
 
-
                 // Invitee can update event
                 return res.status(200).json({ message: "Shared event updated" });
             }
