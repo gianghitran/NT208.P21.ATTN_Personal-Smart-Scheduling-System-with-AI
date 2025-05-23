@@ -184,14 +184,14 @@ export const getEvents = async (userId, startDate, endDate) => {
 };
 
 
-export const deleteEvents = async (_id, userId, access_token, axiosJWT) => {
+export const deleteEvents = async (eventId, access_token, axiosJWT) => {
     try {
         if (!access_token) {
             throw new Error("Access token is missing");
         }
-        const response = await axiosJWT.delete(`/api/event/delete/${_id}`, {
+        const response = await axiosJWT.delete(`/api/event/delete/${eventId}`, {
             headers: { Authorization: `Bearer ${access_token}` },
-            data: { userId },
+            'x-client-id': localStorage.getItem('sseClientId')
         });
         console.log("Delete event response:", response);
         return { success: true, message: response.data.message };
