@@ -10,13 +10,13 @@ const handleEventUpdate = (data) => {
       console.log("startOfWeek", startOfWeek);
 
     const endOfWeek = moment(data.end).endOf('isoWeek').toDate();
-    listeners.EVENT_UPDATED?.(startOfWeek, endOfWeek, true, false, 'week');
+    listeners.EVENT_UPDATED?.(startOfWeek, endOfWeek, true, false, "week");
 }
 
 const handleEventDelete = (data) => {
   const startOfWeek = moment(data.start).startOf('isoWeek').toDate();
   const endOfWeek = moment(data.end).endOf('isoWeek').toDate();
-  listeners.EVENT_DELETED?.(startOfWeek, endOfWeek, true, true);
+  listeners.EVENT_DELETED?.(startOfWeek, endOfWeek, true, true, "week", data.data.eventId);
 };
 
 const handleNotification = (data) => {
