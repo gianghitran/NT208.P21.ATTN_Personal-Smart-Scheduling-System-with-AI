@@ -21,6 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 import NotificationBell from "./NotificationBell";
 import UserSharing from "./UserSharing";
 import { v4 as uuidv4 } from 'uuid';
+import { addSSEListener, removeSSEListener, initSSE } from "../../utils/sseService";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -69,7 +70,7 @@ export default function MyCalendar() {
 
   const loadedRangesRef = useRef(new Set());
 
-  const fetchEvents = async (startDate, endDate, force = false, del = false, view) => {
+  const fetchEvents = async (startDate, endDate, force = false, del = false, view, idToDelete = null) => {
     const key = getRangeKey(startDate, endDate);
     // Nếu là view month thì luôn fetch, bỏ qua loadedRangesRef
     // Nếu là view week thì chỉ fetch nếu chưa từng fetch range này hoặc force = true
@@ -106,13 +107,8 @@ export default function MyCalendar() {
           }
         }
       });
-      if (del) {
-        const currentIds = new Set(items.map(ev => ev.id));
-        for (const id of eventsMap.keys()) {
-          if (!currentIds.has(id)) {
-            eventsMap.delete(id);
-          }
-        }
+      if (del && idToDelete) {
+        eventsMap.delete(idToDelete);
       }
       return Array.from(eventsMap.values());
     });
@@ -151,43 +147,13 @@ export default function MyCalendar() {
 
   // UseEffect để lắng nghe sự kiện từ SSE và BroadcastChannel
   useEffect(() => {
-    if (!user?.userData?._id) return;
-
-    const clientIdKey = "sseClientId";
-
-    let effectiveClientId = localStorage.getItem(clientIdKey);
-    if (!effectiveClientId) {
-      effectiveClientId = uuidv4();
-      localStorage.setItem(clientIdKey, effectiveClientId);
+    const init = async () => {
+      await initSSE(user?.userData?._id);
+      await addSSEListener("EVENT_UPDATED", fetchEvents);
+      await addSSEListener("EVENT_DELETED", fetchEvents);
     }
 
-    const eventSource = new EventSource(
-      `/api/sse/stream/${user?.userData?._id}?clientId=${effectiveClientId}`
-    );
-
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-
-        if (data?.type === "EVENT_UPDATED" || data?.type === "EVENT_DELETED") {
-          const startOfWeek = moment(data?.start).startOf("isoWeek").toDate();
-          const endOfWeek = moment(data?.end).endOf("isoWeek").toDate();
-          if (data?.type === "EVENT_DELETED") {
-            fetchEvents(startOfWeek, endOfWeek, true, true);
-          }
-          else {
-            fetchEvents(startOfWeek, endOfWeek, true, false);
-          }
-        }
-      } catch (err) {
-        console.error("Lỗi khi xử lý SSE:", err);
-      }
-    };
-
-    eventSource.onerror = (err) => {
-      console.error("SSE lỗi:", err);
-      eventSource.close();
-    };
+    init();
 
     const intervalId = setInterval(() => {
       otherTabsPresent = false;
@@ -240,7 +206,8 @@ export default function MyCalendar() {
 
 
     return () => {
-      eventSource.close();
+      removeSSEListener("EVENT_UPDATED", fetchEvents);
+      removeSSEListener("EVENT_DELETED", fetchEvents);
       if (broadcast) {
         try {
           broadcast.close();

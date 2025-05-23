@@ -167,11 +167,11 @@ const eventController = {
 
             if (event.userId.toString() === req.user._id.toString()) {
                 const inviteeIds = (await EventSharing.find({ eventId: event._id }).distinct("inviteeId")).map(id => id.toString());
-                const hehe = await Event.deleteOne({ _id: event._id });
                 await EventSharing.deleteMany({ eventId: event._id });
+                await Event.deleteOne({ _id: req.params.id });
                 inviteeIds.forEach(userId => {
                     sendEvent(
-                        { type: "EVENT_DELETED", start: event.start, end: event.end, data: {} },
+                        { type: "EVENT_DELETED", start: event.start, end: event.end, data: {eventId: event._id} },
                         userId,
                         userId === req.user._id.toString() ? excludeClientId : null
                     );

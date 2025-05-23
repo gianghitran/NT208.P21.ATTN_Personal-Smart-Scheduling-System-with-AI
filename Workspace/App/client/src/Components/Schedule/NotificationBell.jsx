@@ -62,7 +62,7 @@ const NotificationBell = ({ unreadCount, notifications, setNotifications, setUnr
         ));
         const startOfWeek = moment(acceptedNotification.start).startOf('isoWeek').toDate();
         const endOfWeek = moment(acceptedNotification.end).endOf('isoWeek').toDate();
-        await onAccept?.(startOfWeek, endOfWeek, true);
+        await onAccept?.(startOfWeek, endOfWeek, true, false, "week");
         customToast("Invite accepted", "success", "bottom-right");
       }
     }
