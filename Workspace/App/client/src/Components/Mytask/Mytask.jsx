@@ -30,7 +30,9 @@ const Mytask = () => {
   };
 
   const getEvent = async () => {
-    const data = await getEvents(user?.userData._id);
+    const startDate = moment().subtract(14, "days").toDate();
+    const endDate = moment().add(14, "days").toDate();
+    const data = await getEvents(user?.userData._id, startDate, endDate);
     setEvents(data);
   };
 
