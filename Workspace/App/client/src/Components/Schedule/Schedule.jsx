@@ -24,27 +24,28 @@ import { v4 as uuidv4 } from 'uuid';
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
+
+// Kiểm tra hỗ trợ BroadcastChannel và randomUUID
 let broadcast = null;
-let isMobile = false;
-
-// Kiểm tra xem có phải mobile không
-const checkIsMobile = () => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-         window.innerWidth <= 768;
-};
-
 try {
-  isMobile = checkIsMobile();
-  
-  // Chỉ tạo BroadcastChannel nếu không phải mobile và browser hỗ trợ
-  if (!isMobile && typeof BroadcastChannel !== 'undefined') {
-    broadcast = new BroadcastChannel("sync-tab");
+  if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+    broadcast = new window.BroadcastChannel("sync-tab");
   }
-} catch (error) {
-  console.log("BroadcastChannel not available:", error.message);
+} catch (e) {
+  broadcast = null;
 }
 
-const tabId = crypto?.randomUUID?.() || Math.random().toString(36).substring(7);
+let tabId = "";
+try {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    tabId = crypto.randomUUID();
+  } else {
+    tabId = Math.random().toString(36).substring(2, 15);
+  }
+} catch (e) {
+  tabId = Math.random().toString(36).substring(2, 15);
+}
+
 let otherTabsPresent = false;
 
 export default function MyCalendar() {
@@ -188,65 +189,64 @@ export default function MyCalendar() {
       eventSource.close();
     };
 
-    // Chỉ setup BroadcastChannel nếu không phải mobile
-    let pingInterval;
-      if (!isMobile && broadcast) {
-        pingInterval = setInterval(() => {
-          otherTabsPresent = false;
-          try {
-            broadcast.postMessage({ type: "PING", from: tabId });
-          } catch (error) {
-            console.error("Failed to send ping:", error);
-          }
-          setTimeout(() => {}, 500);
-        }, 5000);
-
-        broadcast.addEventListener("message", (event) => {
-          const { type, from, payload } = event.data;
-
-          if (type === "PONG" && from !== tabId) {
-            otherTabsPresent = true;
-            return;
-          }
-
-          if (type === "PING" && from !== tabId) {
-            try {
-              broadcast.postMessage({ type: "PONG", from: tabId });
-            } catch (error) {
-              console.error("Failed to send pong:", error);
-            }
-            return;
-          }
-
-          if (type === "BC_EVENT") {
-            const data = payload;
-            if (data?.userId !== user?.userData?._id) return;
-
-            if (
-              data?.type === "EVENT_ADDED" ||
-              data?.type === "EVENT_UPDATED" ||
-              data?.type === "EVENT_DELETED"
-            ) {
-              const startOfWeek = moment(data?.start).startOf("isoWeek").toDate();
-              const endOfWeek = moment(data?.end).endOf("isoWeek").toDate();
-              fetchEvents(startOfWeek, endOfWeek, true, data?.force);
-            }
-          }
-        });
+    const intervalId = setInterval(() => {
+      otherTabsPresent = false;
+      if (broadcast && broadcast.readyState !== "closed") {
+        try {
+          broadcast.postMessage({ type: "PING", from: tabId });
+        } catch (e) {
+          // Có thể log hoặc bỏ qua
+        }
       }
+      // Đợi 500ms để nhận PONG từ các tab khác
+      setTimeout(() => { }, 500);
+    }, 5000);
+
+
+    // Nghe toàn bộ message
+    if (broadcast) {
+      broadcast.addEventListener("message", (event) => {
+        const { type, from, payload } = event.data;
+
+        // Nhận PONG từ các tab khác
+        if (type === "PONG" && from !== tabId) {
+          otherTabsPresent = true;
+          return;
+        }
+
+        // Nhận PING từ tab khác → phản hồi lại PONG
+        if (type === "PING" && from !== tabId) {
+          broadcast.postMessage({ type: "PONG", from: tabId });
+          return;
+        }
+
+        // Nhận sự kiện cập nhật từ tab khác
+        if (type === "BC_EVENT") {
+          const data = payload;
+          if (data?.userId !== user?.userData?._id) return;
+
+          if (
+            data?.type === "EVENT_ADDED" ||
+            data?.type === "EVENT_UPDATED" ||
+            data?.type === "EVENT_DELETED"
+          ) {
+            const startOfWeek = moment(data?.start).startOf("isoWeek").toDate();
+            const endOfWeek = moment(data?.end).endOf("isoWeek").toDate();
+            fetchEvents(startOfWeek, endOfWeek, true, data?.force, "week");
+          }
+        }
+      });
+    }
+
 
     return () => {
       eventSource.close();
-      if (pingInterval) {
-        clearInterval(pingInterval);
-      }
       if (broadcast) {
         try {
           broadcast.close();
-        } catch (error) {
-          console.error("Failed to close broadcast:", error);
-        }
+        } catch (e) { }
       }
+      clearInterval(intervalId);
     };
   }, [user?.userData._id]);
 
