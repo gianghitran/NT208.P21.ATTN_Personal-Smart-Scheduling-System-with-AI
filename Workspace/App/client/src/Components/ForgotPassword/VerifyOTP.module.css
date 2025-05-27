@@ -1,0 +1,90 @@
+.Wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #74ebd5, #acb6e5);
+}
+
+.otpForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding-top: min(100px, 20%);
+    padding-bottom: min(100px, 20%);
+    padding-left: min(50px, 2.7%);
+    padding-right: min(50px, 2.7%);
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.otpForm h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.inputGroup {
+    display: flex;
+    gap: 5px;
+    position: relative;
+    width: 100%;
+}
+
+.inputGroup input {
+    border: none;
+    background-color: #E6E6E6;
+    padding: 15px;
+    border-radius: 30px;
+    width: 310px;
+    letter-spacing: 10px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.inputGroup input:focus {
+    outline: none;
+}
+
+.otpButton {
+    padding: 15px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 30px;
+    padding-right: 50px;
+    padding-left: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.otpButton:hover {
+    background: linear-gradient(to right, #3d6fd1, #7098f3);
+    box-shadow: 0 6px 15px rgba(61, 111, 209, 0.4);
+    transform: translateY(-1px);
+}
+
+.error {
+    color: red;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: center;
+    margin-top: -10px;
+}
+
+@media screen and (max-width: 768px) {
+    .inputGroup input {
+        width: 300px;
+    }
+    .otpButton {
+        padding-right: 40px;
+        padding-left: 40px;
+    }
+}
