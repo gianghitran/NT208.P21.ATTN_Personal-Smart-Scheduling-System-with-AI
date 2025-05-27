@@ -76,7 +76,7 @@ const authController = {
         if (!user) {
             return res.status(400).json({ message: "Email not found" });
         }
-        
+
         user.verificationToken = verificationToken;
         user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
         try {
@@ -210,12 +210,11 @@ const authController = {
     },
 
     verifyEmail: async (req, res) => {
-        // 1 2 3 4 5 6
         const { code } = req.body;
         try {
-            const user = await User.findOne({ 
+            const user = await User.findOne({
                 verificationToken: code,
-                verificationTokenExpires: { $gt: Date.now() } 
+                verificationTokenExpires: { $gt: Date.now() }
             })
 
             if (!user) {
@@ -225,15 +224,22 @@ const authController = {
             user.isVerified = true;
             user.verificationToken = undefined;
             user.verificationTokenExpires = undefined;
+
+            // Tạo resetPasswordToken mới
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            user.resetPasswordToken = resetToken;
+            user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+
             await user.save();
 
             res.status(200).json({
                 success: true,
-                message: "Email verified successfully" ,
+                message: "Email verified successfully",
                 user: {
                     ...user._doc,
                     admin: undefined,
                     password: undefined,
+                    resetPasswordToken: resetToken, // trả về token cho client
                 },
             });
         } catch (error) {
@@ -277,22 +283,20 @@ const authController = {
                 return res.status(400).json({ message: "User not found" });
             }
 
-            // Generate reset token
-            const resetToken = crypto.randomBytes(32).toString('hex');
-            const resetTokenExpires = Date.now() + 60 * 60 * 1000; // 1 hour
-            user.resetPasswordToken = resetToken;
-            user.resetPasswordExpires = resetTokenExpires;
-            
+            // Generate OTP (6 số)
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            user.verificationToken = otp;
+            user.verificationTokenExpires = Date.now() + 10 * 60 * 1000; // 10 phút
+
             await user.save();
 
-            // Send email
-            await sendResetPasswordEmail(email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);
-            return res.status(200).json({ message: "Reset password email sent" });
+            // Gửi email chứa OTP
+            await sendVerificationEmail(email, otp);
+            return res.status(200).json({ message: "OTP sent to your email" });
         } catch (error) {
-            console.error("Error sending reset password email:", error);
-            return res.status(500).json({ message: "Error sending email" });   
-        }   
-
+            console.error("Error sending OTP email:", error);
+            return res.status(500).json({ message: "Error sending email" });
+        }
     },
 
     requestRefreshToken: async (req, res) => {

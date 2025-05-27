@@ -13,6 +13,9 @@ import OAuthCallback from './Components/OAuthCallback/OAuthCallback';
 import { ToastContainer } from 'react-toastify';
 import { Suspense, lazy } from "react";
 import Modal from "react-modal";
+import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
+import VerifyOTP from "./Components/ForgotPassword/VerifyOTP";
+import ResetPassword from "./Components/ForgotPassword/ResetPassword";
 
 const Schedule = lazy(() => import("./Components/Schedule/Schedule"));
 const Myactivities = lazy(() => import("./Components/Myactivities/Myactivities"));
@@ -43,7 +46,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/email-verify" element={<EmailVerification />} />
-                    <Route path="/email-resend-verify" element={<EmailResendVerification/>} />
+              <Route path="/email-resend-verify" element={<EmailResendVerification />} />
             </>
           )}
 
@@ -103,6 +106,9 @@ function App() {
           </Route>
 
           <Route path="/oauth2callback" element={<OAuthCallback />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-otp" element={<VerifyOTP />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </div>
       <ToastContainer />

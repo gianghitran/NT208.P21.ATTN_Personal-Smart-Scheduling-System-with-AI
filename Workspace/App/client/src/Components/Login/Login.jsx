@@ -19,15 +19,15 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        
+
         const user = {
             email: email,
             password: password
         };
-    
+
         try {
             const response = await loginUser(user, dispatch, navigate);
-    
+
             if (response && !response.success) {
                 setError(response.message);
             }
@@ -56,30 +56,30 @@ const Login = () => {
 
     return (
         <div className={loginStyle.Wrapper}>
-            <form className={loginStyle.loginForm} onSubmit={handleLogin}> 
+            <form className={loginStyle.loginForm} onSubmit={handleLogin}>
                 <h1>Login</h1>
 
                 {error && <p className={loginStyle.error}>{error}</p>}
 
                 <div className={loginStyle.inputGroup}>
                     <IoIosMail className={loginStyle.icon} />
-                    <input type="email" placeholder="Enter your email..." 
-                        onChange={(e) => {setEmail(e.target.value); setError("")}} />
+                    <input type="email" placeholder="Enter your email..."
+                        onChange={(e) => { setEmail(e.target.value); setError("") }} />
                 </div>
 
                 <div className={loginStyle.inputGroup}>
                     <RiLockPasswordFill className={loginStyle.icon} />
                     <input type={showPassword ? "text" : "password"} placeholder="Enter your password..."
-                        onChange={(e) => {setPassword(e.target.value); setError("")}}/>
+                        onChange={(e) => { setPassword(e.target.value); setError("") }} />
                     <EyeIcon onClick={handleShowPassword} className={`${loginStyle.icon} ${loginStyle.eyeIcon}`} />
                 </div>
 
                 <div className={loginStyle.rememberForgot}>
-                    <label><input type="checkbox"/> Remember me</label>
-                    <Link to="#">Forgot password?</Link>
+                    <label><input type="checkbox" /> Remember me</label>
+                    <Link to="/forgot-password">Forgot password?</Link>
                 </div>
 
-                <input type="submit" value="Login" className={loginStyle.loginButton}/>
+                <input type="submit" value="Login" className={loginStyle.loginButton} />
                 <GoogleLogin
                     onSuccess={handleSuccess}
                     onError={() => {
