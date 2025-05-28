@@ -112,7 +112,7 @@ module.exports = {
     apps: [
         new GraphQLApp(),
         new AdminUIApp({
-            name: 'Admin UI',
+            adminPath: '/admin', // Thay đổi đường dẫn admin
             enableDefaultRoute: true,
         }),
     ],
