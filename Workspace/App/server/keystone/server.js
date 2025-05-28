@@ -1,6 +1,9 @@
 require('dotenv').config();
 const { keystone, apps } = require('./keystone');
 
+const originalLog = console.log;
+console.log = function () { }; // Tạm thời tắt log
+
 keystone
     .prepare({
         apps,
@@ -11,6 +14,7 @@ keystone
         },
     })
     .then(async ({ middlewares }) => {
+        console.log = originalLog; // Khôi phục log
         await keystone.connect();
         const express = require('express');
         const app = express();

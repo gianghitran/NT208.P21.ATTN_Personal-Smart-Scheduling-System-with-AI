@@ -28,12 +28,6 @@ const Login = () => {
         try {
             const response = await loginUser(user, dispatch, navigate);
 
-            // Nếu là super admin, chuyển hướng sang /admin
-            if (response && response.isSuperAdmin) {
-                window.location.href = "http://localhost:3001/admin";
-                return;
-            }
-
             if (response && !response.success) {
                 setError(response.message);
             }
