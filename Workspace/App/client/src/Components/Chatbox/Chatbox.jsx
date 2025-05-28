@@ -301,6 +301,8 @@ const Chatbox = () => {
         ) {
           const parsed = parseEventFromJSON(msg.content);
           if (parsed) {
+            parsed.start = new Date(new Date(parsed.start).getTime() - 7 * 60 * 60 * 1000).toISOString();
+            parsed.end = new Date(new Date(parsed.end).getTime() - 7 * 60 * 60 * 1000).toISOString();
             newEditableEvents[index] = parsed;
           }
         }
