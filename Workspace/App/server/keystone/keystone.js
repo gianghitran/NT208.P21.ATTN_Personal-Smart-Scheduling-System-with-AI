@@ -6,6 +6,7 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const { Text, Checkbox, Relationship, DateTime, DateTimeUtc, Select, Integer, Json, Password } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -14,8 +15,6 @@ const keystone = new Keystone({
     adapter: new MongooseAdapter({ mongoUri: process.env.MONGOSV }),
     cookieSecret: process.env.COOKIE_SECRET,
 });
-
-
 
 keystone.createList('User', {
     fields: {
@@ -48,7 +47,14 @@ keystone.createList('User', {
     labelResolver: item => item.email || `User ${item.id}`, // tránh lỗi khi email null
 });
 
-
+const authStrategy = keystone.createAuthStrategy({
+    type: PasswordAuthStrategy,
+    list: 'User',
+    config: {
+        identityField: 'email',
+        secretField: 'password',
+    },
+});
 
 // === Event List ===
 keystone.createList('Event', {
@@ -112,8 +118,11 @@ module.exports = {
     apps: [
         new GraphQLApp(),
         new AdminUIApp({
-            adminPath: '/admin', // Thay đổi đường dẫn admin
+            name: "ThreeBears Admin",
             enableDefaultRoute: true,
+            adminPath: "/admin", // hoặc để mặc định
+            authStrategy, // nếu có xác thực
+            signoutPath: "/admin/signout", // đường dẫn logout
         }),
     ],
 };

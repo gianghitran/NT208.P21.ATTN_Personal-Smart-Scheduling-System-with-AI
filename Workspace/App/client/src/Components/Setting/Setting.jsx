@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import styles from "./Setting.module.css";
+import { useSelector } from "react-redux";
 
 const Setting = () => {
+    const user = useSelector((state) => state.auth.login?.currentUser);
+    
+    // Dùng thông tin từ Redux store, fallback sang localStorage
+    const userData = user?.userData;
+
     const [dark, setDark] = useState(() => localStorage.getItem("theme") === "dark");
 
     useEffect(() => {
@@ -14,8 +20,27 @@ const Setting = () => {
         }
     }, [dark]);
 
+    const role = userData.email === "admin@gmail.com" ? "Administrator" : "User";
+
     return (
         <div className={styles.container}>
+            {/* User Info Section */}
+            <div className={styles.userInfoSection}>
+                <img
+                    src="https://img.icons8.com/ios-filled/100/000000/user-male-circle.png"
+                    alt="User"
+                    className={styles.userAvatar}
+                />
+                <div className={styles.userInfoText}>
+                    <div className={styles.userName}>{userData.full_name}</div>
+                    <div className={styles.userRole}>{role}</div>
+                    <div className={styles.userEmail}>{userData.email}</div>
+                </div>
+            </div>
+
+            <hr className={styles.divider} />
+
+            {/* Setting Section */}
             <div className={styles.headerSection}>
                 <h1 className={styles.header}>Setting</h1>
             </div>
@@ -25,7 +50,7 @@ const Setting = () => {
                     <input
                         type="checkbox"
                         checked={dark}
-                        onChange={() => setDark(v => !v)}
+                        onChange={() => setDark((v) => !v)}
                         className={styles.toggleInput}
                         aria-label="Bật/tắt dark mode"
                     />

@@ -30,7 +30,7 @@
 }
 
   /* Main Content */
-  .main_content {
+.main_content {
     flex-grow: 1; /* Mặc định chiếm toàn bộ không gian còn lại */
   /* transition: width 0.3s ease-in-out; */
     display: flex;

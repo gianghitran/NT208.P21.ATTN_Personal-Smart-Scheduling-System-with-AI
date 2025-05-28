@@ -99,3 +99,51 @@
   transition: left 0.2s, background 0.2s;
   background-color: var(--toggle-circle);
 }
+
+.userInfoSection {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+    border-radius: 12px;
+    padding-top: 16px;
+}
+
+.userAvatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: white;
+    object-fit: cover;
+}
+
+.userInfoText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.userName {
+    font-weight: bold;
+    color: var(--text-dark);
+    font-size: 1.4rem;
+}
+
+.userRole {
+    font-size: 1rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.userEmail {
+    font-size: 0.98rem;
+    color: var(--text-dark);
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 18px 0 18px 0;
+    opacity: 0.6;
+}
