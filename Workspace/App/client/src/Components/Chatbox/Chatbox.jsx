@@ -110,6 +110,9 @@ const Chatbox = () => {
       loadOldMessagesAPI(userId,dispatch);
     }
   }, [userId, dispatch]);
+
+  // Hàm lấy số giờ offset múi giờ của máy
+  const timezoneOffsetHours = -new Date().getTimezoneOffset() / 60;
   // Hàm gửi tin nhắn đến AI và lưu vào MongoDB
   const sendMessage = async () => {
     if (!input.trim()) {
@@ -171,10 +174,12 @@ const Chatbox = () => {
         
         
         const eventsArr = await getEvents(user?.userData._id, startDateFETCH, endDateFETCH);
+         // Lấy số giờ offset múi giờ của máy (ví dụ GMT+7 thì là 7)
+        
         const eventsArrGMT7 = eventsArr.map(event => ({
             ...event,
-            start: new Date(new Date(event.start).getTime() + 7 * 60 * 60 * 1000).toISOString(),
-            end: new Date(new Date(event.end).getTime() + 7 * 60 * 60 * 1000).toISOString(),
+            start: new Date(new Date(event.start).getTime() + timezoneOffsetHours * 60 * 60 * 1000).toISOString(),
+            end: new Date(new Date(event.end).getTime() + timezoneOffsetHours * 60 * 60 * 1000).toISOString(),
           }));
         
         const currentEvents = JSON.stringify(eventsArrGMT7);
@@ -301,8 +306,8 @@ const Chatbox = () => {
         ) {
           const parsed = parseEventFromJSON(msg.content);
           if (parsed) {
-            parsed.start = new Date(new Date(parsed.start).getTime() - 7 * 60 * 60 * 1000).toISOString();
-            parsed.end = new Date(new Date(parsed.end).getTime() - 7 * 60 * 60 * 1000).toISOString();
+            parsed.start = new Date(new Date(parsed.start).getTime() - timezoneOffsetHours * 60 * 60 * 1000).toISOString();
+            parsed.end = new Date(new Date(parsed.end).getTime() - timezoneOffsetHours * 60 * 60 * 1000).toISOString();
             newEditableEvents[index] = parsed;
           }
         }
