@@ -336,7 +336,7 @@ const Chatbox = () => {
         const jsonEnd = str.lastIndexOf("}") + 1;
         const jsonStr = str.substring(jsonStart, jsonEnd);
         const parsed = JSON.parse(jsonStr);
-    
+        
         if (parsed.title && parsed.start && parsed.end) {
           return parsed;
         }
