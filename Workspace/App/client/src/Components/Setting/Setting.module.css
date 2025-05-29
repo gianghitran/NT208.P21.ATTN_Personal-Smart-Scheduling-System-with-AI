@@ -147,3 +147,20 @@
     margin: 18px 0 18px 0;
     opacity: 0.6;
 }
+
+@media (max-width: 800px) {
+    .container {
+        width: 100%;
+        margin-left: 5px;
+    }
+    .userInfoSection {
+        margin: 10px 0 0 10px;
+    }
+    .headerSection {
+        padding: 0 0.5rem 1rem 0;
+    }
+    .toggleRow {
+        width: 98%;
+        padding: 10px;
+    }
+  }

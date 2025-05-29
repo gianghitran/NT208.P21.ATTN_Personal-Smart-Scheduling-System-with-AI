@@ -143,7 +143,7 @@ export const addEvents = async (newEvent, access_token, axiosJWT) => {
         return;
     } catch (error) {
         if (!newEvent.title.trim()) {
-            customToast("Lỗi: Vui lòng nhập tiêu đề sự kiện!", "error", "bottom-right");
+            customToast("Error: Please enter event title!", "error", "bottom-right");
         }
         return { success: false };
     }
@@ -152,7 +152,7 @@ export const addEvents = async (newEvent, access_token, axiosJWT) => {
 export const saveEvents = async (selectedEvent, _id, access_token, axiosJWT) => {
     try {
         if (!selectedEvent.title.trim()) {
-            customToast("Lỗi: Vui lòng nhập tiêu đề sự kiện!", "error", "bottom-right");
+            customToast("Error: Please enter event title!", "error", "bottom-right");
             return { success: false };
         }
         const response = await axiosJWT.put(`/api/event/update/${_id}`, selectedEvent, {

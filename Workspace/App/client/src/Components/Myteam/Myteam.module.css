@@ -59,7 +59,7 @@
 .eventTime {
     font-weight: bold;
     font-size: 1.2rem;
-    width: 140px;
+    width: 10%;
     text-align: center;
     flex-shrink: 0;
     color: var(--text-dark);
@@ -97,6 +97,14 @@
     word-break: break-word;
 }
 
+.eventCategory {
+    font-size: 0.95rem;
+    color: var(--background-color);
+    font-style: italic;
+    margin-bottom: 0;
+    word-break: break-word;
+}
+
 .eventDesc {
     font-size: 0.95rem;
     color: #e0e0e0;
@@ -115,12 +123,12 @@
     font-weight: bold;
     color: var(--header);
     margin-right: 8px;
+    font-size: 0.85rem;
 }
 
 .participantItem {
-    font-size: 0.98rem;
+    font-size: 0.85rem;
     color: var(--text-dark);
-    margin-left: 1rem;
 }
 
 .participantName {
@@ -132,7 +140,7 @@
     margin-left: 4px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .container {
         width: 100%;
         margin-left: 5px;
