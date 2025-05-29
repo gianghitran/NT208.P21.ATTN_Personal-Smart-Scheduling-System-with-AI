@@ -242,10 +242,10 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      customToast(`Sự kiện "${event.title}" đã được thay đổi kích thước!`, "success", "bottom-right", 3000);
+      customToast(`Event "${event.title}" has been resized!`, "success", "bottom-right", 3000);
       await BroadCastEvent(start, end, "EVENT_UPDATED", false);
     } else {
-      customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
+      customToast(`Error: ${response.message}`, "error", "bottom-right", 3000);
     }
   };
 
@@ -275,7 +275,7 @@ export default function MyCalendar() {
   const addEvent = async () => {
     if (newEvent.end < newEvent.start) {
       // toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
-      customToast("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!", "error", "bottom-right", 3000);
+      customToast("Error: End time must be after start time!", "error", "bottom-right", 3000);
 
       return;
     }
@@ -298,14 +298,14 @@ export default function MyCalendar() {
       await BroadCastEvent(event.start, event.end, "EVENT_ADDED", false);
     } catch (error) {
       // toast.error("Lỗi khi thêm sự kiện!");
-      customToast("Lỗi khi thêm sự kiện!", "error", "bottom-right", 3000);
+      customToast("Error adding event!", "error", "bottom-right", 3000);
       setModalIsOpen(false);
     }
   };
 
   const saveEditedEvent = async () => {
     if (selectedEvent.end < selectedEvent.start) {
-      customToast("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!", "error", "bottom-right", 3000);
+      customToast("Error: End time must be after start time!", "error", "bottom-right", 3000);
       return;
     }
 
@@ -326,7 +326,7 @@ export default function MyCalendar() {
       customToast(`Event "${event.title}" was successfully edited`, "success", "bottom-right", 3000);
       await BroadCastEvent(selectedEvent.start, selectedEvent.end, "EVENT_UPDATED", false);
     } else {
-      customToast(`Lỗi: ${response.message} `, "error", "bottom-right", 3000);
+      customToast(`Error: ${response.message} `, "error", "bottom-right", 3000);
     }
     setEditModalIsOpen(false);
   };
@@ -480,13 +480,13 @@ export default function MyCalendar() {
   const syncWithGoogleCalendar = async () => {
     if (!user?.access_token) {
       // toast.error("Bạn chưa đăng nhập hoặc token không tồn tại.");
-      customToast("Bạn chưa đăng nhập hoặc token không tồn tại.", "error", "bottom-right", 3000);
+      customToast("You are not logged in or the token does not exist.", "error", "bottom-right", 3000);
       return;
     }
 
     // Hiện toast loading
     // const loadingId = toast.loading("Đang đồng bộ với Google Calendar...");
-    const loadingId = customToast("Đang đồng bộ với Google Calendar...", "loading", "bottom-right");
+    const loadingId = customToast("Syncing with Google Calendar...", "loading", "bottom-right");
 
     try {
       const response = await axiosJWT.post('/api/google-calendar/sync', {}, {
@@ -517,19 +517,19 @@ export default function MyCalendar() {
           data.message?.toLowerCase().includes("token")
         ) {
           // toast.info('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...');
-          customToast('🔗 Google Calendar chưa được kết nối. Đang chuyển hướng để kết nối...', "info", "bottom-right", 3000);
+          customToast('Google Calendar is not connected. Redirecting to connect...', "info", "bottom-right", 3000);
           const urlRes = await axios('/api/auth/connect-google', { withCredentials: true });
           const { url } = await urlRes.data;
           window.location.href = url;
         } else {
           // toast.error(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`);
-          customToast(`❌ Đồng bộ thất bại: ${data.message || "Unknown error"}`, "error", "bottom-right", 3000);
+          customToast(`Sync failed: ${data.message || "Unknown error"}`, "error", "bottom-right", 3000);
         }
       }
     } catch (error) {
       toast.dismiss(loadingId);
       // toast.error('❌ Lỗi khi đồng bộ Google Calendar');
-      customToast('❌ Lỗi khi đồng bộ Google Calendar', "error", "bottom-right", 3000);
+      customToast('Error while syncing Google Calendar', "error", "bottom-right", 3000);
     }
   };
 
