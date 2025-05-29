@@ -229,7 +229,7 @@ export default function MyCalendar() {
     const response = await saveEvents(updatedEvent, event.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === event.id ? updatedEvent : e));
-      customToast(`Sự kiện "${event.title}" đã được di chuyển!`, "success", "bottom-right", 3000);
+      customToast(`Event "${event.title}" has been moved!`, "success", "bottom-right", 3000);
       await BroadCastEvent(start, end, "EVENT_UPDATED", false);
     } else {
       customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
@@ -294,7 +294,7 @@ export default function MyCalendar() {
       if (!event.title.trim()) {
         return;
       }
-      customToast(`Sự kiện "${event.title}" đã được thêm thành công!`, "success", "bottom-right", 3000);
+      customToast(`Event "${event.title}" was added successfully!`, "success", "bottom-right", 3000);
       await BroadCastEvent(event.start, event.end, "EVENT_ADDED", false);
     } catch (error) {
       // toast.error("Lỗi khi thêm sự kiện!");
@@ -323,7 +323,7 @@ export default function MyCalendar() {
     const response = await saveEvents(event, selectedEvent.id, access_token, axiosJWT);
     if (response.success) {
       setEvents(events.map(e => e.id === selectedEvent.id ? { ...e, ...event } : e));
-      customToast(`Sự kiện "${event.title}" đã được sửa thành công!`, "success", "bottom-right", 3000);
+      customToast(`Event "${event.title}" was successfully edited`, "success", "bottom-right", 3000);
       await BroadCastEvent(selectedEvent.start, selectedEvent.end, "EVENT_UPDATED", false);
     } else {
       customToast(`Lỗi: ${response.message} `, "error", "bottom-right", 3000);
@@ -410,7 +410,7 @@ export default function MyCalendar() {
         }
         // Thay renderEvents() bằng fetchEvents
         await fetchEvents(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
-        customToast("Import thành công!", "success", "bottom-right", 3000);
+        customToast("Import successful !", "success", "bottom-right", 3000);
         await BroadCastEvent(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "EVENT_ADDED", false);
         setUploadModalIsOpen(false);
       },
@@ -453,7 +453,7 @@ export default function MyCalendar() {
         }
         // Thay renderEvents() bằng fetchEvents
         await fetchEvents(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
-        customToast("Upload thành công!", "success", "bottom-right", 3000);
+        customToast("Upload successful!", "success", "bottom-right", 3000);
       },
     });
   };
@@ -506,7 +506,7 @@ export default function MyCalendar() {
       if (response.status === 200) {
         const message = Array.isArray(data.message)
           ? data.message.filter(Boolean).join('\n')
-          : data.message || "Đã đồng bộ Google Calendar thành công!";
+          : data.message || "Google Calendar synced successfully!";
         customToast(`✅ ${message}`, "success", "bottom-right", 3000);
         // Thay renderEvents() bằng fetchEvents
         await fetchEvents(new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
@@ -560,7 +560,7 @@ export default function MyCalendar() {
 
     const responsesData = await getEventResponses(access_token, axiosJWT);
     const responses = Array.isArray(responsesData.responses) ? responsesData.responses : [];
-    
+
     const allEvents = [...invites, ...responses] || [];
     if (allEvents.length > 0) {
       setNotifications(allEvents);
