@@ -374,8 +374,12 @@ authController.googleOAuthCallback = async (req, res) => {
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        user.googleAccessToken = tokens.access_token;
-        user.googleRefreshToken = tokens.refresh_token;
+        if (tokens.access_token) {
+            user.googleAccessToken = tokens.access_token;
+        }
+        if (tokens.refresh_token) {
+            user.googleRefreshToken = tokens.refresh_token;
+        }
         await user.save();
 
         const newAccessToken = authController.generateAccessToken(user);
