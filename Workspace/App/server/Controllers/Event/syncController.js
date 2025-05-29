@@ -31,7 +31,7 @@ const syncGoogleCalendar = async (req, res) => {
         }
 
         const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-        
+
         const events = await calendar.events.list({
             calendarId: "primary",
             timeMin: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -105,9 +105,17 @@ const syncGoogleCalendar = async (req, res) => {
 
         return res.status(200).json({ message: `Đã thêm ${addedCount} sự kiện từ Google Calendar và đẩy ${pushedCount} sự kiện lên Google Calendar.` });
     } catch (error) {
-        console.error("Error syncing Google Calendar:", error);
+        console.error("Error syncing Google Calendar:", error?.response?.data || error);
+
+        if (error?.response?.data?.error === 'invalid_grant') {
+            user.googleAccessToken = undefined;
+            user.googleRefreshToken = undefined;
+            await user.save();
+        }
+
         return res.status(500).json({ message: "Không thể lấy dữ liệu từ Google Calendar." });
     }
+
 };
 
 const addEventToGoogleCalendar = async (req, res) => {
@@ -161,7 +169,7 @@ const addEventToGoogleCalendar = async (req, res) => {
 
 
 const refreshGoogleToken = async (req, res) => {
-    const { refreshToken } = req.body; 
+    const { refreshToken } = req.body;
 
     if (!refreshToken) {
         return res.status(400).json({ message: "Refresh token is required" });
