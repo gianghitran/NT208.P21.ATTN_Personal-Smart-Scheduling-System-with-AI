@@ -373,3 +373,72 @@ Get chat history from user: 67ddc1f73d303e68cfec8c04
 Get chat history from user: 67ddc1f73d303e68cfec8c04
 Get chat history from user: 67ddc1f73d303e68cfec8c04
 >>>>>>> e205fb65a71e2aa3b84656a72dccb68af2fa1f40
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get message: hello
+Response from chatbot: [Chat Reply:]
+Hôm nay, ngày **31 tháng 5 năm 2025**, lịch trình của bạn như sau:
+
+1. **Đi bơi**:
+   - **Thời gian**: Từ **04:00** đến **06:00**
+   - **Mô tả**: Thời gian đi bơi thư giãn vào buổi sáng.
+
+2. **Học IELTS**:
+   - **Thời gian**: Từ **07:00** đến **10:30**
+   - **Mô tả**: Thời gian học IELTS.
+
+3. **Làm bài tập Toán**:
+   - **Thời gian**: Từ **07:00** đến **20:00**
+   - **Mô tả**: Thời gian làm bài tập Toán.
+
+4. **Viết README cho đồ án web**:
+   - **Thời gian**: Từ **18:30** đến **20:30**
+   - **Mô tả**: Thời gian viết README cho đồ án web.
+
+### Lưu ý:
+- Hôm nay, bạn có một số hoạt động học tập và thư giãn. Bạn cần sắp xếp thời gian hợp lý để đảm bảo hoàn thành các nhiệm vụ.
+- Nếu bạn cần thêm bất kỳ sự kiện nào hoặc có thay đổi, hãy cho tôi biết để tôi giúp bạn cập nhật lịch trình!
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get message: lịch trình hôm nay của tôi có gì
+Response from chatbot: [Chat Reply:]
+Hôm nay, ngày **31 tháng 5 năm 2025**, lịch trình của bạn như sau:
+
+1. **Đi bơi**:
+   - **Thời gian**: Từ **04:00** đến **06:00**
+   - **Mô tả**: Thời gian đi bơi thư giãn vào buổi sáng.
+
+2. **Học IELTS**:
+   - **Thời gian**: Từ **07:00** đến **10:30**
+   - **Mô tả**: Thời gian học IELTS.
+
+3. **Làm bài tập Toán**:
+   - **Thời gian**: Từ **07:00** đến **20:00**
+   - **Mô tả**: Thời gian làm bài tập Toán.
+
+4. **Viết README cho đồ án web**:
+   - **Thời gian**: Từ **18:30** đến **20:30**
+   - **Mô tả**: Thời gian viết README cho đồ án web.
+
+### Lưu ý:
+- Hôm nay, bạn có một số hoạt động học tập và thư giãn. Bạn cần sắp xếp thời gian hợp lý để đảm bảo hoàn thành các nhiệm vụ.
+- Nếu bạn cần thêm bất kỳ sự kiện nào hoặc có thay đổi, hãy cho tôi biết để tôi giúp bạn cập nhật lịch trình!
