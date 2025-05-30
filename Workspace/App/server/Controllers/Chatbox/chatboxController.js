@@ -15,7 +15,7 @@ exports.chatWithAI = async (req, res) => {
       const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          Authorization: `${process.env.OPENROUTER_API_KEY}`,
           "HTTP-Referer": "http://localhost:3000",
           "X-Title": "BearCalendar",
           "Content-Type": "application/json",
