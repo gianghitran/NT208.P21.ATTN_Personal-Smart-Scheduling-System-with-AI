@@ -303,3 +303,73 @@ Get chat history from user: 67ecbcb979ebe8249482ebfd
 Get message: hello
 Response from chatbot: Xin lỗi, tôi không thể đọc được toàn bộ lịch trình bạn gửi. Hãy nêu rõ yêu cầu hoặc thông tin cụ thể bạn muốn tôi hỗ trợ, để tôi có thể cung cấp thông tin cho bạn một cách chính xác.
 Get chat history from user: 67ecbcb979ebe8249482ebfd
+<<<<<<< HEAD
+=======
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get message: sự kiện hôm nay của tôi
+Response from chatbot: [Chat Reply:]
+
+### Lịch trình hôm nay (31/05/2025):
+
+1. **Chơi game**:
+   - **Thời gian**: Từ **07:00** đến **10:30**
+   - **Mô tả**: Thời gian chơi game với bạn bè.
+
+### Lịch trình ngày mai (01/06/2025):
+Bạn không có sự kiện nào được ghi nhận trong lịch trình ngày mai.
+
+### Lưu ý:
+- Hôm nay, bạn có một sự kiện chính là **"Chơi game"** từ **07:00 đến 10:30**. Đây là sự kiện duy nhất trong lịch trình hôm nay.
+- Nếu bạn cần thêm bất kỳ sự kiện nào hoặc có thay đổi, hãy cho tôi biết để tôi giúp bạn cập nhật lịch trình!
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get message: xếp lịch cho tôi đi bơi hôm nay
+Response from chatbot: [Chat Reply:]
+```json
+{
+  "title": "Đi bơi",
+  "start": "2025-05-31T11:00:00.000+07:00",
+  "end": "2025-05-31T13:00:00.000+07:00",
+  "category": "relax",
+  "description": "Thời gian đi bơi thư giãn vào buổi sáng.",
+  "userId": "67ddc1f73d303e68cfec8c04"
+}
+```
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+>>>>>>> e205fb65a71e2aa3b84656a72dccb68af2fa1f40
