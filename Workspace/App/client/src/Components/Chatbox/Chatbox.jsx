@@ -399,7 +399,7 @@ const Chatbox = () => {
               WebkitTextFillColor: "transparent",
             }}
           >
-            [SMART] [Chatbox]<a></a>🔥To do list
+            [SMART] [Chatbox]<a></a> AI Scheduling Assistant
           </motion.h1>
             </div>
 
