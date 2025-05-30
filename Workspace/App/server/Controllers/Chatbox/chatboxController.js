@@ -21,7 +21,12 @@ exports.chatWithAI = async (req, res) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "openai/gpt-4o-mini-2024-07-18",
+          // model: "openai/gpt-4o-mini-2024-07-18",
+          // model :"openai/gpt-4o-mini",
+          model: "openai/gpt-3.5-turbo-1106",
+            // model: "meta-llama/llama-3.3-8b-instruct:free",
+            // model : "google/gemini-2.5-flash-preview-05-20",
+            // model:"qwen/qwen2.5-vl-32b-instruct:free", # work mà ngu
           messages,
         }),
       });
