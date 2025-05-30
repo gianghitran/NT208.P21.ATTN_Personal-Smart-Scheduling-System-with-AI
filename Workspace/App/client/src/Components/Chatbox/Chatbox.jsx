@@ -48,7 +48,29 @@ const Chatbox = () => {
     setLoadTime(new Date());
   }, []);
 
-  
+
+  const renderEvents = async () => {
+    try {
+      const data = await getEvents(user?.userData._id);
+      const items = data.map(({ _id, userId, __v, start, end, ...rest }) => ({
+        id: _id,
+        title: rest.title,
+        start: new Date(start),
+        end: new Date(end),
+        category: rest.category,
+        description: rest.description,
+      }));
+      setEvents(items);
+      
+    } catch (err) {
+      console.error("Lỗi khi tải sự kiện:", err);
+    }
+  };
+  useEffect(() => {
+    if (userId) {
+      renderEvents();
+    }
+  }, [userId]);
   const addEvent = async (event) => {
     if (!event || !event.title || !event.start || !event.end) {
       // toast.error("Tiêu đề sự kiện rỗng!");
@@ -66,6 +88,7 @@ const Chatbox = () => {
       console.log("Gửi sự kiện:", event);
       await addEvents(event, access_token, axiosJWT);
       
+      await renderEvents();
       // toast.success("Sự kiện được thêm thành công");
       customToast("Sự kiện được thêm thành công", "success", "bottom-right", 3000);
       console.log("Thêm thành công sự kiện");
@@ -78,11 +101,21 @@ const Chatbox = () => {
   };
   
   
-  
+  const now = moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); 
+  const format_JSON = `Now timestamp is ${now}.Just give me only the JSON of this statement in this format:
+        {
+          "title": (string),
+          "start": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
+          "end": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
+          "category": ("work"/"school"/"relax"/"todo"/"others"),
+          "description": (string),
+          "userId": "${user?.userData._id}"
+        }`;
   const CheckboxTick = (e) =>{
     const isChecked = e.target.checked;
     setTicked(isChecked); //update state
   };
+  const NormalFormat=`do not give JSON, give nomarl respone. Now timestamp is ${now}`
   const checkIfJSON = (str) => {
     try { 
       if (str.includes('"title"') && str.includes('"start"')) {
@@ -102,17 +135,33 @@ const Chatbox = () => {
 
 
 
+
+  // Hàm lấy lịch sử chat từ MongoDB khi người dùng mở chat
+ // Hàm lấy lịch sử chat từ MongoDB
+    const fetchChatHistory = async () => {
+      if (!userId) return;
+      try {
+        const response = await fetch(`/api/chatbox/send/${userId}`);
+        const data = await response.json();
+    
+        if (Array.isArray(data.history)) {
+          // Chỉ cập nhật nếu có tin nhắn mới, không ghi đè toàn bộ
+          dispatch(addMessage(data.history));
+        }
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+      }
+    };
+
     // Gọi lịch sử chat khi component mount
   
     useEffect(() => {
     if (userId) {
       
       loadOldMessagesAPI(userId,dispatch);
+      renderEvents();
     }
   }, [userId, dispatch]);
-
-  // Hàm lấy số giờ offset múi giờ của máy
-  const timezoneOffsetHours = -new Date().getTimezoneOffset() / 60;
   // Hàm gửi tin nhắn đến AI và lưu vào MongoDB
   const sendMessage = async () => {
     if (!input.trim()) {
@@ -166,44 +215,13 @@ const Chatbox = () => {
             content: msg.content,
         }))
         : [];
-        const now = moment().toDate(); 
-        // Ngày bắt đầu = ngày hiện tại - 30 ngày
-        const startDateFETCH = moment().subtract(30, "days").toDate();
-        // Ngày kết thúc = ngày hiện tại + 90 ngày
-        const endDateFETCH = moment().add(90, "days").toDate();
-        
-        
-        const eventsArr = await getEvents(user?.userData._id, startDateFETCH, endDateFETCH);
-         // Lấy số giờ offset múi giờ của máy (ví dụ GMT+7 thì là 7)
-        
-        const eventsArrGMT7 = eventsArr.map(event => ({
-            ...event,
-            start: new Date(new Date(event.start).getTime() + timezoneOffsetHours * 60 * 60 * 1000).toISOString(),
-            end: new Date(new Date(event.end).getTime() + timezoneOffsetHours * 60 * 60 * 1000).toISOString(),
-          }));
-        
-        const currentEvents = JSON.stringify(eventsArrGMT7);
 
-        const format_JSON = `Now timestamp is ${now}. In my calendar, there were my events in timetable: ${currentEvents} , so when you schedule an event, avoid those times.
-        Just give me only the JSON of this statement in this format:
-              {
-                "title": (string),
-                "start": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
-                "end": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
-                "category": ("work"/"school"/"relax"/"todo"/"others"),
-                "description": (string),
-                "userId": "${user?.userData._id}"
-              }`;
-        const NormalFormat=`Now timestamp is ${now}. This is my timetable: ${currentEvents}. (Do not give JSON, give nomarl respone.)`;
-        const systemMessage = {
-          role: "system",
-          content: "Previous messages are the chat history between the user and Chatbox. The event timelines in the chat history are not accurate. Please follow the timestamp in timetable.",
-        };
         const messagesToSend = isChecked 
-        ? [systemMessage,...filteredMessages, { role: "user", content: input }, { role: "user", content: format_JSON }]
-        : [systemMessage,...filteredMessages, { role: "user", content: input }, { role: "user", content: NormalFormat }];
+        ? [...filteredMessages, { role: "user", content: input }, { role: "user", content: format_JSON }]
+        : [...filteredMessages, { role: "user", content: input }, { role: "user", content: NormalFormat }];
+
       
-      const res = await fetch(`http://localhost:4000/api/chatbox/ask/${userId}`, {
+      const res = await fetch(`/api/chatbox/ask/${userId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -247,11 +265,12 @@ const Chatbox = () => {
         
   
       // Gửi lên MongoDB
-      await fetch(`http://localhost:4000/api/chatbox/history/${userId}`, {
+      await fetch(`/api/chatbox/history/${userId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, message: input, botReply }),
       });
+    // fetchChatHistory();
     
     setLoading(false);
   
@@ -306,8 +325,6 @@ const Chatbox = () => {
         ) {
           const parsed = parseEventFromJSON(msg.content);
           if (parsed) {
-            parsed.start = new Date(new Date(parsed.start).getTime() - timezoneOffsetHours * 60 * 60 * 1000).toISOString();
-            parsed.end = new Date(new Date(parsed.end).getTime() - timezoneOffsetHours * 60 * 60 * 1000).toISOString();
             newEditableEvents[index] = parsed;
           }
         }
@@ -343,7 +360,7 @@ const Chatbox = () => {
         const jsonEnd = str.lastIndexOf("}") + 1;
         const jsonStr = str.substring(jsonStart, jsonEnd);
         const parsed = JSON.parse(jsonStr);
-        
+    
         if (parsed.title && parsed.start && parsed.end) {
           return parsed;
         }
@@ -399,7 +416,7 @@ const Chatbox = () => {
               WebkitTextFillColor: "transparent",
             }}
           >
-            [SMART] [Chatbox]<a></a>🔥To do list
+            [SMART] [Chatbox]<a></a>AI Schedule Helper
           </motion.h1>
             </div>
 
