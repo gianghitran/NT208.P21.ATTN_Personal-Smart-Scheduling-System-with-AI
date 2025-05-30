@@ -18,11 +18,9 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 
 ## 📌 Công nghệ sử dụng
 
-- **Frontend**: ReactJS, TailwindCSS, Vercel
-- **Backend**: ExpressJS, NodeJS, Render / Railway
+- **Frontend**: ReactJS
+- **Backend**: ExpressJS, NodeJS
 - **Database**: MongoDB Atlas
-- **APIs**: RESTful APIs, OpenAI Whisper API, Mistral AI API, Google OAuth 2.0
-- **Triển khai & Lưu trữ**: Render, Vercel, Railway
 
 ---
 
