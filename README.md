@@ -111,9 +111,35 @@ Tích hợp AI Chatbox Scheduling, cho phép người dùng lên lịch bằng n
 
 ---
 
-## 📸 Một số giao diện
+## 📸 Giao diện trang web
+- Home page
+> ![image](https://github.com/user-attachments/assets/955e7f05-7d07-4393-93c4-fbea666c6965)
 
-> *(thêm hình ảnh màn hình ở đây nếu muốn)*
+- Login
+> ![image](https://github.com/user-attachments/assets/1f6d5cde-8fef-4c24-88e2-5a883b5821f2)
+
+- Schedule
+> ![image](https://github.com/user-attachments/assets/367f64c4-ba1c-4ec7-bf90-ee6ebfe99b03)
+
+- Chatbox help schedule & persionalize
+> ![image](https://github.com/user-attachments/assets/993c8e11-d964-46e8-bc86-6cde70d1459f)
+
+- My task ( To-do list )
+> ![image](https://github.com/user-attachments/assets/09d37459-b0c5-4a5a-8825-f7950f40e6c7)
+
+- My activities ( Your events)
+> ![image](https://github.com/user-attachments/assets/1dbf8e44-034a-4772-83a8-3d62795f9638)
+
+- My team ( Collaboration events)
+> ![image](https://github.com/user-attachments/assets/de1e4708-ccb9-4a9f-969b-13dc636eb7ce)
+
+- Setting (Darkmode & user infomation)
+> ![image](https://github.com/user-attachments/assets/0a7fe8d5-ff17-4bc8-bdc8-f33408352136)
+
+
+> ![image](https://github.com/user-attachments/assets/05b193cb-d39b-441b-b7f1-52d56f42ccef)
+
+
 
 ---
 
