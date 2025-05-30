@@ -1,0 +1,7 @@
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Email sent successfully: {"accepted":["admin@gmail.com"],"rejected":[],"ehlo":["SIZE 35882577","8BITMIME","AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH","ENHANCEDSTATUSCODES","PIPELINING","CHUNKING","SMTPUTF8"],"envelopeTime":728,"messageTime":683,"messageSize":1734,"response":"250 2.0.0 OK  1748574898 d9443c01a7336-23506cf908fsm19045275ad.193 - gsmtp","envelope":{"from":"trongnghia210105@gmail.com","to":["admin@gmail.com"]},"messageId":"<a8a78705-be09-dfcc-a21a-6c7bd58921f9@gmail.com>"}

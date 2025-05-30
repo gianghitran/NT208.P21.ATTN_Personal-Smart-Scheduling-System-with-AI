@@ -1,15 +1,14 @@
 {
   "name": "app",
   "version": "1.0.0",
-  "description": "**client folder**: using to code frontend (React.js) **server folder**: using to code backend (Express.js)",
+  "description": "**client folder**: using to code frontend (React.js) **server folder**: using to code backend (Express.js + Keystone.js)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm run start-client\" \"npm run start-server\" \"npm run start-keystone\"",
+    "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
     "start-client": "cd client && npm start",
-    "start-server": "cd server && npm start",
-    "start-keystone": "cd server/keystone && cross-env NODE_OPTIONS=--openssl-legacy-provider node server.js > nul 2>&1",
-    "build": "npm install && cd client && npm install && cd ../server && npm install && cd keystone && npm install"
+    "start-server": "cd server && cross-env NODE_OPTIONS=--openssl-legacy-provider node server.js",
+    "build": "npm install && cd client && npm install && cd ../server && npm install"
   },
   "author": "",
   "license": "ISC",
