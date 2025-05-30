@@ -1,5 +1,7 @@
 const path = require('path');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const pino = require('pino');
 
 const { Keystone } = require('@keystonejs/keystone');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
@@ -10,10 +12,18 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
+const logDir = __dirname + '/keystone';
+if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir);
+}
+const logStream = fs.createWriteStream(logDir + '/keystone_log.txt', { flags: 'a' });
+const fileLogger = pino({}, logStream);
+
 const keystone = new Keystone({
     name: 'Keystone v5 MongoDB Example',
     adapter: new MongooseAdapter({ mongoUri: process.env.MONGOSV }),
     cookieSecret: process.env.COOKIE_SECRET,
+    logger: fileLogger,
 });
 
 keystone.createList('User', {
@@ -111,8 +121,6 @@ keystone.createList('ChatHistory', {
     labelResolver: item => `Chat of ${item.userId?.email || 'Unknown'}`
 });
 
-
-
 module.exports = {
     keystone,
     apps: [
@@ -123,6 +131,9 @@ module.exports = {
             adminPath: "/admin", // hoặc để mặc định
             authStrategy, // nếu có xác thực
             signoutPath: "/admin/signout", // đường dẫn logout
+            isAccessAllowed: ({ authentication: { item: user } }) => {
+                return !!user && user.admin === true;
+            }
         }),
     ],
 };
