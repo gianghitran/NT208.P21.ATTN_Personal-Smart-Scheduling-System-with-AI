@@ -281,3 +281,25 @@ Response from chatbot: Hôm nay, bạn có sự kiện sau đây:
 - Không có lịch hẹn cụ thể vào buổi chiều và tối.
 
 Nếu bạn muốn biết thông tin chi tiết về một sự kiện cụ thể hoặc có bất kỳ câu hỏi nào khác, đừng ngần ngại để tôi biết.
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: hello
+Response from chatbot: Xin lỗi, tôi không thể đọc được toàn bộ lịch trình bạn gửi. Hãy nêu rõ yêu cầu hoặc thông tin cụ thể bạn muốn tôi hỗ trợ, để tôi có thể cung cấp thông tin cho bạn một cách chính xác.
+Get chat history from user: 67ecbcb979ebe8249482ebfd
