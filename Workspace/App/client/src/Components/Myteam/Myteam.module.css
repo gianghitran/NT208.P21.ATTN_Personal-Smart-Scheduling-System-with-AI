@@ -135,9 +135,11 @@
     font-weight: 500;
 }
 
-.participantEmail {
-    color: #888;
-    margin-left: 4px;
+.role {
+    margin-top: 4;
+    color: var(--text-dark);
+    font-style: italic;
+    font-size: 0.85rem;
 }
 
 @media (max-width: 800px) {
