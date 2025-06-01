@@ -64,14 +64,16 @@ connectDB();
 
 // Bọc keystone.prepare trong async function
 (async () => {
+  // 🔁 KeystoneJS kết nối MongoDB
+  await keystone.connect();
+  console.log("✅ KeystoneJS is connected to MongoDB");
+
   const { middlewares } = await keystone.prepare({
     apps,
     dev: true,
-    port, // có thể dùng hoặc không, Express đã tự listen
-    onConnect: () => {
-      console.log("✅ KeystoneJS is connected to MongoDB");
-    },
+    port,
   });
+
 
   // Mount routes của app
   app.use("/api/auth", authRoute);
