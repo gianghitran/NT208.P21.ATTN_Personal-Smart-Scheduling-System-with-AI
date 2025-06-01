@@ -17,9 +17,9 @@
 
 
 .container {
-    width: 80%;
+    width: auto;
     height: 95dvh;
-    margin: 5px 0 0 17rem;
+    margin: 10px 20px 0 270px;
     font-family: "Montserrat", sans-serif;
     display: flex;
     flex-direction: column;
@@ -42,6 +42,8 @@
     font-weight: 800;
     color: var(--header);
 }
+
+
 
 .date {
     font-size: 1rem;
@@ -140,8 +142,8 @@
 
 @media (max-width: 800px) {
     .container {
-      width: 100%;
-      margin-left: 5px;
+      width: 95%;
+      margin-left: 15px;
     }
 
     .headerSection {
