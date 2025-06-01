@@ -213,11 +213,11 @@ Bearlander\
 │\
 │\
 └── Hệ thống tối ưu\
-    ├── Lazy Loading\
-    │     ├── Từng tab\
-    │     ├── Từng grid của tuần\
-    ├── SEO > 90\
-    └── Google-site search hỗ trợ\
+│    ├── Lazy Loading\
+│    │     ├── Từng tab\
+│    │     ├── Từng grid của tuần\
+│    ├── SEO > 90\
+│    └── Google-site search hỗ trợ\
 
 ---
 ## Video pr sản phẩm:
