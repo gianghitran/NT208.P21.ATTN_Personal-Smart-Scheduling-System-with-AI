@@ -8,7 +8,8 @@ import { IoIosMail } from "react-icons/io";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
-
+import { customToast } from '../../utils/customToast';
+import { toast } from 'react-toastify';
 
 const Register = () => {
     const [fullName, setFullName] = useState('');
@@ -34,10 +35,15 @@ const Register = () => {
             password: password
         }
         
+        
         try {
             const response = await registerUser(user, dispatch, navigate);
+            
             if (response && response.message) {
                 setError(response.message);
+                customToast(response.message, "error");
+            } else {
+                customToast("Registration successful! Please verify your email.", "success");
             }
         } catch (error) {
             setError("An unexpected error occurred.");
