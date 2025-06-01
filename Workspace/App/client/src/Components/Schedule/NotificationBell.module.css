@@ -358,6 +358,7 @@ strong {
   .notification {
    width : 30px;
    height : 30px;
+   left: 60px;
   
   }
 }

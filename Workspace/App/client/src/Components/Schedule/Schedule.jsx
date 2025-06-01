@@ -592,6 +592,7 @@ export default function MyCalendar() {
       
       <div className={styles.container}>
         <div className={styles.add_event}>
+          <div>
           <NotificationBell 
                 unreadCount={unreadCount}
                 notifications={notifications}
@@ -602,7 +603,7 @@ export default function MyCalendar() {
                 onAccept={fetchEvents}
               />
           <button className={styles.add} onClick={() => addButton()}>+</button>
-
+          </div>
           <div className={styles.filters}>
             <h3 className={styles.filtername}>Filters</h3>
             <div className={styles.chbox} style={{ backgroundColor: "lightcoral" }}>
