@@ -23,10 +23,20 @@ const Myteam = () => {
 
     // Lọc tất cả inviteEvents mà user là owner, invitor hoặc invitee
     const userId = user?.userData?._id;
+    const now = new Date();
+    const twoMonthsLater = new Date();
+    twoMonthsLater.setMonth(now.getMonth() + 2);
+
     const relatedInviteEvents = inviteEvents.filter(invite =>
-        (invite.ownerId?._id === userId) ||
-        (invite.invitorId?._id === userId) ||
-        (invite.inviteeId?._id === userId)
+        (
+            (invite.ownerId?._id === userId) ||
+            (invite.invitorId?._id === userId) ||
+            (invite.inviteeId?._id === userId)
+        ) &&
+        invite.eventId &&
+        invite.eventId.start &&
+        new Date(invite.eventId.start) >= now &&
+        new Date(invite.eventId.start) <= twoMonthsLater
     );
 
     const CATEGORY_COLORS = {
