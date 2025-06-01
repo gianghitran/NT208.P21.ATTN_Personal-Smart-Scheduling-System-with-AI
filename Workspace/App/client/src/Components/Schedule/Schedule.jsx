@@ -589,17 +589,18 @@ export default function MyCalendar() {
 
   return (
     <div>
-      <NotificationBell
-        unreadCount={unreadCount}
-        notifications={notifications}
-        setNotifications={setNotifications}
-        setUnreadCount={setUnreadCount}
-        axiosJWT={axiosJWT}
-        onClick={handleBellClick}
-        onAccept={fetchEvents}
-      />
+      
       <div className={styles.container}>
         <div className={styles.add_event}>
+          <NotificationBell 
+                unreadCount={unreadCount}
+                notifications={notifications}
+                setNotifications={setNotifications}
+                setUnreadCount={setUnreadCount}
+                axiosJWT={axiosJWT}
+                onClick={handleBellClick}
+                onAccept={fetchEvents}
+              />
           <button className={styles.add} onClick={() => addButton()}>+</button>
 
           <div className={styles.filters}>
@@ -669,6 +670,7 @@ export default function MyCalendar() {
           views={['month', 'week']}
           onRangeChange={handleRangeChange}
         />
+         
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={() => setModalIsOpen(false)}

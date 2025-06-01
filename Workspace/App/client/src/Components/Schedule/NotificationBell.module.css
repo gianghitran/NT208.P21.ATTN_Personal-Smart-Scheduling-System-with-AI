@@ -57,8 +57,12 @@ strong {
     align-items: center;
     justify-content: center;
     z-index: 899;
-    right: 200px;
-    top: 0.3rem;
+    /* right: 200px; */
+    /* top: 0.3rem; */
+    top : 5px;
+    left: 20px;
+    width: 35px;
+    height: 35px;
     padding: 4.5px 6px;
     border-radius: 6px;
     background-color: var(--notification-bg);
@@ -99,7 +103,7 @@ strong {
   pointer-events: auto;
   user-select: none;
   top: 100%;
-  right: 50%;
+  left: 50%;
   width: 350px;
   height: 150px;
   max-height: 150px;
@@ -239,7 +243,7 @@ strong {
   text-align: center;
   font-style: italic;
 }
-
+/* 
 @media screen and (max-width: 1024px) {
   .notification {
     right: 16%;
@@ -349,4 +353,11 @@ strong {
   }
 }
 
-
+ */
+@media screen and (max-width: 800px) {
+  .notification {
+   width : 30px;
+   height : 30px;
+  
+  }
+}

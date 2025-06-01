@@ -23,9 +23,13 @@ exports.sendRecordtoAPI = async (req, res) => {
       });
   
       const uploadResult = await uploadResponse.json();
-  
+      if (uploadResponse.status === 401) {
+        alert("Token API đã hết!");
+        return res.status(401).json({ error: "Token API đã hết" });
+      }
       if (!uploadResponse.ok) {
         console.error("Lỗi upload file:", uploadResult);
+        alert("Lỗi API!");
         return res.status(500).json({ error: "Lỗi upload file", details: uploadResult });
       }
   

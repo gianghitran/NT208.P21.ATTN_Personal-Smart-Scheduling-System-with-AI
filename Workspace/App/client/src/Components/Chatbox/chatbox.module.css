@@ -14,13 +14,7 @@
 }
 
 
-html, body {
-  overflow: auto; /* Ngăn chặn thanh cuộn toàn trang */
-  overflow-y: auto;  /* Cho phép cuộn dọc */
-  overflow-x: hidden; /* Ẩn cuộn ngang nếu có */
-  scrollbar-width: none; /* Ẩn trên Firefox */
-  -ms-overflow-style: none; /* Ẩn trên IE/Edge */
-}
+
 
 .container {
   padding: 10px;

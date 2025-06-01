@@ -528,3 +528,219 @@ Get chat history from user: 67ddc1f73d303e68cfec8c04
 🔐 Admin UI available at http://localhost:4000/admin
 🚀 Server is running on http://localhost:4000
 🔐 Admin UI available at http://localhost:4000/admin
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: hello
+Response from chatbot: [Chat Reply:]
+Dựa trên lịch trình chính thức bạn cung cấp, ngày mai (thứ Hai, ngày 2/6/2025) của bạn sẽ có các sự kiện sau:
+
+### **Lịch trình ngày mai (2/6/2025):**
+1. **Ngủ**  
+   - **Thời gian:** 01:00 - 03:00
+   - **Mô tả:** Thời gian ngủ vào buổi đêm.
+
+2. **Đi bơi**  
+   - **Thời gian:** 03:00 - 13:00
+   - **Mô tả:** Lịch đi bơi khoảng 3 tiếng vào ngày mai.
+
+3. **Báo cáo đồ án Web**  
+   - **Thời gian:** 13:00 - 15:00
+   - **Mô tả:** Không có mô tả cụ thể.
+
+4. **Đi ăn với anh Jack**  
+   - **Thời gian:** 16:00 - 18:00
+   - **Mô tả:** Lịch đi ăn với anh Jack vào ngày mai.
+
+5. **Ngủ**  
+   - **Thời gian:** 18:00 - 23:59
+   - **Mô tả:** Thời gian ngủ vào buổi chiều tối.
+
+### **Lưu ý:**
+- Lịch trình ngày mai chủ yếu tập trung vào các hoạt động nghỉ ngơi và thư giãn, bao gồm ngủ và đi bơi.
+- Bạn có một buổi báo cáo đồ án Web vào buổi chiều và một buổi đi ăn với anh Jack vào buổi chiều muộn.
+
+Nếu bạn cần điều chỉnh hoặc thêm bất kỳ sự kiện nào, hãy thông báo để tôi hỗ trợ bạn!
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: xếp lịch cho tôi đi nhà sách chiều thứ 5 tuần tới
+Response from chatbot: ```json
+{
+  "title": "Đi nhà sách",
+  "start": "2025-06-06T15:00:00.000+07:00",
+  "end": "2025-06-06T18:00:00.000+07:00",
+  "category": "relax",
+  "description": "Đi nhà sách vào chiều thứ 5 tuần tới.",
+  "userId": "67ecbcb979ebe8249482ebfd"
+}
+```
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: thứ 5 cơ
+Response from chatbot: ```json
+{
+  "title": "Đi nhà sách",
+  "start": "2025-06-06T15:00:00.000+07:00",
+  "end": "2025-06-06T18:00:00.000+07:00",
+  "category": "relax",
+  "description": "Đi nhà sách vào chiều thứ 5 tuần tới.",
+  "userId": "67ecbcb979ebe8249482ebfd"
+}
+```
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: hôm nay là thứ mấy
+Response from chatbot: ```json
+{
+  "title": "Đi nhà sách",
+  "start": "2025-06-06T15:00:00.000+07:00",
+  "end": "2025-06-06T18:00:00.000+07:00",
+  "category": "relax",
+  "description": "Đi nhà sách vào chiều thứ 5 tuần tới.",
+  "userId": "67ecbcb979ebe8249482ebfd"
+}
+```
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: hôm nay là thứ mấy
+Response from chatbot: [Chat Reply:]
+Hôm nay là **Chủ Nhật (01/06/2025)**. Dựa trên lịch trình chính thức bạn cung cấp, hôm nay (Chủ Nhật) của bạn có các sự kiện sau:
+
+### **Lịch trình hôm nay (01/06/2025):**
+1. **Làm đồ án Lập trình mạng căn bản**  
+   - **Thời gian:** 03:00 - 05:30
+   - **Mô tả:** Không có mô tả cụ thể.
+
+2. **Code web đứt hơi**  
+   - **Thời gian:** 06:00 - 18:00
+   - **Mô tả:** Không có mô tả cụ thể.
+
+### **Lưu ý:**
+- Hôm nay bạn có lịch làm việc liên quan đến đồ án và code web, kéo dài từ sáng đến chiều tối.
+- Nếu bạn cần thêm hoặc điều chỉnh bất kỳ sự kiện nào, hãy thông báo để tôi hỗ trợ bạn!
+
+Nếu bạn có thêm yêu cầu hoặc cần sắp xếp lịch trình, vui lòng cho tôi biết!
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: vậy thứ 5 là ngày mấy?
+Response from chatbot: [Chat Reply:]
+### **Hôm nay là thứ mấy?**
+Hôm nay là **Chủ Nhật (01/06/2025)**.
+
+### **Thứ 5 là ngày mấy?**
+Thứ 5 tuần này sẽ là **thứ 5, ngày 06/06/2025**.
+
+### **Lịch trình thứ 5 (06/06/2025):**
+1. **Đi nhà sách**  
+   - **Thời gian:** 15:00 - 18:00
+   - **Mô tả:** Đi nhà sách vào chiều thứ 5 tuần tới.
+
+### **Lưu ý:**
+- Hôm nay (Chủ Nhật, 01/06/2025) bạn có các hoạt động như làm đồ án và code web.
+- Thứ 5 (06/06/2025) bạn đã có lịch đi nhà sách vào buổi chiều.
+
+Nếu bạn cần thêm hoặc điều chỉnh bất kỳ sự kiện nào, hãy thông báo để tôi hỗ trợ bạn!
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: xếp lịch đi ăn với anh Jack hôm nay
+Response from chatbot: {
+  "title": "Đi ăn với anh Jack",
+  "start": "2025-06-01T19:00:00.000+07:00",
+  "end": "2025-06-01T21:00:00.000+07:00",
+  "category": "relax",
+  "description": "Đi ăn tối với anh Jack.",
+  "userId": "67ecbcb979ebe8249482ebfd"
+}
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: hôm nay tôi có lịch trình gì?
+Response from chatbot: Dựa trên lịch trình hiện tại của bạn, hôm nay (Ngày 01/06/2025), bạn đã có một sự kiện được sắp xếp:
+
+- **Đi ăn với anh Jack**: Từ 19:00 đến 21:00.
+
+Lịch trình này đã được ghi nhận trong lịch của bạn. Vì vậy, bạn đã có một cuộc hẹn ăn tối với anh Jack vào lúc 19:00 hôm nay. Nếu bạn muốn điều chỉnh hoặc thêm bất kỳ sự kiện nào khác, vui lòng thông báo để tôi có thể giúp bạn sắp xếp lại lịch trình phù hợp.
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get message: ngày mai tôi có lịch trình gì
+Response from chatbot: ### Lịch trình hôm nay (Ngày 01/06/2025):
+1. **Làm đồ án Lập trình mạng căn bản**:
+   - Thời gian: Từ **03:00 đến 05:30**.
+   - Mục tiêu: Hoàn thành phần việc liên quan đến đồ án.
+
+2. **Code web đứt hơi**:
+   - Thời gian: Từ **06:00 đến 18:00**.
+   - Mục tiêu: Tập trung vào việc code web trong suốt thời gian này.
+
+3. **Đi ăn với anh Jack**:
+   - Thời gian: Từ **19:00 đến 21:00**.
+   - Mục tiêu: Hẹn ăn tối với anh Jack.
+
+### Lịch trình ngày mai (Ngày 02/06/2025):
+1. **Ngủ**:
+   - Thời gian: Từ **01:00 đến 03:00**.
+   - Mục tiêu: Nghỉ ngơi sau một ngày làm việc.
+
+2. **Đi bơi**:
+   - Thời gian: Từ **03:00 đến 13:00**.
+   - Mục tiêu: Tham gia hoạt động bơi lội.
+
+3. **Báo cáo đồ án Web**:
+   - Thời gian: Từ **13:00 đến 15:00**.
+   - Mục tiêu: Chuẩn bị và trình bày đồ án Web.
+
+4. **Ngủ**:
+   - Thời gian: Từ **18:00 đến 23:59**.
+   - Mục tiêu: Nghỉ ngơi sau khi hoàn thành các công việc.
+
+### Tóm tắt:
+- **Hôm nay (01/06/2025)**: Bạn sẽ dành thời gian cho việc làm đồ án, code web, và đi ăn tối với anh Jack.
+- **Ngày mai (02/06/2025)**: Bạn sẽ đi bơi, báo cáo đồ án Web, và dành thời gian nghỉ ngơi.
+
+Nếu bạn cần điều chỉnh hoặc thêm bất kỳ sự kiện nào, vui lòng thông báo để tôi có thể giúp bạn sắp xếp lại lịch trình phù hợp.
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+Get chat history from user: 67ecbcb979ebe8249482ebfd
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin

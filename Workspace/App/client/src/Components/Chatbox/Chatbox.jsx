@@ -116,22 +116,12 @@ const Chatbox = () => {
   // Hàm gửi tin nhắn đến AI và lưu vào MongoDB
   const sendMessage = async () => {
     if (!input.trim()) {
-      dispatch(addMessage({
-        content: "Messages not found!.",
-        sender: "system",
-        timestamp: new Date().toISOString(),
-        status: "error"
-      }));
+      customToast("Messages not found!", "error", "top-right", 2000);
       return;
     }
   
-    if (!userId) {
-      dispatch(addMessage({
-        content: "Sign in to chat!",
-        sender: "system",
-        timestamp: new Date().toISOString(),
-        status: "error"
-      }));
+    if (!user?.userData._id) {
+      customToast("Sign in to chat!", "error", "top-right", 2000);
       return;
     }
   
@@ -213,7 +203,10 @@ const Chatbox = () => {
             Make sure the suggested event does NOT conflict with my existing timetable.`;
         const NormalFormat=`
         - Now timestamp is ${now}.
-        - Here is my CURRENT timetable: ${currentEvents}. 
+        - Here is my CURRENT timetable: 
+        ${currentEvents}
+
+
         ⚠️ IMPORTANT:
             - Do not give JSON, give nomarl respone.
             - The event timelines mentioned in the chat history ARE NOT RELIABLE.
@@ -221,12 +214,10 @@ const Chatbox = () => {
             - Disregard any events mentioned previously unless they are explicitly present in the latest timetable.`;
         const systemMessage = {
           role: "system",
-          content: `
-          You are an assistant helping the user schedule events.
+          content: `You are an assistant helping the user schedule events.
           - 🚫 IMPORTANT: Any events or timestamps mentioned in previous messages (chat history) may be inaccurate or outdated.
           - ⚠️ Always prioritize and strictly follow the current timetable provided by the user when suggesting new events.
-          - ⚠️ [NOTE] : Never assume availability from past messages. All scheduling decisions must respect my current timetable only.
-`,
+          - ⚠️ [NOTE] : Never assume availability from past messages. All scheduling decisions must respect my current timetable only.`,
         };
         const messagesToSend = isChecked 
         ? [systemMessage,...filteredMessages, { role: "user", content: input }, { role: "user", content: format_JSON }]
@@ -285,10 +276,13 @@ const Chatbox = () => {
     setLoading(false);
   
     } catch (error) {
-      if (error.response && error.response.status === 429) {
+      if (error.response && error.response.status === 401) {
         console.log("Rate limit hit: token usage");
         //Lỗi
         alert("Rate limit hit: token usage");
+      }
+      else if(!userId){
+        customToast("User ID not found. Please sign in.", "error", "top-right", 2000);
       }
       else{
       //Lỗi
@@ -309,12 +303,7 @@ const Chatbox = () => {
       controllerRef.current = null;
     }
     setLoading(false);
-    dispatch(addMessage({
-      content: "Chat stopped. You can ask another question.",
-      sender: "system",
-      timestamp: new Date().toISOString(),
-      status: "error"
-    }));
+    customToast("Chat was stopped", "info", "top-right", 2000);
 
     };
 
