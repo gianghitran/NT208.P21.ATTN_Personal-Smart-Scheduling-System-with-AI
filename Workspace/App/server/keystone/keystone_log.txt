@@ -483,3 +483,34 @@ Hôm nay, ngày **31 tháng 5 năm 2025**, lịch trình của bạn như sau:
 ✅ MongoDB is connected
 Get chat history from user: 67ddc1f73d303e68cfec8c04
 Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected

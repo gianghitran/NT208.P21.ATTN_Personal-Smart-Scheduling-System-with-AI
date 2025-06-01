@@ -28,7 +28,7 @@ const Home = () => {
 
 
             <div className={home.image}>
-            <img src={gifAnimation} alt="GIF Animation" width="800px" />
+            {/* <img src={gifAnimation} alt="GIF Animation" width="800px" /> */}
 
             </div>
 
