@@ -13,6 +13,8 @@ dotenv.config();
 
 const clientID = process.env.GG_CLIENT_ID;
 const client = new OAuth2Client(clientID);
+const GG_REDIRECT_LOGIN_URL = process.env.GG_REDIRECT_LOGIN_URL;
+
 
 async function verify(token) {
     const ticket = await client.verifyIdToken({
@@ -24,6 +26,25 @@ async function verify(token) {
 }
 
 const authController = {
+    getUser: async (req, res) => {
+        const userId = req.user.id;
+        if (!userId) {
+            return res.status(401).json({ message: "User not authenticated" });
+        }
+
+        try {
+            const user = await User.findById(userId)
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            const { password, admin, ...userData } = user._doc;
+            return res.status(200).json(userData);
+        }
+        catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    },
+
     registerUser: async (req, res) => {
         const { full_name, email, password } = req.body;
 
@@ -131,11 +152,14 @@ const authController = {
             const token = req.body.credential;
             const payload = await verify(token);
             const { email, name, sub } = payload;
+            const rememberMe = cookieParser.JSONCookies(req.cookies).rememberMe || false;
             let account = await User.findOne({ email: email });
 
             if (account) {
                 if (account.oauth_provider !== "google") {
-                    return res.status(400).json({ message: "Email already exists" });
+                    const errorMessage = encodeURIComponent("Email already exists with a different provider");
+                    const errorRedirectUrl = `${GG_REDIRECT_LOGIN_URL}?error=${errorMessage}`;
+                    return res.redirect(errorRedirectUrl);
                 }
             }
             else {
@@ -149,29 +173,37 @@ const authController = {
                 account = await newUser.save();
             }
 
-            const access_token = authController.generateAccessToken(account);
-            const refresh_token = authController.generateRefreshToken(account);
-            RefreshToken.create({ userId: account._id, refreshToken: refresh_token });
+
             account.lastAccess = Date.now();
             await account.save();
 
-            res.cookie("refresh_token", refresh_token, {
-                httpOnly: true,
-                secure: false,
-                path: "/",
-                sameSite: "strict",
-            });
+            const access_token = authController.generateAccessToken(account);
 
-            const { oauth_id, ...userData } = account._doc;
-            res.status(200).json({ userData, access_token });
+            if (rememberMe) {
+                const refresh_token = authController.generateRefreshToken(account);
+                RefreshToken.create({ userId: account._id, refreshToken: refresh_token });
+                res.cookie("refresh_token", refresh_token, {
+                    httpOnly: true,
+                    secure: false,
+                    path: "/",
+                    sameSite: "strict",
+                });
+            }
+
+            const frontEndCallbackUrl = `${GG_REDIRECT_LOGIN_URL}?access_token=${access_token}`;
+            res.redirect(frontEndCallbackUrl);
         } catch (error) {
-            res.status(500).json({ message: error });
+            const errorMessage = encodeURIComponent(
+                error?.message || "Something went wrong"
+            );
+            const errorRedirectUrl = `${GG_REDIRECT_LOGIN_URL}?error=${errorMessage}`;
+            return res.redirect(errorRedirectUrl);
         }
     },
 
     loginUser: async (req, res) => {
         try {
-            const { email, password } = req.body;
+            const { email, password, rememberMe } = req.body;
 
             if (!email || !password) {
                 return res.status(400).json({ message: "Please fill all the fields" });
@@ -188,18 +220,21 @@ const authController = {
             };
 
             if (validUser && validPassword) {
-                const access_token = authController.generateAccessToken(validUser);
-                const refresh_token = authController.generateRefreshToken(validUser);
-                RefreshToken.create({ userId: validUser._id, refreshToken: refresh_token });
+
                 validUser.lastAccess = Date.now();
                 await validUser.save();
 
-                res.cookie("refresh_token", refresh_token, {
-                    httpOnly: true,
-                    secure: false,
-                    path: "/",
-                    sameSite: "strict",
-                });
+                const access_token = authController.generateAccessToken(validUser);
+                if (rememberMe) {
+                    const refresh_token = authController.generateRefreshToken(validUser);
+                    RefreshToken.create({ userId: validUser._id, refreshToken: refresh_token });
+                    res.cookie("refresh_token", refresh_token, {
+                        httpOnly: true,
+                        secure: false,
+                        path: "/",
+                        sameSite: "strict",
+                    });
+                }
 
                 const { password, admin, ...userData } = validUser._doc;
                 res.status(200).json({ userData, access_token });

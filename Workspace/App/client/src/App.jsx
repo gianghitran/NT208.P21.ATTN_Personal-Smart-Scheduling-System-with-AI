@@ -9,7 +9,7 @@ import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import OAuthCallback from './Components/OAuthCallback/OAuthCallback';
+import { OAuthCallback, OAuthCallbackLogin } from './Components/OAuthCallback/OAuthCallback';
 import { ToastContainer } from 'react-toastify';
 import { Suspense, lazy } from "react";
 import Modal from "react-modal";
@@ -114,6 +114,7 @@ function App() {
           </Route>
 
           <Route path="/oauth2callback" element={<OAuthCallback />} />
+          <Route path="/oauth2callback-login" element={<OAuthCallbackLogin />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />

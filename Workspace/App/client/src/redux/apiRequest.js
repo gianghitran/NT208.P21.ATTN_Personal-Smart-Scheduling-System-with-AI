@@ -58,24 +58,6 @@ export const loginUser = async (user, dispatch, navigate) => {
     }
 }
 
-export const loginGoogle = async (credentialResponse, dispatch, navigate) => {
-    dispatch(loginRequest());
-    try {
-        const res = await axios.post("/api/auth/google-auth", credentialResponse);
-        dispatch(loginSuccess(res.data));
-        navigate("/Schedule");
-    } catch (error) {
-        dispatch(loginFailure());
-        if (error.response) {
-            return { success: false, message: error.response.data.message || "Login failed" };
-        } else if (error.request) {
-            return { success: false, message: "Server did not respond. Please try again later." };
-        } else {
-            return { success: false, message: "An unexpected error occurred." };
-        }
-    }
-}
-
 export const registerUser = async (user, dispatch, navigate) => {
     dispatch(registerRequest());
     const toastId = customToast("Registering...", "loading");

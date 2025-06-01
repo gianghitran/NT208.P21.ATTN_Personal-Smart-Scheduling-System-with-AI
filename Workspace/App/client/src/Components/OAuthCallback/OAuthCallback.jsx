@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { loginSuccess } from "../../redux/authSlice";
+import { loginSuccess, loginRequest, loginFailure } from "../../redux/authSlice";
+import axios from 'axios';
 
-const OAuthCallback = () => {
+export const OAuthCallback = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -67,4 +68,49 @@ const OAuthCallback = () => {
   return <p>🔄 Đang xử lý kết nối Google Calendar...</p>;
 };
 
-export default OAuthCallback;
+export const OAuthCallbackLogin = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const error = searchParams.get("error");
+
+  useEffect(() => {
+    const token = searchParams.get("access_token");
+
+    if (error) {
+      const errorMessage = searchParams.get("error") || "Login failed";
+      navigate("/login", { state: { error: errorMessage } });
+      return;
+    }
+
+    const fetchUserInfo = async () => {
+      if (!token) return navigate("/login");
+
+      dispatch(loginRequest());
+      try {
+        const res = await axios.get("/api/auth/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const payload = {
+          userData: res.data,
+          access_token: token,
+        }
+
+        dispatch(loginSuccess(payload));
+        navigate("/Schedule");
+      } catch (error) {
+        dispatch(loginFailure());
+        const errorMessage = error?.response?.data?.message || "Login failed";
+
+        navigate("/login", { state: { error: errorMessage } });
+      }
+    };
+
+    fetchUserInfo();
+  }, [dispatch, navigate, searchParams]);
+
+  return <div>Login Google is loading...</div>;
+};
