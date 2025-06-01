@@ -7,6 +7,7 @@ const { verifyToken } = require('../Controllers/Auth/middlewareController');
 route.post('/register', authController.registerUser);
 route.post('/login', authController.loginUser);
 route.post('/logout', authController.logoutUser);
+route.get('/user', verifyToken, authController.getUser);
 
 // This route is used to verify otp reset password
 route.post('/verify-email', authController.verifyEmail); 

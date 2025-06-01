@@ -1,8 +1,8 @@
 import loginStyle from "./Login.module.css";
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginUser, loginGoogle } from "../../redux/apiRequest";
+import { loginUser } from "../../redux/apiRequest";
 import { GoogleLogin } from "@react-oauth/google";
 import { IoIosMail } from "react-icons/io";
 import { FaEye } from "react-icons/fa";
@@ -10,19 +10,47 @@ import { FaEyeSlash } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 
 const Login = () => {
+    const baseUrl = window.location.origin;
+    const location = useLocation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const errorFromState = location.state?.error;
+        if (errorFromState) {
+            setError(errorFromState);
+            window.history.replaceState({}, document.title); 
+        }
+    }, [location.state]);
+
+    useEffect(() => {
+        if (rememberMe) {
+            document.cookie = `rememberMe=true; path=/; max-age=604800`; // 7 days
+        } else {
+            document.cookie = `rememberMe=; path=/; max-age=0`; // xóa cookie
+        }
+    }, [rememberMe]);
+
+    const handleGooogleOnClick = () => {
+        if (rememberMe) {
+            document.cookie = `rememberMe=${rememberMe}; path=/; max-age=300`; 
+            console.log("Cookie set:", document.cookie);
+
+        }
+    }
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
         const user = {
             email: email,
-            password: password
+            password: password,
+            rememberMe: rememberMe
         };
 
         try {
@@ -35,17 +63,6 @@ const Login = () => {
             setError("An unexpected error occurred.");
         }
     };
-
-    const handleSuccess = async (credentialResponse) => {
-        try {
-            const response = await loginGoogle(credentialResponse, dispatch, navigate);
-            if (response && !response.success) {
-                setError(response.message);
-            }
-        } catch (error) {
-            setError("Google login failed. Please try again.");
-        }
-    }
 
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -75,16 +92,20 @@ const Login = () => {
                 </div>
 
                 <div className={loginStyle.rememberForgot}>
-                    <label><input type="checkbox" /> Remember me</label>
+                    <label>
+                        <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
+                        Remember me
+                    </label>
                     <Link to="/forgot-password">Forgot password?</Link>
                 </div>
 
                 <input type="submit" value="Login" className={loginStyle.loginButton} />
                 <GoogleLogin
-                    onSuccess={handleSuccess}
                     onError={() => {
                         setError("Google login failed. Please try again.");
                     }}
+                    ux_mode="redirect" // Improve practice by using redirect mode
+                    login_uri= {`${baseUrl}/api/auth/google-auth`}
                 />
 
                 <div className={loginStyle.registerLink}>
