@@ -127,7 +127,8 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 - SEO : > 90
 - Lazy loading
 - Google-site: ``` site:bearlander.onrender.com ```
-- 
+- Real-time
+- Mobile FriendlyFriendly
 
 ---
 ## 📖 Sơ đồ hệ thống
@@ -212,16 +213,18 @@ Bearlander\
 │   └── Ngôn ngữ: Tiếng Việt / English\
 │\
 │\
-│── Hệ thống tối ưu\
+└── Hệ thống tối ưu\
 │    ├── Lazy Loading\
 │    │     ├── Từng tab\
 │    │     ├── Từng grid của tuần\
 │    ├── SEO > 90\
-│    └── Google-site search hỗ trợ\
+│    ├── Google-site search hỗ trợ\
+│    ├── Real-time\
+│    └── Mobile friendly\ 
 
 ---
 ## Video pr sản phẩm:
-- [Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
+[Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
 ---
 ## 📖 Sơ đồ kiến trúc
 
