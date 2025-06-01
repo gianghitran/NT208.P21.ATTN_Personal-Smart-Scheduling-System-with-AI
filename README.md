@@ -122,6 +122,16 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 
 
 ---
+
+## 🌟 Các tính năng hỗ trợ load và tối ưu:
+- SEO : > 90
+- Lazy loading
+- Google-site: ``` site:bearlander.onrender.com ```
+- 
+
+
+
+---
 ## 📖 Sơ đồ kiến trúc
 
 > Xem chi tiết trong file: [`Mindmap_PERSONAL-SMART-SCHEDULING-SYSTEM-WITH-AI.pdf`](Workspace/06-03-2025_MEETING4IDEAS_MINDMAP_DATABASES/Mindmap_PERSONAL-SMART-SCHEDULING-SYSTEM-WITH-AI.pdf)
