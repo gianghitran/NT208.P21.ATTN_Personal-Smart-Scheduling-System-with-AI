@@ -478,3 +478,8 @@ Hôm nay, ngày **31 tháng 5 năm 2025**, lịch trình của bạn như sau:
 ### Lưu ý:
 - Hôm nay, bạn có một số hoạt động học tập và thư giãn. Bạn cần sắp xếp thời gian hợp lý để đảm bảo hoàn thành các nhiệm vụ.
 - Nếu bạn cần thêm bất kỳ sự kiện nào hoặc có thay đổi, hãy cho tôi biết để tôi giúp bạn cập nhật lịch trình!
+🚀 Server is running on http://localhost:4000
+🔐 Admin UI available at http://localhost:4000/admin
+✅ MongoDB is connected
+Get chat history from user: 67ddc1f73d303e68cfec8c04
+Get chat history from user: 67ddc1f73d303e68cfec8c04
