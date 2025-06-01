@@ -232,7 +232,7 @@ export default function MyCalendar() {
       customToast(`Event "${event.title}" has been moved!`, "success", "bottom-right", 3000);
       await BroadCastEvent(start, end, "EVENT_UPDATED", false);
     } else {
-      customToast(`Lỗi: ${response.message}`, "error", "bottom-right", 3000);
+      customToast(`Error: ${response.message}`, "error", "bottom-right", 3000);
     }
   };
 
@@ -274,7 +274,7 @@ export default function MyCalendar() {
 
   const addEvent = async () => {
     if (newEvent.end < newEvent.start) {
-      // toast.error("Lỗi: Thời gian kết thúc phải sau thời gian bắt đầu!");
+      // toast.error("Error: Thời gian kết thúc phải sau thời gian bắt đầu!");
       customToast("Error: End time must be after start time!", "error", "bottom-right", 3000);
 
       return;
@@ -297,7 +297,7 @@ export default function MyCalendar() {
       customToast(`Event "${event.title}" was added successfully!`, "success", "bottom-right", 3000);
       await BroadCastEvent(event.start, event.end, "EVENT_ADDED", false);
     } catch (error) {
-      // toast.error("Lỗi khi thêm sự kiện!");
+      // toast.error("Error khi thêm sự kiện!");
       customToast("Error adding event!", "error", "bottom-right", 3000);
       setModalIsOpen(false);
     }
@@ -528,7 +528,7 @@ export default function MyCalendar() {
       }
     } catch (error) {
       toast.dismiss(loadingId);
-      // toast.error('❌ Lỗi khi đồng bộ Google Calendar');
+      // toast.error('❌ Error khi đồng bộ Google Calendar');
       customToast('Error while syncing Google Calendar', "error", "bottom-right", 3000);
     }
   };
