@@ -9,20 +9,30 @@ const eventSharingController = {
         if (!userId) return res.status(400).json({ message: "Missing userId" });
 
         try {
-            const invitesRaw = await EventSharing.find({ inviteeId: userId, hidden: false })
+            // Lấy tất cả event sharing mà user là owner, invitor hoặc invitee
+            const invitesRaw = await EventSharing.find({
+                $or: [
+                    { inviteeId: userId },
+                    { ownerId: userId },
+                    { invitorId: userId }
+                ],
+                hidden: false
+            })
                 .populate({ path: 'invitorId', select: 'full_name' })
-                .populate({ path: 'eventId', select: 'title' })
-                .populate({ path: 'ownerId', select: 'full_name' });
+                .populate({ path: 'eventId' }) // lấy đầy đủ event
+                .populate({ path: 'ownerId', select: 'full_name' })
+                .populate({ path: 'inviteeId', select: 'full_name' });
 
-            // Map lại để thêm 2 trường mới
+            // Map lại để thêm trường tên cho dễ dùng
             const invites = invitesRaw.map(invite => ({
                 ...invite.toObject(),
                 invitorName: invite.invitorId?.full_name || null,
                 eventName: invite.eventId?.title || null,
                 ownerName: invite.ownerId?.full_name || null,
+                inviteeName: invite.inviteeId?.full_name || null,
             }));
 
-            return res.status(200).json( { invites } );
+            return res.status(200).json({ invites });
         }
         catch (error) {
             return res.status(500).json({ message: error.message });
@@ -33,7 +43,7 @@ const eventSharingController = {
         const userId = req.user.id;
         if (!userId) return res.status(400).json({ message: "Missing userId" });
         try {
-            const responses = await EventSharing.find({ invitorId: userId, respondedAt: {$exists: true}, hidden: false })
+            const responses = await EventSharing.find({ invitorId: userId, respondedAt: { $exists: true }, hidden: false })
                 .populate({ path: 'inviteeId', select: 'full_name email' })
                 .populate({ path: 'eventId', select: 'title' });
 
@@ -45,7 +55,7 @@ const eventSharingController = {
                 eventName: response.eventId?.title || null,
             }));
 
-            return res.status(200).json( { responses: formattedResponses } );
+            return res.status(200).json({ responses: formattedResponses });
         }
         catch (error) {
             return res.status(500).json({ message: error.message });
@@ -67,7 +77,7 @@ const eventSharingController = {
             if (!owner) return res.status(404).json({ message: "Owner not found" });
 
             const ownerEmail = owner.email;
-            
+
             if (currentUserId === event.userId.toString()) {
                 const invitedUsers = await EventSharing.find({ eventId }).populate("inviteeId", "email");
                 const formatedInvitedUsers = invitedUsers.map(user => ({
@@ -80,11 +90,11 @@ const eventSharingController = {
                 }));
                 return res.status(200).json({ ownerEmail, invitedUsers: formatedInvitedUsers, isOwner: true });
             }
-            
+
             const currentUser = await EventSharing.findOne({ eventId, inviteeId: currentUserId }).populate("inviteeId", "email");
             if (!currentUser) return res.status(403).json({ message: "You are not invited to this event" });
-            
-            return res.status(200).json({ 
+
+            return res.status(200).json({
                 ownerEmail,
                 invitedUsers: [{
                     inviteeId: currentUser.inviteeId._id,
@@ -94,7 +104,7 @@ const eventSharingController = {
                     start: currentUser.start,
                     end: currentUser.end,
                 }],
-                isOwner: false, 
+                isOwner: false,
             });
         }
         catch (error) {
@@ -122,10 +132,10 @@ const eventSharingController = {
         }
 
         if (!event) return res.status(404).json({ message: "Event not found" });
-        
+
         try {
-            const eventSharing = await EventSharing.findOne({ eventId, inviteeId: inviteeId });    
-            if (eventSharing !== null) {    
+            const eventSharing = await EventSharing.findOne({ eventId, inviteeId: inviteeId });
+            if (eventSharing !== null) {
                 return res.status(409).json({ message: "Event already shared with this user" });
             }
 
@@ -140,9 +150,9 @@ const eventSharingController = {
 
             await newEventSharing.save();
             sendEvent(
-                { type: "NOTIFICATION", data: {mode: "invite"} },
+                { type: "NOTIFICATION", data: { mode: "invite" } },
                 inviteeId.toString(),
-                null, 
+                null,
             )
             return res.status(201).json({ message: "Event shared successfully", newEventSharing });
         }
@@ -161,7 +171,7 @@ const eventSharingController = {
             sendEvent(
                 { type: "NOTIFICATION" },
                 invite.invitorId.toString(),
-                null, 
+                null,
             )
             return res.status(200).json({ message: "Invite accepted" });
         }
@@ -180,7 +190,7 @@ const eventSharingController = {
             sendEvent(
                 { type: "NOTIFICATION" },
                 invite.invitorId.toString(),
-                null, 
+                null,
             )
             res.status(200).json({ message: "Invite declined" });
         }
@@ -206,7 +216,7 @@ const eventSharingController = {
             const result = await EventSharing.findByIdAndUpdate(inviteId, update, { new: true });
 
             if (!result) {
-            return res.status(404).json({ message: "Notification not found" });
+                return res.status(404).json({ message: "Notification not found" });
             }
 
             return res.status(200).json({ message: "Marked as read", result });

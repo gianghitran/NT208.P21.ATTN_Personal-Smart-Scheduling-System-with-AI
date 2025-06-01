@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Myteam.module.css";
 import { useSelector } from "react-redux";
-import moment from "moment";
-import { getEvents } from "../../redux/apiRequest";
 import { getInviteEvents } from "../../services/sharedEventService";
 import axios from "axios";
 
 const Myteam = () => {
     const user = useSelector((state) => state.auth.login.currentUser);
-    const [events, setEvents] = useState([]);
     const [inviteEvents, setInviteEvents] = useState([]);
 
     const axiosJWT = axios;
@@ -16,35 +13,21 @@ const Myteam = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (!user?.access_token) return;
-            const now = new Date();
-            const end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-            const [data, res] = await Promise.all([
-                getEvents(user?.userData._id, now, end),
-                getInviteEvents(user.access_token, axiosJWT)
-
-            ]);
-            setEvents(data);
+            const res = await getInviteEvents(user.access_token, axiosJWT);
+            // Chỉ lấy các invite đã accept
             const accepted = (res.invites || []).filter(ev => ev.status === "accepted");
             setInviteEvents(accepted);
         };
         fetchData();
     }, [user?.access_token]);
 
-    // Chỉ merge nếu eventId có trong data events
-    const mergedEvents = inviteEvents
-        .map(invite => {
-            const eventId = invite.eventId?._id || invite.eventId;
-            const matchedEvent = events.find(ev => ev._id === eventId);
-
-            if (!matchedEvent) return null; // Không merge nếu không tìm thấy
-
-            return {
-                ...matchedEvent, // Ưu tiên lấy dữ liệu gốc
-                inviteInfo: invite, // nếu cần giữ lại thông tin từ lời mời
-            };
-        })
-        .filter(ev => ev !== null); // Loại bỏ những item không khớp
-
+    // Lọc tất cả inviteEvents mà user là owner, invitor hoặc invitee
+    const userId = user?.userData?._id;
+    const relatedInviteEvents = inviteEvents.filter(invite =>
+        (invite.ownerId?._id === userId) ||
+        (invite.invitorId?._id === userId) ||
+        (invite.inviteeId?._id === userId)
+    );
 
     const CATEGORY_COLORS = {
         work: "#2196F3",
@@ -59,37 +42,46 @@ const Myteam = () => {
             <div className={styles.headerSection}>
                 <h2 className={styles.header}>My Team</h2>
             </div>
-            {mergedEvents.length === 0 ? (
+            {relatedInviteEvents.length === 0 ? (
                 <div className={styles.empty}>You have not joined any collaborative events!</div>
             ) : (
                 <div>
-                    {mergedEvents.map((event, idx) => {
-                        // Lấy thông tin người tham gia từ inviteInfo
+                    {relatedInviteEvents.map((invite, idx) => {
+                        // Lấy thông tin event
+                        const event = invite.eventId && typeof invite.eventId === "object" ? invite.eventId : {};
                         const participants = [];
-                        const { inviteInfo } = event;
 
                         // Owner
-                        if (inviteInfo?.ownerId && inviteInfo.ownerId.full_name) {
+                        if (invite.ownerId && invite.ownerId.full_name) {
                             participants.push({
-                                full_name: inviteInfo.ownerId.full_name,
+                                full_name: invite.ownerId.full_name,
+                                role: "Owner"
                             });
                         }
                         // Invitor
-                        if (inviteInfo?.invitorId && inviteInfo.invitorId.full_name) {
-                            if (!participants.some(p => p.full_name === inviteInfo.invitorId.full_name)) {
+                        if (invite.invitorId && invite.invitorId.full_name) {
+                            if (!participants.some(p => p.full_name === invite.invitorId.full_name)) {
                                 participants.push({
-                                    full_name: inviteInfo.invitorId.full_name,
+                                    full_name: invite.invitorId.full_name,
+                                    role: "Invitor"
                                 });
                             }
                         }
-                        // Invitee (bạn)
-                        if (user?.userData?.full_name) {
-                            if (!participants.some(p => p.full_name === user.userData.full_name)) {
+                        // Invitee
+                        if (invite.inviteeId && invite.inviteeId.full_name) {
+                            if (!participants.some(p => p.full_name === invite.inviteeId.full_name)) {
                                 participants.push({
-                                    full_name: user.userData.full_name,
+                                    full_name: invite.inviteeId.full_name,
+                                    role: "Invitee"
                                 });
                             }
                         }
+
+                        // Xác định vai trò của user
+                        let userRole = "";
+                        if (invite.ownerId?._id === userId) userRole = "Owner";
+                        else if (invite.invitorId?._id === userId) userRole = "Invitor";
+                        else if (invite.inviteeId?._id === userId) userRole = "Invitee";
 
                         let bgColor = "#bdbdbd";
                         if (event.category) {
@@ -106,8 +98,12 @@ const Myteam = () => {
                                 }}
                             >
                                 <div className={styles.eventTime}>
-                                    {new Date(event.start).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}{" "}
-                                    {new Date(event.end).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}
+                                    {event.start && event.end ? (
+                                        <>
+                                            {new Date(event.start).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}{" "}
+                                            {new Date(event.end).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}
+                                        </>
+                                    ) : "No time"}
                                 </div>
                                 <div className={styles.verticalLine}></div>
                                 <div className={styles.eventTitleInfo}>
@@ -121,6 +117,10 @@ const Myteam = () => {
                                                     participants.map((p, idx) => (
                                                         <li key={idx} className={styles.participantItem}>
                                                             <span className={styles.participantName}>{p.full_name}</span>
+                                                            <span className={styles.participantRole}> ({p.role})</span>
+                                                            {p.full_name === user.userData.full_name && (
+                                                                <span className={styles.role}> (You)</span>
+                                                            )}
                                                         </li>
                                                     ))
                                                 ) : (
@@ -129,6 +129,9 @@ const Myteam = () => {
                                                     </li>
                                                 )}
                                             </ul>
+                                            <div className={styles.role}>
+                                                Your role: {userRole}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className={styles.eventDesc}>
