@@ -1,17 +1,9 @@
 const Nodemailer = require("nodemailer");
-const { MailtrapTransport } = require("mailtrap");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
 const TOKEN = process.env.MAILTRAP_TOKEN;
-
-// Test on hosting server
-// const emailTransport = Nodemailer.createTransport(
-//   MailtrapTransport({
-//     token: TOKEN,
-//   })
-// );
 
 // Test on local host
 const emailTransport = Nodemailer.createTransport({
