@@ -9,6 +9,13 @@
     font-style: normal;
 }
 
+input::-ms-reveal,
+input::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-reveal-button {
+  display: none !important;
+}
+
 .Wrapper {
     display: flex;
     justify-content: center;

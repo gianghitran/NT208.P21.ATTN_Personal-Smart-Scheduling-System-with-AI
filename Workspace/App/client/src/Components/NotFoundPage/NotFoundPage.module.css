@@ -1,0 +1,65 @@
+:root {
+  --setting-bg: #e4e4e4;
+  --toggle-bg: #ccc;
+  --toggle-circle: #fff;
+  --text-dark: #000000;
+  --text-light: #ffffff;
+  --header: #7a1a08;
+  --notfound-bg: #f9f9f9;
+  --notfound-text: #333;
+  --notfound-accent: #3498db;
+  --notfound-danger: #e74c3c;
+}
+
+[data-theme="dark"] {
+  --setting-bg: #98989878;
+  --toggle-bg: #444;
+  --toggle-circle: #ffcf7d;
+  --text-dark: #ffffff;
+  --text-light: #000000;
+  --header: #ffc821;
+  --notfound-bg: #1e1e1e;
+  --notfound-text: #ffffff;
+  --notfound-accent: #4aa8ff;
+  --notfound-danger: #ff6b6b;
+}
+
+.notFoundContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  background-color: var(--notfound-bg);
+  color: var(--notfound-text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.notFoundTitle {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  color: var(--notfound-danger);
+}
+
+.notFoundText {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.notFoundLink {
+  font-size: 1rem;
+  color: var(--notfound-accent);
+  text-decoration: none;
+  border: 2px solid var(--notfound-accent);
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.notFoundLink:hover {
+  background-color: var(--notfound-accent);
+  color: var(--text-light);
+}

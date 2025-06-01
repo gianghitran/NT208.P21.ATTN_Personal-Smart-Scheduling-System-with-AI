@@ -1,11 +1,9 @@
 import { loginRequest, loginSuccess, loginFailure, registerFailure, registerRequest, registerSuccess, logoutRequest, logoutSuccess, logoutFailure } from "./authSlice";
-import { verifyEmailFailure, verifyEmailSuccess, verifyEmailRequest } from "./authSlice";
 import axios from "axios";
 import { addMessage, loadMoreMessages, setLoading, clearMessages } from "./chatSlide";
 import { resetApp } from "./resetAction";
 import { customToast } from "../utils/customToast";
-
-
+import { toast } from "react-toastify";
 
 // Lấy lịch sử tin nhắn cũ từ DB và đẩy vào Redux
 export const loadOldMessagesAPI = async (userId, dispatch) => {
@@ -80,13 +78,16 @@ export const loginGoogle = async (credentialResponse, dispatch, navigate) => {
 
 export const registerUser = async (user, dispatch, navigate) => {
     dispatch(registerRequest());
+    const toastId = customToast("Registering...", "loading");
     try {
         await axios.post("/api/auth/register", user);
         dispatch(registerSuccess());
+        toast.dismiss(toastId);
         sessionStorage.setItem("pendingEmail", user.email);
         navigate("/email-verify");
     } catch (error) {
         dispatch(registerFailure());
+        toast.dismiss(toastId);
         if (error.response) {
             return { success: false, message: error.response.data.message || "Register failed" };
         } else if (error.request) {
@@ -97,14 +98,14 @@ export const registerUser = async (user, dispatch, navigate) => {
     }
 }
 
-export const verifyEmail = async (code, dispatch, navigate) => {
-    dispatch(verifyEmailRequest());
+export const verifyEmail = async (code, navigate) => {
     try {
-        const response = await axios.post("/api/auth/verify-email", { code });
-        dispatch(verifyEmailSuccess());
-        navigate("/login");
+        const res = await axios.post("/api/auth/verify-email-validation", { code });
+        if (res.data.success) {
+            navigate("/login");
+            return { success: true, message: "Email verified successfully" };
+        }
     } catch (error) {
-        dispatch(verifyEmailFailure());
         if (error.response) {
             return { success: false, message: error.response.data.message || "Verification failed" };
         } else if (error.request) {
