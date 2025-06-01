@@ -212,7 +212,7 @@ Bearlander\
 │   └── Ngôn ngữ: Tiếng Việt / English\
 │\
 │\
-└── Hệ thống tối ưu\
+│── Hệ thống tối ưu\
 │    ├── Lazy Loading\
 │    │     ├── Từng tab\
 │    │     ├── Từng grid của tuần\
@@ -221,7 +221,7 @@ Bearlander\
 
 ---
 ## Video pr sản phẩm:
-[Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
+- [Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
 ---
 ## 📖 Sơ đồ kiến trúc
 
