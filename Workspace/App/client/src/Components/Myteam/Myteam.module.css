@@ -16,14 +16,15 @@
 }
 
 .container {
-    width: 80%;
-    min-height: 95dvh;
-    margin: 5px 0 0 17rem;
+    width: auto;
+    height: 95dvh;
+    margin: 10px 20px 0 270px;
     font-family: "Montserrat", sans-serif;
     display: flex;
     flex-direction: column;
     position: relative;
     background: var(--background-color);
+    
 }
 
 .headerSection {
@@ -110,7 +111,7 @@
     color: #e0e0e0;
     margin-left: 10px;
     white-space: pre-line;
-    max-width: 80%;
+    max-width: 50%;
     text-align: right;
     word-break: break-word;
 }
@@ -144,15 +145,15 @@
 
 @media (max-width: 800px) {
     .container {
-        width: 100%;
-        margin-left: 5px;
+        margin-left: 20px;
+        margin-right: 20px;
     }
     .headerSection {
         padding: 2rem 0.5rem 0.5rem 0;
     }
-    .header {
+    /* .header {
         font-size: 1.1rem;
-    }
+    } */
     .eventTime {
         font-size: 80%;
         width: 70px;
@@ -161,7 +162,7 @@
     .verticalLine {
         width: 1px;
         margin-left: 0;
-        margin-right: 5px;
+        /* margin-right: 5px; */
     }
     .eventTitle {
         font-size: 80%;
@@ -170,7 +171,7 @@
         font-size: 70%;
     }
     .eventBlock {
-        margin-right: 0.5rem;
+        margin-top: 15px;
     }
     .eventDesc {
         font-size: 80%;
