@@ -52,8 +52,8 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 > ### 🔗 Tích hợp và đồng bộ
 > - **Google OAuth 2.0 Sign-in**.
 > - Đồng bộ hóa sự kiện với **Google Calendar**.
-> - Tích hợp **Mistral-24b AI API** cho AI Chatbox.
-> - Tích hợp **OpenAI Whisper API** nhận diện giọng nói.
+> - Tích hợp API AI xử lý ngôn ngữ tự nhiên cho AI Chatbox.
+> - Tích hợp **Assembly AI** nhận diện giọng nói và chuyển thành văn bản.
 > 
 > ### 🔔 Thông báo & nhắc nhở
 > - Nhắc nhở sự kiện bằng **Email và Push Notification**.
@@ -64,12 +64,21 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
  
 ---
 ## 🌟 Các tính năng nổi bật
-### 📌 1️⃣ Đồng bộ Google Calendar
+### 📌 Chức năng đăng nhập/ đăng ký
+
+
+![image](https://github.com/user-attachments/assets/d8e15d96-0fab-453b-8fff-51914dbc9490)
+
+> - Khả năng ghi nhớ mật khẩu (remember me).
+> - Verify email khi đăng ký.
+> - Lưu session key.
+
+### 📌 Đồng bộ Google Calendar
 - Cho phép người dùng đồng bộ hóa lịch trình cá nhân với Google Calendar chỉ bằng vài cú nhấp chuột.
 - Tự động cập nhật các sự kiện, nhắc nhở và công việc giữa hệ thống Bearlander AI Scheduler và Google Calendar theo thời gian thực.
 - Hỗ trợ đăng nhập bằng Google OAuth 2.0 và xác thực bảo mật phiên.
 
-### 📌 2️⃣ Chatbox AI hỗ trợ đặt lịch thông minh & cá nhân hóa
+### 📌 Chatbox AI hỗ trợ đặt lịch thông minh & cá nhân hóa
 > Tích hợp AI Chatbox Scheduling, cho phép người dùng lên lịch bằng ngôn ngữ tự nhiên qua trò chuyện.
 > - AI có khả năng:
 >   - Hỏi bằng giọng nói
@@ -82,7 +91,7 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 ![image](https://github.com/user-attachments/assets/993c8e11-d964-46e8-bc86-6cde70d1459f)
 
 
-### 📌 3️⃣ Chế độ To-do List, Nhắc nhở & Collaboration
+### 📌 Chế độ To-do List, Nhắc nhở & Collaboration
 
 
 > - [My Task / To-do list]:
@@ -106,6 +115,9 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 
 ![image](https://github.com/user-attachments/assets/1dbf8e44-034a-4772-83a8-3d62795f9638)
 
+### 📌 Admin page - Cho phép admin quản lý website
+
+![image](https://github.com/user-attachments/assets/82d585e1-258d-4045-9ced-26ce2d1dd324)
 
 
 
