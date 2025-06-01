@@ -346,6 +346,11 @@ const authController = {
                 return res.status(400).json({ message: "User not found" });
             }
 
+            // Nếu là tài khoản Google thì không cho quên mật khẩu
+            if (user.oauth_provider === "google") {
+                return res.status(400).json({ message: "Google account cannot use forgot password. Please login with Google." });
+            }
+
             // Generate OTP (6 số)
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
             user.verificationToken = otp;
