@@ -4,27 +4,25 @@ import { Link } from "react-router-dom";
 import { Typography, Button, Container, Box, Paper } from "@mui/material";
 // npm install @mui/material @emotion/react @emotion/styled
 import gifAnimation from "../../assets/homepage_element.gif";
-import threeBears from "../../assets/3bears.png";
+import threeBears from "../../assets/3bears.webp";
 
 const Home = () => {
+    
     return ( 
         <div className={home.Home_byNghi}>
-            {/* Mini Calendar */}
-            {/* <div className={home.date_container}>
-                <DateContainer/>
-            </div> */}
-
-            {/* Nội dung chính */}
+                     {/* Nội dung chính */}
             <div className={home.title_container}>
             <div className={home.title_box}>
                 <h1 className={home.title_text}>The Happier Workspace</h1>
                 <p className={home.subtitle_text}>Calendar. Plan. To-do list. With a little help from AI.</p>
                 <Link to="/Login"><button className={home.login_button}>Login</button> </Link>
             </div>
-            <div className={home.date_container}>
-                <DateContainer/>
-            </div> 
+                 <div className={home.date_container}>
+                    <DateContainer/>
+                </div> 
             </div>
+
+           
 
 
             <div className={home.image}>
@@ -34,7 +32,7 @@ const Home = () => {
 
 
             <div className={home.Bears}>
-            <img src={threeBears} alt="Bears" width="800px" />
+            <img src={threeBears} alt="Bears" width="700px" loading="eager"  fetchPriority="high"/>
 
 
             </div>

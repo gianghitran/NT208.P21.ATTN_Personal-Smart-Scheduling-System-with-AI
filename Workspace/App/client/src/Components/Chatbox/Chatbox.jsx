@@ -167,10 +167,10 @@ const Chatbox = () => {
         }))
         : [];
         const now = moment().toDate(); 
-        // Ngày bắt đầu = ngày hiện tại - 30 ngày
-        const startDateFETCH = moment().subtract(30, "days").toDate();
-        // Ngày kết thúc = ngày hiện tại + 90 ngày
-        const endDateFETCH = moment().add(90, "days").toDate();
+        // Ngày bắt đầu = ngày hiện tại - 7 ngày
+        const startDateFETCH = moment().subtract(7, "days").toDate();
+        // Ngày kết thúc = ngày hiện tại + 14 ngày
+        const endDateFETCH = moment().add(14, "days").toDate();
         
         
         const eventsArr = await getEvents(user?.userData._id, startDateFETCH, endDateFETCH);
@@ -181,11 +181,26 @@ const Chatbox = () => {
             start: new Date(new Date(event.start).getTime() + timezoneOffsetHours * 60 * 60 * 1000).toISOString(),
             end: new Date(new Date(event.end).getTime() + timezoneOffsetHours * 60 * 60 * 1000).toISOString(),
           }));
+        eventsArrGMT7.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+        // console.log("Events fetched:", eventsArrGMT7);
         
         const currentEvents = JSON.stringify(eventsArrGMT7);
 
-        const format_JSON = `Now timestamp is ${now}. In my calendar, there were my events in timetable: ${currentEvents} , so when you schedule an event, avoid those times.
-        Just give me only the JSON of this statement in this format:
+        const format_JSON = `
+            You are helping me create a new event in my calendar.
+
+            - Current time: ${now}
+            - These are my existing scheduled events (timetable):
+            ${currentEvents}
+
+            ! When suggesting a new event, strictly avoid any time slots that overlap with the events above.
+            
+            🚫 IMPORTANT: You MUST AVOID any time conflicts with the above events.
+                - Do NOT overlap with any existing event in the timetable.
+                - Only suggest a time slot that is completely FREE.
+
+            ! Please return ONLY a JSON object with the following structure (no explanation, no extra text):
+            ! Just give me only the JSON of this statement in this format:
               {
                 "title": (string),
                 "start": (in this regex: "^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$"),
@@ -193,16 +208,30 @@ const Chatbox = () => {
                 "category": ("work"/"school"/"relax"/"todo"/"others"),
                 "description": (string),
                 "userId": "${user?.userData._id}"
-              }`;
-        const NormalFormat=`Now timestamp is ${now}. This is my timetable: ${currentEvents}. (Do not give JSON, give nomarl respone.)`;
+              }
+            
+            Make sure the suggested event does NOT conflict with my existing timetable.`;
+        const NormalFormat=`
+        - Now timestamp is ${now}.
+        - Here is my CURRENT timetable: ${currentEvents}. 
+        ⚠️ IMPORTANT:
+            - Do not give JSON, give nomarl respone.
+            - The event timelines mentioned in the chat history ARE NOT RELIABLE.
+            - Only trust the official timetable provided in this session.
+            - Disregard any events mentioned previously unless they are explicitly present in the latest timetable.`;
         const systemMessage = {
           role: "system",
-          content: "Previous messages are the chat history between the user and Chatbox. The event timelines in the chat history are not accurate. Please follow the timestamp in timetable.",
+          content: `
+          You are an assistant helping the user schedule events.
+          - 🚫 IMPORTANT: Any events or timestamps mentioned in previous messages (chat history) may be inaccurate or outdated.
+          - ⚠️ Always prioritize and strictly follow the current timetable provided by the user when suggesting new events.
+          - ⚠️ [NOTE] : Never assume availability from past messages. All scheduling decisions must respect my current timetable only.
+`,
         };
         const messagesToSend = isChecked 
         ? [systemMessage,...filteredMessages, { role: "user", content: input }, { role: "user", content: format_JSON }]
         : [systemMessage,...filteredMessages, { role: "user", content: input }, { role: "user", content: NormalFormat }];
-      
+       
       const res = await fetch(`http://localhost:4000/api/chatbox/ask/${userId}`, {
         method: "POST",
         headers: {
@@ -306,8 +335,8 @@ const Chatbox = () => {
         ) {
           const parsed = parseEventFromJSON(msg.content);
           if (parsed) {
-            parsed.start = new Date(new Date(parsed.start).getTime() - timezoneOffsetHours * 60 * 60 * 1000).toISOString();
-            parsed.end = new Date(new Date(parsed.end).getTime() - timezoneOffsetHours * 60 * 60 * 1000).toISOString();
+            // parsed.start = new Date(new Date(parsed.start).getTime() - timezoneOffsetHours * 60 * 60 * 1000).toISOString();
+            // parsed.end = new Date(new Date(parsed.end).getTime() - timezoneOffsetHours * 60 * 60 * 1000).toISOString();
             newEditableEvents[index] = parsed;
           }
         }
