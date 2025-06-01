@@ -131,93 +131,93 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 
 ---
 ## 📖 Sơ đồ hệ thống
-Bearlander
-│
-├── Trang chủ
-│   ├── Giới thiệu
-│   └── Đăng nhập / Đăng ký
-│
-│
-├── Admin Page
-│   ├── Quản lý người dùng
-│   ├── Quản lý sự kiện hệ thống
-│   ├── Quản lý báo cáo / vi phạm
-│   └── Cấu hình hệ thống
-│
-│
-├── Tài khoản người dùng
-│   ├── Đăng ký (Google OAuth / Email)
-│   ├── Đăng nhập
-│   ├── Ghi nhớ đăng nhập (Remember me)
-│   └── Xác thực Email
-│
-│
-├── Schedule (Quản lý lịch cá nhân)
-│   ├── Lịch Tuần / Tháng
-│   ├── Thêm / xóa
-│   │    ├── Quản lý sự kiện & công việc
-│   │         ├── Tạo / Sửa / Xóa sự kiện
-│   │             ├── Tạo sự kiện từ:
-│   │                  ├── Google Calendar
-│   │                  ├── AI Chatbox
-│   │                  ├── CSV Upload
-│   │                  ├── Text Upload
-│   │                  └── Giọng nói (Voice Input)
-│   ├── Kéo thả sự kiện
-│   ├── Phân loại sự kiện theo màu
-│   ├── Đồng bộ Google Calendar
-│   ├── Sự kiện Collaboration
-│
-│
-├── Chatbox (AI Scheduling)
-│   ├── AI Chatbox đặt lịch thông minh
-│   ├── Gợi ý sự kiện cá nhân hóa
-│   ├── Phân tích thời gian trống
-│   ├── Nhận diện lịch trùng
-│   ├── Tự động tạo sự kiện vào lịch
-│   ├── Đề xuất thời gian hợp lý
-│   └── Nhận dạng giọng nói (Voice to Text)
-│
-│
-├── My Activities (Sự kiện trong ngày)
-│   ├── Hiển thị chi tiết các sự kiện trong ngày
-│   ├── Phân loại sự kiện: quá khứ / đang diễn ra / sắp diễn ra
-│
-│
-├── My Teams (Collaboration-Cộng tác sự kiện)
-│   ├── Chia sẻ sự kiện với người khác
-│   ├── Mời tham gia sự kiện
-│   ├── Phân quyền: Xem / Chỉnh sửa
-│   └── Nhận thông báo khi có cập nhật
-│
-│
-├── My task (To-do list)
-│   │   ├── Hiển thị những sự kiện có tag là "to do"
-│   │   ├── Đánh dấu hoàn thành
-│   │   └── Kí hiệu đã quá hạn hay chưa
-│   └── Nhắc nhở / Reminders
-│
-│
-│
-├── My Teams (Collaboration-Cộng tác sự kiện)
-│   ├── Chia sẻ sự kiện với người khác
-│   ├── Mời tham gia sự kiện
-│   ├── Phân quyền: Xem / Chỉnh sửa
-│   └── Nhận thông báo khi có cập nhật
-│
-│
-├── Tùy chỉnh giao diện
-│   ├── Hiển thị thông tin người dùng
-│   ├── Dark Mode / Light Mode
-│   └── Ngôn ngữ: Tiếng Việt / English
-│
-│
-└── Hệ thống tối ưu
-    ├── Lazy Loading
-    │     ├── Từng tab
-    │     ├── Từng grid của tuần
-    ├── SEO > 90
-    └── Google-site search hỗ trợ
+Bearlander\
+│\
+├── Trang chủ\
+│   ├── Giới thiệu\
+│   └── Đăng nhập / Đăng ký\
+│\
+│\
+├── Admin Page\
+│   ├── Quản lý người dùng\
+│   ├── Quản lý sự kiện hệ thống\
+│   ├── Quản lý báo cáo / vi phạm\
+│   └── Cấu hình hệ thống\
+│\
+│\
+├── Tài khoản người dùng\
+│   ├── Đăng ký (Google OAuth / Email)\
+│   ├── Đăng nhập\
+│   ├── Ghi nhớ đăng nhập (Remember me)\
+│   └── Xác thực Email\
+│\
+│\
+├── Schedule (Quản lý lịch cá nhân)\
+│   ├── Lịch Tuần / Tháng\
+│   ├── Thêm / xóa\
+│   │    ├── Quản lý sự kiện & công việc\
+│   │         ├── Tạo / Sửa / Xóa sự kiện\
+│   │             ├── Tạo sự kiện từ:\
+│   │                  ├── Google Calendar\
+│   │                  ├── AI Chatbox\
+│   │                  ├── CSV Upload\
+│   │                  ├── Text Upload\
+│   │                  └── Giọng nói (Voice Input)\
+│   ├── Kéo thả sự kiện\
+│   ├── Phân loại sự kiện theo màu\
+│   ├── Đồng bộ Google Calendar\
+│   ├── Sự kiện Collaboration\
+│\
+│\
+├── Chatbox (AI Scheduling)\
+│   ├── AI Chatbox đặt lịch thông minh\
+│   ├── Gợi ý sự kiện cá nhân hóa\
+│   ├── Phân tích thời gian trống\
+│   ├── Nhận diện lịch trùng\
+│   ├── Tự động tạo sự kiện vào lịch\
+│   ├── Đề xuất thời gian hợp lý\
+│   └── Nhận dạng giọng nói (Voice to Text)\
+│\
+│\
+├── My Activities (Sự kiện trong ngày)\
+│   ├── Hiển thị chi tiết các sự kiện trong ngày\
+│   ├── Phân loại sự kiện: quá khứ / đang diễn ra / sắp diễn ra\
+│\
+│\
+├── My Teams (Collaboration-Cộng tác sự kiện)\
+│   ├── Chia sẻ sự kiện với người khác\
+│   ├── Mời tham gia sự kiện\
+│   ├── Phân quyền: Xem / Chỉnh sửa\
+│   └── Nhận thông báo khi có cập nhật\
+│\
+│\
+├── My task (To-do list)\
+│   │   ├── Hiển thị những sự kiện có tag là "to do"\
+│   │   ├── Đánh dấu hoàn thành\
+│   │   └── Kí hiệu đã quá hạn hay chưa\
+│   └── Nhắc nhở / Reminders\
+│\
+│\
+│\
+├── My Teams (Collaboration-Cộng tác sự kiện)\
+│   ├── Chia sẻ sự kiện với người khác\
+│   ├── Mời tham gia sự kiện\
+│   ├── Phân quyền: Xem / Chỉnh sửa\
+│   └── Nhận thông báo khi có cập nhật\
+│\
+│\
+├── Tùy chỉnh giao diện\
+│   ├── Hiển thị thông tin người dùng\
+│   ├── Dark Mode / Light Mode\
+│   └── Ngôn ngữ: Tiếng Việt / English\
+│\
+│\
+└── Hệ thống tối ưu\
+    ├── Lazy Loading\
+    │     ├── Từng tab\
+    │     ├── Từng grid của tuần\
+    ├── SEO > 90\
+    └── Google-site search hỗ trợ\
 
 ---
 ## Video pr sản phẩm:
