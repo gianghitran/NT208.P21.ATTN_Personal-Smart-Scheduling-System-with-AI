@@ -16,6 +16,7 @@ import Modal from "react-modal";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import VerifyOTP from "./Components/ForgotPassword/VerifyOTP";
 import ResetPassword from "./Components/ForgotPassword/ResetPassword";
+import NotFoundPage from "./Components/NotFoundPage/NotFoundPage";
 
 const Schedule = lazy(() => import("./Components/Schedule/Schedule"));
 const Myactivities = lazy(() => import("./Components/Myactivities/Myactivities"));
@@ -27,6 +28,13 @@ Modal.setAppElement("#root");
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.login.currentUser);
+  const location = useLocation();
+
+  const navbarRoutes = [
+    "/Schedule", "/Chatbox", "/Myactivities", "/Mytask", "/Myteam", "/Setting"
+  ];
+  const showNavbar = isLoggedIn !== null && navbarRoutes.some(route => location.pathname.startsWith(route));
+
 
   useEffect(() => {
     const theme = localStorage.getItem("theme");
@@ -37,7 +45,7 @@ function App() {
     <>
       <div className="app-layout">
         {/* <Navbar/> */}
-        {isLoggedIn !== null && <Navbar />}
+        {showNavbar && <Navbar />}
 
         <Routes>
           {isLoggedIn === null && (
@@ -109,6 +117,8 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+        
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
       <ToastContainer />

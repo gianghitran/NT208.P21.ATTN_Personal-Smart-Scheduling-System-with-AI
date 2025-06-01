@@ -16,7 +16,7 @@ import RecordButton from "../VoiceAsk/Record_Button";
 import { ToastContainer, toast } from "react-toastify";
 import { customToast } from "../../utils/customToast";
 import "react-toastify/dist/ReactToastify.css";
-
+import { Helmet } from "react-helmet";
 
 
 const Chatbox = () => {
@@ -380,8 +380,30 @@ const Chatbox = () => {
     
     
   return (
+
     <div className={chatbox.container}>
-      
+                        <Helmet>
+                          <html lang="vi" />
+                          <title>Bearlander Chatbox - Trợ lý AI lập lịch | AI Scheduling Assistant</title>
+                          {/*Mô tả bằng tiếng Việt */}
+                          <meta
+                            name="description"
+                            content="Trò chuyện với AI để tạo sự kiện, tránh trùng lịch và nhắc việc tự động bằng Chatbox thông minh."
+                          />
+                          {/*Mô tả bằng tiếng Anh */}
+                          <meta
+                            name="description"
+                            lang="en"
+                            content="Chat with AI to automatically create events, avoid schedule conflicts, and receive reminders with the intelligent Bearlander Chatbox."
+                          />
+                          {/*Keywords*/}
+                          <meta
+                            name="keywords"
+                            content="chatbox AI, lập lịch thông minh, nhắc việc, AI calendar assistant, smart scheduling, Bearlander, trợ lý lập lịch"
+                          />
+                          {/*Thẻ canonical*/}
+                          <link rel="canonical" href="https://bearlander.onrender.com/Chatbox" />
+                        </Helmet>
 
 
             <div className={chatbox.title}>

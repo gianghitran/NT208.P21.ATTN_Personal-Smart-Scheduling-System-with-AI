@@ -221,10 +221,6 @@ const authController = {
                 return res.status(400).json({ message: "Invalid or expired token" });
             }
 
-            user.isVerified = true;
-            user.verificationToken = undefined;
-            user.verificationTokenExpires = undefined;
-
             // Tạo resetPasswordToken mới
             const resetToken = crypto.randomBytes(32).toString('hex');
             user.resetPasswordToken = resetToken;
@@ -240,6 +236,38 @@ const authController = {
                     admin: undefined,
                     password: undefined,
                     resetPasswordToken: resetToken, // trả về token cho client
+                },
+            });
+        } catch (error) {
+            return res.status(500).json({ message: error });
+        }
+    },
+
+    verifyEmailValidation: async (req, res) => {
+        const { code } = req.body;
+        try {
+            const user = await User.findOne({
+                verificationToken: code,
+                verificationTokenExpires: { $gt: Date.now() }
+            })
+
+            if (!user) {
+                return res.status(400).json({ message: "Invalid or expired token" });
+            }
+
+            user.isVerified = true;
+            user.verificationToken = undefined;
+            user.verificationTokenExpires = undefined;
+
+            await user.save();
+
+            res.status(200).json({
+                success: true,
+                message: "Email verified successfully",
+                user: {
+                    ...user._doc,
+                    admin: undefined,
+                    password: undefined,
                 },
             });
         } catch (error) {

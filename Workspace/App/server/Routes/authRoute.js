@@ -8,7 +8,11 @@ route.post('/register', authController.registerUser);
 route.post('/login', authController.loginUser);
 route.post('/logout', authController.logoutUser);
 
-route.post('/verify-email', authController.verifyEmail);
+// This route is used to verify otp reset password
+route.post('/verify-email', authController.verifyEmail); 
+
+// This route is used to verify email validation
+route.post('/verify-email-validation', authController.verifyEmailValidation); 
 route.post('/resend-verify-email', authController.resendVerifyEmail);
 
 route.post('/forgot-password', authController.forgotPassword);

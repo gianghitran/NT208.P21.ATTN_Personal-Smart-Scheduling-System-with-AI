@@ -19,13 +19,7 @@ const authReducer = createSlice({
             success: false,
             error: false,
             fetching: false
-        },
-
-        verifyEmail: {
-            success: false,
-            error: false,
-            fetching: false
-        },
+        }
     },
 
     reducers: {
@@ -68,20 +62,7 @@ const authReducer = createSlice({
         logoutFailure: (state) => {
             state.logout.fetching = false;
             state.logout.error = true;
-        },
-
-        verifyEmailRequest: (state) => {
-            state.verifyEmail.fetching = true;
-        },
-        verifyEmailSuccess: (state) => {
-            state.verifyEmail.fetching = false;
-            state.verifyEmail.error = false;
-            state.verifyEmail.success = true;
-        },
-        verifyEmailFailure: (state) => {
-            state.verifyEmail.fetching = false;
-            state.verifyEmail.error = true;
-        },
+        }
     }
 });
 
@@ -90,7 +71,5 @@ export const { loginRequest, loginSuccess, loginFailure } = authReducer.actions;
 export const { registerRequest, registerSuccess, registerFailure } = authReducer.actions;
 
 export const { logoutRequest, logoutSuccess, logoutFailure } = authReducer.actions;
-
-export const { verifyEmailRequest, verifyEmailSuccess, verifyEmailFailure } = authReducer.actions;
 
 export default authReducer.reducer;

@@ -1,4 +1,4 @@
-import home from "./home.module.css"
+import home from "./Home.module.css"
 import DateContainer from "../miniCalendar/DateContainer";
 import { Link } from "react-router-dom";
 import { Typography, Button, Container, Box, Paper } from "@mui/material";
@@ -28,7 +28,7 @@ const Home = () => {
 
 
             <div className={home.image}>
-            <img src={gifAnimation} alt="GIF Animation" width="800px" />
+            {/* <img src={gifAnimation} alt="GIF Animation" width="800px" /> */}
 
             </div>
 

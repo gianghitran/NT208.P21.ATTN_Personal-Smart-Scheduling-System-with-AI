@@ -10,7 +10,6 @@ const EmailVerification = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRef = useRef([]);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   // Check if there is a pending email in session storage
   useEffect(() => {
@@ -64,11 +63,11 @@ const EmailVerification = () => {
     const fullCode = code.join("");
     const loadingId = customToast(`Verifying email...`, "loading");
 
-    const response = await verifyEmail(fullCode, dispatch, navigate);
+    const response = await verifyEmail(fullCode, navigate);
     if (response.success) {
       toast.dismiss(loadingId);
       sessionStorage.removeItem("pendingEmail");
-      customToast("success", "Email verified successfully");
+      customToast("Email verified successfully", "success");
     } else {
       toast.dismiss(loadingId);
       customToast("error", response.message || "Verification failed")
