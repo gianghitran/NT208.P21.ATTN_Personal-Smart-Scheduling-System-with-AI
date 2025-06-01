@@ -3,6 +3,9 @@
 - Gia-Nghi Tran : 23521005@gm.uit.edu.vn
 - Trong-Nghia Tran : 23521018@gm.uit.edu.vn
 - Da-Vit Nguyen : 23521802@gm.uit.edu.vn
+
+> ![PosterThreeBears_origin](https://github.com/user-attachments/assets/91c74b63-bdc9-4756-85cd-e713a8108410)
+
 ## 📅 Personal Smart Scheduling System with AI
 
 Website: [https://bearlander.onrender.com/](https://bearlander.onrender.com/)  
@@ -224,7 +227,8 @@ Bearlander\
 
 ---
 ## Video pr sản phẩm:
-[Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
+- [Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
+---
 ---
 ## 📖 Sơ đồ kiến trúc
 
