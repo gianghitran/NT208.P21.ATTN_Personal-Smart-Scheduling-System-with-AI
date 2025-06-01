@@ -41,11 +41,12 @@ const Navbar = () => {
                 <ul className={navs.mainitem}>
                     <CustomLink to="/Schedule" icon="date">Schedule</CustomLink>
                     <CustomLink to="/Chatbox" icon="chat">Chatbox</CustomLink>
-                    <CustomLink to="/Myactivities" icon="activity">My Activities</CustomLink>
+                    
                 </ul>
                 <div className={`${navs.tag} ${navs.account}`}>
                     <div className={navs.title}>My Account</div>
                     <ul className={navs.accountmenu}>
+                        <CustomLink to="/Myactivities" icon="activity">My Activities</CustomLink>
                         <CustomLink to="/Mytask" icon="task">My Task</CustomLink>
                         <CustomLink to="/Myteam" icon="team">My Team</CustomLink>
                         {/* <CustomLink to="/Myactivities" icon="activity">My Activities</CustomLink> */}
