@@ -50,11 +50,17 @@ Sau khi đã cấu hình `.env`, chạy lệnh sau để build và khởi độn
 docker-compose up --build -d
 ```
 
+Chỉ để khởi động sau khi đã build trước đó:
+
+```bash
+docker-compose up -d
+```
+
 ---
 
 ### 3. Lưu ý
 
-- 🐢 **MongoDB local có thể khởi động chậm** — nếu backend chưa kết nối được ngay, hãy thử đợi vài giây hoặc khởi động lại container.
+- 🐢 **MongoDB local có thể khởi động chậm** — nếu backend chưa kết nối được ngay, hãy thử đợi vài phút hoặc khởi động lại container.
 - ⚡ **MongoDB Atlas kết nối nhanh hơn** — bạn có thể thay đổi biến `MONGOSV` trong `.env` để sử dụng chuỗi kết nối từ MongoDB Atlas.
 - 🔐 Không nên commit file `.env` vào Git — hãy đảm bảo file này nằm trong `.gitignore`.
 
