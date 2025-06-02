@@ -60,7 +60,7 @@
 .eventTime {
     font-weight: bold;
     font-size: 1.2rem;
-    width: 10%;
+    width: 20%;
     text-align: center;
     flex-shrink: 0;
     color: var(--text-dark);
