@@ -223,7 +223,7 @@ const Chatbox = () => {
         ? [systemMessage,...filteredMessages, { role: "user", content: input }, { role: "user", content: format_JSON }]
         : [systemMessage,...filteredMessages, { role: "user", content: input }, { role: "user", content: NormalFormat }];
        
-      const res = await fetch(`http://localhost:4000/api/chatbox/ask/${userId}`, {
+      const res = await fetch(`/api/chatbox/ask/${userId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -286,7 +286,7 @@ const Chatbox = () => {
       }
       else{
       //Lỗi
-      alert("Error: " + error.message);
+      
       console.error("Error:", error.message);
     }
 
