@@ -21,14 +21,19 @@ const SpeechtoTextRoute = require("./Routes/SpeechtoTextRoute");
 const eventSharingRoute = require("./Routes/eventSharingRoute");
 const sseRoute = require("./Routes/sseRoute");
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGOSV);
-    console.log("✅ MongoDB is connected");
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
+const connectDB = async (retries = 5, delay = 3000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await mongoose.connect(process.env.MONGOSV);
+      console.log("✅ MongoDB is connected");
+      return;
+    } catch (error) {
+      console.error(`❌ MongoDB connection failed, retrying in ${delay / 1000}s... (${i + 1}/${retries})`);
+      await new Promise(res => setTimeout(res, delay));
+    }
   }
+  console.error("❌ Could not connect to MongoDB after multiple attempts.");
+  process.exit(1);
 };
 
 function getLocalIPs() {
