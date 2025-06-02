@@ -145,8 +145,9 @@ Bearlander\
 ├── Admin Page\
 │   ├── Quản lý người dùng\
 │   ├── Quản lý sự kiện hệ thống\
-│   ├── Quản lý báo cáo / vi phạm\
-│   └── Cấu hình hệ thống\
+│   ├── Quản lý token đã cấp\
+│   ├── Quản lý lịch sử chatbox\
+│   └── Quản lý sự kiện colab\
 │\
 │\
 ├── Tài khoản người dùng\
@@ -186,13 +187,6 @@ Bearlander\
 ├── My Activities (Sự kiện trong ngày)\
 │   ├── Hiển thị chi tiết các sự kiện trong ngày\
 │   ├── Phân loại sự kiện: quá khứ / đang diễn ra / sắp diễn ra\
-│\
-│\
-├── My Teams (Collaboration-Cộng tác sự kiện)\
-│   ├── Chia sẻ sự kiện với người khác\
-│   ├── Mời tham gia sự kiện\
-│   ├── Phân quyền: Xem / Chỉnh sửa\
-│   └── Nhận thông báo khi có cập nhật\
 │\
 │\
 ├── My task (To-do list)\
