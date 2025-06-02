@@ -1,0 +1,16 @@
+node_modules
+client/node_modules
+server/node_modules
+dist
+.vite
+.env
+.git
+.gitignore
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.keystone_log.txt
+logs
+tmp
+Dockerfile
+docker-compose.yml

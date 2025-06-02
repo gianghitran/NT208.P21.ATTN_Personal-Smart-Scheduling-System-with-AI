@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.keystone
+.keystone_admin
+.keystone_log.txt
+logs
+tmp
+.env
+.git
+.gitignore
+Dockerfile
+docker-compose.yml

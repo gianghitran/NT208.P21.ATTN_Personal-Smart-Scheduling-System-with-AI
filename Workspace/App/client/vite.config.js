@@ -6,9 +6,23 @@ import svgr from 'vite-plugin-svgr'
 export default defineConfig({
   plugins: [react(), svgr()],
   server: {
+    host: true,
+    port: 3000,
     proxy: {
       "/api": {
-        target: "http://localhost:4000",
+        target: "http://server:4000",
+        changeOrigin: true,
+        secure: true,
+      },
+
+      '/admin': {
+        target: 'http://server:4000',
+        changeOrigin: true,
+        secure: true,
+      },
+
+      '/admin/api': {
+        target: 'http://server:4000',
         changeOrigin: true,
         secure: true,
       }
