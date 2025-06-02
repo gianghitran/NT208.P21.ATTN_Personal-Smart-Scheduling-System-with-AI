@@ -24,20 +24,26 @@ const Myteam = () => {
     // Lọc tất cả inviteEvents mà user là owner, invitor hoặc invitee
     const userId = user?.userData?._id;
     const now = new Date();
-    const twoMonthsLater = new Date();
+    const twoMonthsLater = new Date(now);
     twoMonthsLater.setMonth(now.getMonth() + 2);
 
-    const relatedInviteEvents = inviteEvents.filter(invite =>
-        (
+    const relatedInviteEvents = inviteEvents.filter(invite => {
+        const event = invite.eventId;
+        if (
             (invite.ownerId?._id === userId) ||
             (invite.invitorId?._id === userId) ||
             (invite.inviteeId?._id === userId)
-        ) &&
-        invite.eventId &&
-        invite.eventId.start &&
-        new Date(invite.eventId.start) >= now &&
-        new Date(invite.eventId.start) <= twoMonthsLater
-    );
+        ) {
+            if (event && event.start && event.end) {
+                const start = new Date(event.start);
+                const end = new Date(event.end);
+                const isOngoing = now >= start && now <= end;
+                const isUpcoming = start >= now && start <= twoMonthsLater;
+                return isOngoing || isUpcoming;
+            }
+        }
+        return false;
+    });
 
     const CATEGORY_COLORS = {
         work: "#2196F3",
@@ -110,8 +116,15 @@ const Myteam = () => {
                                 <div className={styles.eventTime}>
                                     {event.start && event.end ? (
                                         <>
-                                            {new Date(event.start).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}{" "}
+                                            {new Date(event.start).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}{" - "}
                                             {new Date(event.end).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}
+                                            <br />
+                                            {new Date(event.start).toLocaleDateString("en-US", {
+                                                weekday: "long",
+                                                year: "numeric",
+                                                month: "long",
+                                                day: "numeric",
+                                            })}
                                         </>
                                     ) : "No time"}
                                 </div>
