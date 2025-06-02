@@ -220,6 +220,7 @@ Bearlander\
 │    ├── Lazy Loading\
 │    │     ├── Từng tab\
 │    │     ├── Từng grid của tuần\
+│    ├── Chuyển tab không cần reload\
 │    ├── SEO > 90\
 │    ├── Google-site search hỗ trợ\
 │    ├── Real-time\
