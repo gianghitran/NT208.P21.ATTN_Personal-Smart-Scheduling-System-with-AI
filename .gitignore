@@ -1,2 +1,3 @@
 node_modules/
 keystone_log.txt
+.env
