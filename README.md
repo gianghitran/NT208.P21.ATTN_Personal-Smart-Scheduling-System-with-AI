@@ -10,7 +10,7 @@
 
 Website: [https://bearlander.onrender.com/](https://bearlander.onrender.com/)  
 Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Personal-Smart-Scheduling-System-with-AI)
-
+Video demo: [Video demo](https://www.canva.com/design/DAGpK4XvsGc/v75jtWdCBoDPqklSqqjI0g/edit?utm_content=DAGpK4XvsGc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 ---
 
 ## 📖 Giới thiệu
