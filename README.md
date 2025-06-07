@@ -127,6 +127,12 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 
 ![image](https://github.com/user-attachments/assets/82d585e1-258d-4045-9ced-26ce2d1dd324)
 
+### 📌 Mobile friendly
+
+- Hỗ trợ máy tính, tablet, điện thoại,..
+
+https://github.com/user-attachments/assets/0ffd1232-ea8e-40f2-a3c4-fb6ee6139e21
+
 
 
 ---
