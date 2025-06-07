@@ -118,6 +118,11 @@ Source Code: [GitHub Repo](https://github.com/gianghitran/NT208.P21.ATTN_Persona
 
 ![image](https://github.com/user-attachments/assets/1dbf8e44-034a-4772-83a8-3d62795f9638)
 
+> - [Darkmode]:
+
+![image](https://github.com/user-attachments/assets/0cd92fd1-d150-4757-969e-e9304e78ef3b)
+
+
 ### 📌 Admin page - Cho phép admin quản lý website
 
 ![image](https://github.com/user-attachments/assets/82d585e1-258d-4045-9ced-26ce2d1dd324)
