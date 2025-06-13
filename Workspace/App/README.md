@@ -1,3 +1,16 @@
+
+1. [Cách sử dụng](#i-cách-sử-dụng)  
+   - [1. Tạo file cấu hình `.env`](#1-tạo-file-cấu-hình-env)  
+   - [2. Khởi động dự án](#2-khởi-động-dự-án)  
+   - [3. Lưu ý](#3-lưu-ý)  
+   - [4. Tắt hệ thống](#4-tắt-hệ-thống)  
+2. [Hướng dẫn chạy dự án trên trình IDLE](#ii-hướng-dẫn-chạy-dự-án-trên-trình-idle)  
+   - [1. Client Side](#1-client-side)  
+   - [2. Server Side](#2-server-side)  
+   - [3. Kết nối MongoDB bằng Mongoose](#connectToMongo)  
+   - [4. JSON Google Calendar](#json-google-calendar)
+  
+
 ## I. Cách sử dụng
 
 > 💡 **Yêu cầu**: Máy cần có Docker và Docker Compose được cài đặt sẵn.
@@ -118,7 +131,7 @@ const connectToMongo = async () => {
   await mongoose.connect(process.env.MONGO_URL); // MONGO_URL is a var in file .env
   console.log("Connected to MongoDB");
 };
-connectToMongo();
+#### connectToMongo
 ```
 
 ![image](https://github.com/user-attachments/assets/a18ed740-e0d5-4300-b406-c15f0f6c4112)
