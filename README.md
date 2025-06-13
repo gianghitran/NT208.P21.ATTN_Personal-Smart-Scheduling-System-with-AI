@@ -2,36 +2,32 @@
 ---
 
 
-# Mục lục
+## 📑 Mục lục
 
-[I. Sơ lược](#i-sơ-lược)
-- [1. MarkDown (Markup languages)](#1-markdown-markup-languages)
-- [2. Một số trình soạn thảo Markdown](#2-một-số-trình-soạn-thảo-markdown)
+- [📘 ĐỒ ÁN MÔN HỌC](#đồ-án-môn-học-lập-trình-ứng-dụng-web---nt208p21antn-)
+  - [👥 Nhóm thực hiện - Nhóm 5](#nhóm-thực-hiện---nhóm-5)
+- [🚀 Cách sử dụng](#🚀-cách-sử-dụng)
+  - [1. Tạo file cấu hình `.env`](#1-tạo-file-cấu-hình-env)
+  - [2. Khởi động dự án](#2-khởi-động-dự-án)
+  - [4. Tắt hệ thống](#4-tắt-hệ-thống)
+- [📅 Personal Smart Scheduling System with AI](#📅-personal-smart-scheduling-system-with-ai)
+- [📖 Giới thiệu](#📖-giới-thiệu)
+- [📌 Công nghệ sử dụng](#📌-công-nghệ-sử-dụng)
+- [🎯 Các tính năng chính](#🎯-các-tính-năng-chính)
+- [🌟 Các tính năng nổi bật](#🌟-các-tính-năng-nổi-bật)
+  - [📌 Đăng nhập/Đăng ký](#📌-chức-năng-đăng-nhập-đăng-ký)
+  - [📌 Đồng bộ Google Calendar](#📌-đồng-bộ-google-calendar)
+  - [📌 Chatbox AI hỗ trợ đặt lịch](#📌-chatbox-ai-hỗ-trợ-đặt-lịch-thông-minh--cá-nhân-hóa)
+  - [📌 To-do List, Nhắc nhở & Collaboration](#📌-chế-độ-to-do-list-nhắc-nhở--collaboration)
+  - [📌 Admin page](#📌-admin-page---cho-phép-admin-quản-lý-website)
+  - [📌 Mobile Friendly](#📌-mobile-friendly)
+- [🌟 Tối ưu hiệu năng](#🌟-các-tính-năng-hỗ-trợ-load-và-tối-ưu)
+- [📖 Sơ đồ hệ thống](#📖-sơ-đồ-hệ-thống)
+- [📹 Video PR sản phẩm](#video-pr-sản-phẩm)
+- [📖 Sơ đồ kiến trúc](#📖-sơ-đồ-kiến-trúc)
+- [⚠️ Lưu ý](#3-lưu-ý)
+- [📑 Bản quyền](#📑-bản-quyền)
 
-[II. Cách sử dụng](#ii-cách-sử-dụng)
-- [1. Văn bản thuần](#1-văn-bản-thuần)
-  - [1. Tiêu đề - Heading](#1-tiêu-đề---heading)
-  - [2. Đoạn văn - Paragraph](#2-đoạn-văn---paragraph)
-  - [3. Chữ in nghiêng - Italic](#3-chữ-in-nghiêng---italic)
-  - [4. Chữ in đậm - Bold](#4-chữ-in-đậm---bold)
-  - [5. In đậm và in nghiêng](#5-in-đậm-và-in-nghiêng)
-  - [6. Chữ gạch giữa - Strikethrough](#6-chữ-gạch-giữa---strikethrough)
-  - [7. Code trong dòng - Inline Code](#7-code-trong-dòng---inline-code)
-- [2. Các khối](#2-các-khối)
-  - [1. Trích dẫn - Blockquote](#1-trích-dẫn---blockquote)
-  - [2. Danh sách có thứ tự - Ordered List](#2-danh-sách-có-thứ-tự---ordered-list)
-  - [3. Danh sách không có thứ tự - Unordered List](#3-danh-sách-không-có-thứ-tự---unordered-list)
-  - [4. Khối lệnh - Block Code](#4-khối-lệnh---block-code)
-  - [5. Bảng - Table](#5-bảng---table)
-- [3. Đặc biệt](#3-đặc-biệt)
-  - [1. Đường kẻ ngang - Horizonal rules](#1-đường-kẻ-ngang---horizonal-rules)
-  - [2. Liên kết - Link](#2-liên-kết---link)
-  - [3. Hình ảnh - Image](#3-hình-ảnh---image)
-  - [4. Biểu tượng cảm xúc - Icon](#4-biểu-tượng-cảm-xúc---icon)
-  - [5. Checkbox](#5-checkbox)
-  - [6. Escape markdown](#6-escape-markdown)
-
-[III. Kết thúc](#iii-kết-thúc)
 
 ## ĐỒ ÁN MÔN HỌC [Lập trình ứng dụng Web - NT208.P21.ANTN] :
 ###  Nhóm thực hiện - Nhóm 5:
