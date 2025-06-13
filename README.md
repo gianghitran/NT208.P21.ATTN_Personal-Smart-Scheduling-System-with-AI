@@ -6,11 +6,8 @@
 
 - [📘 ĐỒ ÁN MÔN HỌC](#đồ-án-môn-học-lập-trình-ứng-dụng-web---nt208p21antn-)
   - [👥 Nhóm thực hiện - Nhóm 5](#nhóm-thực-hiện---nhóm-5)
-- [🚀 Cách sử dụng](#🚀-cách-sử-dụng)
-  - [1. Tạo file cấu hình `.env`](#1-tạo-file-cấu-hình-env)
-  - [2. Khởi động dự án](#2-khởi-động-dự-án)
-  - [4. Tắt hệ thống](#4-tắt-hệ-thống)
-- [📅 Personal Smart Scheduling System with AI](#📅-personal-smart-scheduling-system-with-ai)
+
+- [📅 Thông tin sản phẩm](#📅-personal-smart-scheduling-system-with-ai)
 - [📖 Giới thiệu](#📖-giới-thiệu)
 - [📌 Công nghệ sử dụng](#📌-công-nghệ-sử-dụng)
 - [🎯 Các tính năng chính](#🎯-các-tính-năng-chính)
@@ -23,9 +20,13 @@
   - [📌 Mobile Friendly](#📌-mobile-friendly)
 - [🌟 Tối ưu hiệu năng](#🌟-các-tính-năng-hỗ-trợ-load-và-tối-ưu)
 - [📖 Sơ đồ hệ thống](#📖-sơ-đồ-hệ-thống)
-- [📹 Video PR sản phẩm](#video-pr-sản-phẩm)
 - [📖 Sơ đồ kiến trúc](#📖-sơ-đồ-kiến-trúc)
-- [⚠️ Lưu ý](#3-lưu-ý)
+- [🚀 Cách sử dụng](#🚀-cách-sử-dụng)
+  - [1. Tạo file cấu hình `.env`](#1-tạo-file-cấu-hình-env)
+  - [2. Khởi động dự án](#2-khởi-động-dự-án)
+  - [4. Tắt hệ thống](#4-tắt-hệ-thống)
+  - [6. Lưu ý](#3-lưu-ý)
+- [📹 Video PR sản phẩm](#video-pr-sản-phẩm)
 - [📑 Bản quyền](#📑-bản-quyền)
 
 
@@ -47,64 +48,6 @@
 > ![PosterThreeBears_origin](https://github.com/user-attachments/assets/91c74b63-bdc9-4756-85cd-e713a8108410)
 
 
-
-## 🚀 Cách sử dụng
-
-> 💡 **Yêu cầu**: Máy cần có Docker và Docker Compose được cài đặt sẵn.
-
-### 1. Tạo file cấu hình `.env`
-
-Dự án đã có sẵn file `.env.sample` chứa các biến môi trường mẫu. Để chạy dự án, bạn cần tạo file `.env` từ file này:
-
-```bash
-cp .env.sample .env
-```
-
-Sau đó, chỉnh sửa nội dung file `.env` và điền các thông tin cần thiết như:
-
-```dotenv
-#### Google OAuth Configuration
-VITE_GG_CLIENT_ID=your_google_client_id_here
-GG_CLIENT_SECRET=your_google_client_secret_here
-GG_REDIRECT_URI=http://localhost:3000/oauth2callback
-GG_REDIRECT_LOGIN_URL=http://localhost:3000/oauth2callback-login
-
-#### Database Configuration
-MONGOSV=mongodb://mongo:27017/dbname
-# MONGOSV=mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=true&w=majority
-
-#### JWT Secret Keys
-ACCESS_KEY=your_jwt_access_secret_key_minimum_32_characters_long
-REFRESH_KEY=your_jwt_refresh_secret_key_minimum_32_characters_long
-
-#### AI Services
-OPENROUTER_API_KEY=sk-or-v1-your_openrouter_api_key_here
-#### WHISPER_API_KEY=sk-proj-your_openai_whisper_api_key_here
-ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here
-
-#### Email Configuration
-MAIL_USER=your_gmail_address@gmail.com
-MAIL_PASS=your_gmail_app_password_here
-
-#### Cookie Secret
-COOKIE_SECRET=your_cookie_secret_key_minimum_32_characters_long
-```
-
----
-
-### 2. Khởi động dự án
-
-Sau khi đã cấu hình `.env`, chạy lệnh sau để build và khởi động toàn bộ hệ thống:
-
-```bash
-docker-compose up --build -d
-```
-
-Chỉ để khởi động sau khi đã build trước đó:
-
-```bash
-docker-compose up -d
-```
 
 ---
 
@@ -334,10 +277,7 @@ Bearlander\
 │    ├── Real-time\
 │    └── Mobile friendly\ 
 
----
-## Video pr sản phẩm:
-- [Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
----
+
 ---
 ## 📖 Sơ đồ kiến trúc
 
@@ -345,6 +285,64 @@ Bearlander\
 
 ---
 
+
+## 🚀 Cách sử dụng
+
+> 💡 **Yêu cầu**: Máy cần có Docker và Docker Compose được cài đặt sẵn.
+
+### 1. Tạo file cấu hình `.env`
+
+Dự án đã có sẵn file `.env.sample` chứa các biến môi trường mẫu. Để chạy dự án, bạn cần tạo file `.env` từ file này:
+
+```bash
+cp .env.sample .env
+```
+
+Sau đó, chỉnh sửa nội dung file `.env` và điền các thông tin cần thiết như:
+
+```dotenv
+#### Google OAuth Configuration
+VITE_GG_CLIENT_ID=your_google_client_id_here
+GG_CLIENT_SECRET=your_google_client_secret_here
+GG_REDIRECT_URI=http://localhost:3000/oauth2callback
+GG_REDIRECT_LOGIN_URL=http://localhost:3000/oauth2callback-login
+
+#### Database Configuration
+MONGOSV=mongodb://mongo:27017/dbname
+# MONGOSV=mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=true&w=majority
+
+#### JWT Secret Keys
+ACCESS_KEY=your_jwt_access_secret_key_minimum_32_characters_long
+REFRESH_KEY=your_jwt_refresh_secret_key_minimum_32_characters_long
+
+#### AI Services
+OPENROUTER_API_KEY=sk-or-v1-your_openrouter_api_key_here
+#### WHISPER_API_KEY=sk-proj-your_openai_whisper_api_key_here
+ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here
+
+#### Email Configuration
+MAIL_USER=your_gmail_address@gmail.com
+MAIL_PASS=your_gmail_app_password_here
+
+#### Cookie Secret
+COOKIE_SECRET=your_cookie_secret_key_minimum_32_characters_long
+```
+
+---
+
+### 2. Khởi động dự án
+
+Sau khi đã cấu hình `.env`, chạy lệnh sau để build và khởi động toàn bộ hệ thống:
+
+```bash
+docker-compose up --build -d
+```
+
+Chỉ để khởi động sau khi đã build trước đó:
+
+```bash
+docker-compose up -d
+```
 
 ### 3. Lưu ý
 
@@ -362,6 +360,10 @@ Khi không sử dụng, bạn có thể dừng toàn bộ các container với l
 docker-compose down
 ```
 
+---
+## Video pr sản phẩm:
+- [Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
+---
 
 ## 📑 Bản quyền
 
