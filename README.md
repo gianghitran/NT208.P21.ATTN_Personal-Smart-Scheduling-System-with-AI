@@ -10,22 +10,13 @@
 - [Giới thiệu](#giới-thiệu)
 - [Công nghệ sử dụng](#công-nghệ-sử-dụng)
 - [Các tính năng chính](#các-tính-năng-chính)
-- [Các tính năng nổi bật](#các-tính-năng-nổi-bật)
-  - [Đăng nhập/Đăng ký](#chức-năng-đăng-nhập-đăng-ký)
-  - [Đồng bộ Google Calendar](#đồng-bộ-google-calendar)
-  - [Chatbox AI hỗ trợ đặt lịch](#chatbox-ai-hỗ-trợ-đặt-lịch-thông-minh--cá-nhân-hóa)
-  - [To-do List, Nhắc nhở & Collaboration](#chế-độ-to-do-list-nhắc-nhở--collaboration)
-  - [Admin page](#admin-page---cho-phép-admin-quản-lý-website)
-  - [Mobile Friendly](#mobile-friendly)
-- [Tối ưu hiệu năng](#các-tính-năng-hỗ-trợ-load-và-tối-ưu)
 - [Sơ đồ hệ thống](#sơ-đồ-hệ-thống)
-- [Sơ đồ kiến trúc](#sơ-đồ-kiến-trúc)
-- [Cách sử dụng](#cách-sử-dụng)
+- [Hướng dẫn sử dụng](#cách-sử-dụng)
   - [1. Tạo file cấu hình `.env`](#1-tạo-file-cấu-hình-env)
   - [2. Khởi động dự án](#2-khởi-động-dự-án)
   - [4. Tắt hệ thống](#4-tắt-hệ-thống)
   - [6. Lưu ý](#3-lưu-ý)
-- [Video PR sản phẩm](#video-pr-sản-phẩm)
+- [Video PR sản phẩm & Video DEMO](#video-pr-sản-phẩm-và-demo)
 - [Bản quyền](#bản-quyền)
 
 
@@ -360,7 +351,7 @@ docker-compose down
 ```
 
 ---
-## Video pr sản phẩm:
+## Video pr sản phẩm và demo:
 - [Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
 ---
 
