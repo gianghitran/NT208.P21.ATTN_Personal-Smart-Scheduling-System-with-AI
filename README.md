@@ -11,7 +11,7 @@
 - [Công nghệ sử dụng](#công-nghệ-sử-dụng)
 - [Các tính năng chính](#các-tính-năng-chính)
 - [Sơ đồ hệ thống](#sơ-đồ-hệ-thống)
-- [Cách sử dụng](#cách-sử-dụng-trên-docker)  
+- [Hướng dẫn sử dụng trên Docker](#cách-sử-dụng-trên-docker)  
    - [1. Tạo file cấu hình `.env`](#1-tạo-file-cấu-hình-env)  
    - [2. Khởi động dự án](#2-khởi-động-dự-án)  
    - [3. Lưu ý](#3-lưu-ý)  
