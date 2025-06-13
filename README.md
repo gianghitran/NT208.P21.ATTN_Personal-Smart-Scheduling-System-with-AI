@@ -1,4 +1,16 @@
 # NT208.P21.ATTN_Personal-Smart-Scheduling-System-with-AI
+---
+
+## ĐỒ ÁN MÔN HỌC [Lập trình ứng dụng Web - NT208.P21.ANTN] :
+###  Nhóm thực hiện - Nhóm 5:
+  
+| MSSV | Họ và Tên | Email |
+|:--------|:------------|:----------------------------|
+| 23521005 | Trần Gia Nghi | 23521005@gm.uit.edu.vn |
+| 23521802 | Nguyễn Đa Vít | 23521802@gm.uit.edu.vn |
+| 23521018 | Trần Trọng Nghĩa | 23521018@gm.uit.edu.vn |
+
+---
 ## This project was built by us:
 - Gia-Nghi Tran : 23521005@gm.uit.edu.vn
 - Trong-Nghia Tran : 23521018@gm.uit.edu.vn
@@ -242,15 +254,7 @@ Bearlander\
 
 ---
 
-## 📣 Nhóm thực hiện
 
-| MSSV | Họ và Tên | Email |
-|:--------|:------------|:----------------------------|
-| 23521005 | Trần Gia Nghi | 23521005@gm.uit.edu.vn |
-| 23521802 | Nguyễn Đa Vít | 23521802@gm.uit.edu.vn |
-| 23521018 | Trần Trọng Nghĩa | 23521018@gm.uit.edu.vn |
-
----
 
 ## 📑 Bản quyền
 
