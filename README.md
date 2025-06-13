@@ -479,6 +479,7 @@ key gpt4o: sk-or-v1-c78458429d8e95a29bc21025c729eb8bb71721b7c3486e46984aed7f6add
 ---
 ## Video pr sản phẩm và demo:
 - [Video giới thiệu sản phẩm](https://drive.google.com/file/d/1BoezXOcbhSpHe9RJW1ExvsfBi4tgjKtN/view?usp=sharing)
+- [Video demo](https://www.canva.com/design/DAGpK4XvsGc/v75jtWdCBoDPqklSqqjI0g/edit?utm_content=DAGpK4XvsGc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 ---
 
 ## Bản quyền
