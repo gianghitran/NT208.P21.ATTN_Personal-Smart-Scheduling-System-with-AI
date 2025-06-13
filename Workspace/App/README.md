@@ -1,4 +1,4 @@
-## I.Cách sử dụng
+## I. Cách sử dụng
 
 > 💡 **Yêu cầu**: Máy cần có Docker và Docker Compose được cài đặt sẵn.
 
@@ -75,7 +75,7 @@ docker-compose down
 ```
 
 ## II. Hướng dẫn chạy dự án trên trình IDLE
-### Client side
+### 1. Client side
 
 #### BEGIN
 
@@ -95,7 +95,7 @@ Note:
 - `Link` in React help you navigate to other pages without load the website again.
 - To run frontend and backend, set frontend's vite.config.js value _"proxy":"url"_ of backend's url.
 
-### Server side
+### 2. Server side
 RUN steps:
 
 1. npm init -y (init workspace for server)
